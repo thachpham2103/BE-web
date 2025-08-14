@@ -1,0 +1,10 @@
+# Server
+PORT=8082
+ENV_URL=http://localhost:8082
+
+# MySQL
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_DB=learningConnect
+MYSQL_USER=root
+MYSQL_PASSWORD=123456
