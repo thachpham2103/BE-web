@@ -49,6 +49,10 @@ public class ClassRoom {
     @JsonIgnore
     private List<ClassRegistration> registrations = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "classRoom")
+    @JsonIgnore
+    private Set<AttendanceSession> attendanceSessions= new HashSet<>();
+
 
 
 }

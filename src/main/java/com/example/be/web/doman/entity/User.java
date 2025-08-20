@@ -24,7 +24,7 @@ public class User extends DateAuditing {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false,updatable = false,insertable = false)
+    @Column(nullable = false,updatable = false)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -63,5 +63,14 @@ public class User extends DateAuditing {
     @ManyToOne
     @JoinColumn(name="class_id", foreignKey = @ForeignKey(name="FK_CLASS_ID"))
     private ClassRoom classRoom;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonIgnore
+    private Set<AttendanceRecord> attendanceRecords= new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
+    @JsonIgnore
+    private Set<FaceData> faceData= new HashSet<>();
+
 
 }
