@@ -1,4 +1,4 @@
-package com.example.be.web.exception;
+package com.example.be.web.exception.extended;
 
 import lombok.Getter;
 import lombok.Setter;

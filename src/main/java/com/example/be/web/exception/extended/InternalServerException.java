@@ -1,13 +1,13 @@
-package com.example.be.web.exception;
+package com.example.be.web.exception.extended;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-@Setter
 @Getter
+@Setter
 
-public class ResponseStatusException extends RuntimeException{
+public class InternalServerException extends RuntimeException{
 
     private String message;
 
@@ -15,26 +15,26 @@ public class ResponseStatusException extends RuntimeException{
 
     private String[] params;
 
-    public ResponseStatusException(String message) {
+    public InternalServerException(String message) {
         super(message);
-        this.status = HttpStatus.NOT_FOUND;
+        this.status = HttpStatus.INTERNAL_SERVER_ERROR;
         this.message = message;
     }
 
-    public ResponseStatusException(HttpStatus status, String message) {
+    public InternalServerException(HttpStatus status, String message) {
         super(message);
         this.status = status;
         this.message = message;
     }
 
-    public ResponseStatusException(String message, String[] params) {
+    public InternalServerException(String message, String[] params) {
         super(message);
-        this.status = HttpStatus.NOT_FOUND;
+        this.status = HttpStatus.INTERNAL_SERVER_ERROR;
         this.message = message;
         this.params = params;
     }
 
-    public ResponseStatusException(HttpStatus status, String message, String[] params) {
+    public InternalServerException(HttpStatus status, String message, String[] params) {
         super(message);
         this.status = status;
         this.message = message;
