@@ -8,6 +8,6 @@ import com.example.be.web.doman.response.UserResponseDto;
 public interface UserService {
 
  UserCreateDto createUser(UserCreateDto userCreateDto);
- ListUserResponseDto getUsers(Long id);
+ UserResponseDto getUserById(Long userId);
 
 }

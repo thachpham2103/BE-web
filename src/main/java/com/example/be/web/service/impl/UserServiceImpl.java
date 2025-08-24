@@ -7,11 +7,13 @@ import com.example.be.web.doman.model.Role;
 import com.example.be.web.doman.request.UserCreateDto;
 import com.example.be.web.doman.response.ListUserResponseDto;
 import com.example.be.web.doman.response.UserResponseDto;
+import com.example.be.web.exception.extended.NotFoundException;
 import com.example.be.web.repository.RoleRepository;
 import com.example.be.web.repository.UserRepository;
 import com.example.be.web.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -47,9 +49,12 @@ public class UserServiceImpl implements UserService {
         return userCreateDto;
     }
 
-
     @Override
-    public ListUserResponseDto getUsers(Long id) {
-        return null;
+    @Cacheable(value = "userDto", key = "id")
+    public UserResponseDto getUserById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID, new String[]{userId.toString()}));
+        return userMapper.toUserResponseDto(user);
     }
+
 }

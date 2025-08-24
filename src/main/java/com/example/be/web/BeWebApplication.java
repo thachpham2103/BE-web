@@ -32,11 +32,4 @@ public class BeWebApplication {
 		log.info("-------------------------START SUCCESS " + appName
 				+ " Application------------------------------");
 	}
-
-
-
-
-
-
-
 }
