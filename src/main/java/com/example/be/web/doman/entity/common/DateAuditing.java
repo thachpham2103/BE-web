@@ -5,6 +5,7 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,8 +19,8 @@ import java.time.LocalDateTime;
 
 public abstract class DateAuditing {
 
-    @CreatedDate
-    @Column(nullable = false, unique = false)
+    @Column(name = "create_date", nullable = false, updatable = false)
+    @CreationTimestamp  // Hibernate tự sinh thời gian khi insert
     private LocalDateTime createDate;
 
     @LastModifiedDate

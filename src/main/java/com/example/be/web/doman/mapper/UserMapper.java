@@ -16,10 +16,9 @@ public interface UserMapper {
     UserResponseDto toUserResponseDto(User user);
 
     @Mapping(target = "role", ignore = true)
+    @Mapping(source = "email", target = "email")
     User toUser(UserCreateDto userCreateDto);
 
     List<UserResponseDto> toUserResponseDtos(List<User> user);
-
-
 
 }

@@ -1,0 +1,55 @@
+package com.example.be.web.service.impl;
+
+import com.example.be.web.constant.ErrorMessage;
+import com.example.be.web.doman.entity.User;
+import com.example.be.web.doman.mapper.UserMapper;
+import com.example.be.web.doman.model.Role;
+import com.example.be.web.doman.request.UserCreateDto;
+import com.example.be.web.doman.response.ListUserResponseDto;
+import com.example.be.web.doman.response.UserResponseDto;
+import com.example.be.web.repository.RoleRepository;
+import com.example.be.web.repository.UserRepository;
+import com.example.be.web.service.UserService;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+
+public class UserServiceImpl implements UserService {
+
+    private final UserMapper userMapper;
+
+    private final UserRepository userRepository;
+
+    private final RoleRepository roleRepository;
+
+//    private final PasswordEncoder passwordEncoder;
+
+
+    @Override
+    public UserCreateDto createUser(UserCreateDto userCreateDto) {
+        User user = userMapper.toUser(userCreateDto);
+//        user.setPassword(passwordEncoder.encode(userCreateDto.getPassword()));
+        // set role thủ công
+        Role role = roleRepository.findById(userCreateDto.getRole().getId())
+                .orElseThrow(() -> new RuntimeException(ErrorMessage.ROLE_NOT_FOUND));
+        user.setRole(role);
+
+        user.setLastLogin(LocalDateTime.now());
+        user.setCreateDate(LocalDateTime.now());
+        user.setLastModifiedDate(LocalDateTime.now());
+
+        return userCreateDto;
+    }
+
+
+    @Override
+    public ListUserResponseDto getUsers(Long id) {
+        return null;
+    }
+}

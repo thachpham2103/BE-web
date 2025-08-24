@@ -1,0 +1,33 @@
+package com.example.be.web.controller;
+
+import com.example.be.web.base.RestApiV1;
+import com.example.be.web.base.VsResponseUtil;
+import com.example.be.web.constant.UrlConstant;
+import com.example.be.web.doman.request.UserCreateDto;
+import com.example.be.web.service.UserService;
+import com.example.be.web.service.impl.UserServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RequiredArgsConstructor
+@RestController
+@RestApiV1
+@Validated
+public class UserController {
+
+    private final UserService userService;
+
+    @Tag(name="admin_leader")
+    @PostMapping(UrlConstant.User.CREATE_USER)
+    public ResponseEntity<?> createUser(@RequestBody @Valid UserCreateDto createDto){
+        return VsResponseUtil.success(userService.createUser(createDto));
+    }
+
+}
