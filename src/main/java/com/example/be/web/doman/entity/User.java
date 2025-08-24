@@ -17,14 +17,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name="users")
+@Table(name = "users")
 @Entity
 
 public class User extends DateAuditing {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false,updatable = false)
+    @Column(nullable = false, updatable = false)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -34,19 +34,19 @@ public class User extends DateAuditing {
     private String password;
 
     @Nationalized
-    @Column(name="full_name")
+    @Column(name = "full_name")
     private String fullName;
 
-    @Column(name="avatar_url")
+    @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @Column(name="email", unique = true, nullable = false)
-    private String eamil;
+    @Column(name = "email", unique = true, nullable = false)
+    private String email;
 
-    @Column(name="gender")
+    @Column(name = "gender")
     private String gender;
 
-    @Column(name="birthday")
+    @Column(name = "birthday")
     private LocalDate birthday;
 
     @Column(nullable = false)
@@ -58,19 +58,19 @@ public class User extends DateAuditing {
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private Set<ClassRegistration> classRegistration= new HashSet<>();
+    private Set<ClassRegistration> classRegistration = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name="class_id", foreignKey = @ForeignKey(name="FK_CLASS_ID"))
+    @JoinColumn(name = "class_id", foreignKey = @ForeignKey(name = "FK_CLASS_ID"))
     private ClassRoom classRoom;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonIgnore
-    private Set<AttendanceRecord> attendanceRecords= new HashSet<>();
+    private Set<AttendanceRecord> attendanceRecords = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     @JsonIgnore
-    private Set<FaceData> faceData= new HashSet<>();
+    private Set<FaceData> faceData = new HashSet<>();
 
 
 }

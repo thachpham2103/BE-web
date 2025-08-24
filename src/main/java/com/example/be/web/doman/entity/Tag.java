@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name="tags")
+@Table(name = "tags")
 
 public class Tag {
 
