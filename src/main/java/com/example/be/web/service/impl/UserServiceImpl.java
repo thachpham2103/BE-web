@@ -57,4 +57,15 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserResponseDto(user);
     }
 
+    @Override
+    public void deleteUsers(Long id) {
+     User user=userRepository.findById(id).orElseThrow(()-> new RuntimeException(ErrorMessage.User.USER_NOT_FOUND_ID));
+
+        if (userRepository.existsById(id)) {
+            throw new RuntimeException(ErrorMessage.User.USER_NOT_FOUND_ID);
+        }
+
+        userRepository.deleteById(id);
+    }
+
 }

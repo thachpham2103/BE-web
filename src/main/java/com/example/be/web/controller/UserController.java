@@ -2,6 +2,7 @@ package com.example.be.web.controller;
 
 import com.example.be.web.base.RestApiV1;
 import com.example.be.web.base.VsResponseUtil;
+import com.example.be.web.constant.ResponseMessage;
 import com.example.be.web.constant.UrlConstant;
 import com.example.be.web.doman.request.UserCreateDto;
 import com.example.be.web.service.UserService;
@@ -34,6 +35,13 @@ public class UserController {
     @PostMapping(UrlConstant.User.CREATE_USER)
     public ResponseEntity<?> createUser(@RequestBody @Valid UserCreateDto createDto){
         return VsResponseUtil.success(userService.createUser(createDto));
+    }
+
+    @Tag(name="admin_leader")
+    @DeleteMapping(UrlConstant.User.DELETE_USER)
+    public ResponseEntity<?> deleteUsers(@PathVariable Long id){
+            userService.deleteUsers(id);
+            return VsResponseUtil.success(ResponseMessage.User.USER_DELETE);
     }
 
 }
