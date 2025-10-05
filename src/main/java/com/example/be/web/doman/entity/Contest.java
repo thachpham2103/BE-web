@@ -25,10 +25,7 @@ public class Contest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "contest_id")
     private Long contestId;
-
-    @Column(name = "title", length = 200, nullable = false)
-    private String title;
-
+    
     @Column(name = "description", length = 1000)
     private String description;
 
