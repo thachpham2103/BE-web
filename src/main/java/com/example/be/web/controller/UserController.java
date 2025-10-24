@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ public class UserController {
         return VsResponseUtil.success(userService.getUserById(userId));
     }
 
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
     @Tag(name="admin_leader")
     @PostMapping(UrlConstant.User.CREATE_USER)
     public ResponseEntity<?> createUser(@RequestBody @Valid UserCreateDto createDto){
