@@ -5,13 +5,15 @@ import com.example.be.web.doman.entity.User;
 import com.example.be.web.doman.mapper.UserMapper;
 import com.example.be.web.doman.model.Role;
 import com.example.be.web.doman.request.UserCreateDto;
-import com.example.be.web.doman.response.ListUserResponseDto;
+import com.example.be.web.doman.request.UserUpdateDto;
 import com.example.be.web.doman.response.UserResponseDto;
+import com.example.be.web.exception.extended.NotFoundException;
 import com.example.be.web.repository.RoleRepository;
 import com.example.be.web.repository.UserRepository;
 import com.example.be.web.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -47,9 +49,29 @@ public class UserServiceImpl implements UserService {
         return userCreateDto;
     }
 
+    @Override
+    @Cacheable(value = "userDto", key = "id")
+    public UserResponseDto getUserById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID, new String[]{userId.toString()}));
+        return userMapper.toUserResponseDto(user);
+    }
 
     @Override
-    public ListUserResponseDto getUsers(Long id) {
-        return null;
+    public void deleteUsers(Long id) {
+     User user=userRepository.findById(id).orElseThrow(()-> new RuntimeException(ErrorMessage.User.USER_NOT_FOUND_ID));
+
+        if (userRepository.existsById(id)) {
+            throw new RuntimeException(ErrorMessage.User.USER_NOT_FOUND_ID);
+        }
+
+        userRepository.deleteById(id);
     }
+
+    @Override
+    public User updateUser(Long id, UserUpdateDto updateDto) {
+           User user= userRepository.findById(id).orElseThrow(()-> new RuntimeException(ErrorMessage.User.USER_NOT_FOUND_ID));
+           return userRepository.save(user);
+    }
+
 }
