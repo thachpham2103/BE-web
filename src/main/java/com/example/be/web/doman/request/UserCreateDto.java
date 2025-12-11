@@ -30,7 +30,7 @@ public class UserCreateDto {
     @Pattern(regexp ="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = ErrorMessage.INVALID_FORMAT_EMAIL)
     private String email;
 
-    @NotBlank(message = ErrorMessage.NOT_BLANK_FIELD)
+    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
     private Role role;
 
 }

@@ -21,7 +21,7 @@ public class FaceData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long facedataId;
 
-    @Column(name="imageUrl")
+    @Column(name="image_url")
     private String imageUrl;
 
     @Column(name="create_at", nullable = false)
