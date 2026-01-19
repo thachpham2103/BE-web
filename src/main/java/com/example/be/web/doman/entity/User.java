@@ -12,13 +12,13 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Table(name = "users")
 @Entity
+@Builder
 
 public class User extends DateAuditing {
 

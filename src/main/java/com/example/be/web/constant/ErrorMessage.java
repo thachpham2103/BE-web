@@ -18,4 +18,6 @@ public class ErrorMessage {
         public static final String ERR_INCORRECT_USERNAME = "exception.auth.incorrect.username";
     }
 
+
+
 }
