@@ -1,4 +1,4 @@
-package com.example.be.web.doman.response;
+package com.example.be.web.doman.dto.response.user;
 
 import lombok.*;
 

@@ -12,4 +12,10 @@ public class ErrorMessage {
         public static final String USER_NOT_FOUND_ID="exception.user.not.found.id";
     }
 
+    public static class Auth{
+
+        public static final String INVALID_REFRESH_TOKEN = "exception.auth.invalid.refresh.token";
+        public static final String ERR_INCORRECT_USERNAME = "exception.auth.incorrect.username";
+    }
+
 }
