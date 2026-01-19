@@ -1,8 +1,8 @@
 package com.example.be.web.doman.mapper;
 
 import com.example.be.web.doman.entity.User;
-import com.example.be.web.doman.request.UserCreateDto;
-import com.example.be.web.doman.response.UserResponseDto;
+import com.example.be.web.doman.dto.request.user.UserCreateDto;
+import com.example.be.web.doman.dto.response.user.UserResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

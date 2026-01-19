@@ -1,4 +1,4 @@
-package com.example.be.web.doman.request;
+package com.example.be.web.doman.dto.request.user;
 
 
 import com.example.be.web.constant.ErrorMessage;

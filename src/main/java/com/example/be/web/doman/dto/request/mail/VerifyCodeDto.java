@@ -1,7 +1,6 @@
-package com.example.be.web.doman.request;
+package com.example.be.web.doman.dto.request.mail;
 
 import lombok.*;
-import org.apache.commons.collections4.Get;
 
 @Setter
 @Getter

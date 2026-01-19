@@ -1,4 +1,4 @@
-package com.example.be.web.doman.response;
+package com.example.be.web.doman.dto.request.user;
 
 import lombok.*;
 
@@ -8,21 +8,21 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 
-public class UserResponseDto {
-
-    private String id;
+public class UserUpdateDto {
 
     private String username;
 
     private String fullName;
 
-    private String roleName;
-
     private String email;
 
-    private String avatarUrl;
+    private String Role;
+
+    private String gender;
 
     private String birthday;
 
-    private String gender;
+    private String urlAvatar;
+
+
 }
