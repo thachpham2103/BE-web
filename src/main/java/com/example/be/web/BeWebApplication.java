@@ -1,5 +1,7 @@
 package com.example.be.web;
 
+import com.example.be.web.base.AdminInfoProperties;
+import com.example.be.web.constant.RoleConstant;
 import com.example.be.web.doman.entity.User;
 import com.example.be.web.doman.model.Role;
 import com.example.be.web.repository.RoleRepository;
@@ -55,7 +57,7 @@ public class BeWebApplication {
 			}
 			//init admin
 			if (userRepository.count() == 0) {
-				User admin = User.builder().username(userInfo.get)
+				User admin = User.builder().username(userInfo.getUsername())
 						.password(passwordEncoder.encode(userInfo.getPassword()))
 						.fullName(userInfo.getFullName())
 						.role(roleRepository.findByRoleName(RoleConstant.ADMIN))

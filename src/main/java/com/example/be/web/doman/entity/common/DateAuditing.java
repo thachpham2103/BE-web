@@ -11,11 +11,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-//@Getter
-//@Setter
+@Getter
+@Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-@Builder
+//@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -29,19 +29,19 @@ public abstract class DateAuditing {
     @Column(nullable = false)
     private LocalDateTime lastModifiedDate;
 
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
-    }
-
-    public LocalDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
+//    public LocalDateTime getCreateDate() {
+//        return createDate;
+//    }
+//
+//    public void setCreateDate(LocalDateTime createDate) {
+//        this.createDate = createDate;
+//    }
+//
+//    public LocalDateTime getLastModifiedDate() {
+//        return lastModifiedDate;
+//    }
+//
+//    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+//        this.lastModifiedDate = lastModifiedDate;
+//    }
 }
