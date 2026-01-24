@@ -18,6 +18,20 @@ public class ErrorMessage {
         public static final String ERR_INCORRECT_USERNAME = "exception.auth.incorrect.username";
     }
 
+    public static class AttendanceSession {
+        public static final String SESSION_NOT_FOUND = "Không tìm thấy buổi điểm danh với ID: %s";
+        public static final String ERR_CREATE_SESSION = "Lỗi khi tạo buổi điểm danh";
+        public static final String ERR_UPDATE_SESSION = "Lỗi khi cập nhật buổi điểm danh";
+        public static final String ERR_DELETE_SESSION = "Lỗi khi xóa buổi điểm danh";
+        public static final String ERR_GET_ALL_SESSION = "Lỗi khi lấy danh sách buổi điểm danh";
+    }
+
+    public static class AttendanceRecord {
+        public static final String RECORD_NOT_FOUND = "Không tìm thấy bản ghi điểm danh với ID: %s";
+        public static final String ERR_CHECKIN = "Lỗi khi điểm danh";
+        public static final String ERR_GET_BY_SESSION = "Lỗi khi lấy bản ghi theo buổi học";
+        public static final String ERR_GET_BY_USER = "Lỗi khi lấy bản ghi theo người dùng";
+    }
 
 
 }
