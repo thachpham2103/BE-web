@@ -1,8 +1,7 @@
-package com.example.be.web.security.jwt;
+package com.example.be.web.security;
 
 import com.example.be.web.constant.ErrorMessage;
 import com.example.be.web.exception.extended.InvalidException;
-import com.example.be.web.security.UserPrincipal;
 import com.example.be.web.service.CustomUserDetailsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

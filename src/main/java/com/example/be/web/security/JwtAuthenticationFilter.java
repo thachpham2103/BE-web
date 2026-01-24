@@ -1,4 +1,4 @@
-package com.example.be.web.security.jwt;
+package com.example.be.web.security;
 
 import com.example.be.web.service.CustomUserDetailsService;
 //import com.example.projectbase.service.CustomUserDetailsService;

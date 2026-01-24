@@ -10,7 +10,7 @@ import com.example.be.web.exception.extended.UnauthorizedException;
 import com.example.be.web.repository.ClassRepository;
 import com.example.be.web.repository.UserRepository;
 import com.example.be.web.security.UserPrincipal;
-import com.example.be.web.security.jwt.JwtTokenProvider;
+import com.example.be.web.security.JwtTokenProvider;
 import com.example.be.web.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

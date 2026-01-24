@@ -1,4 +1,4 @@
-package com.example.be.web.security.jwt;
+package com.example.be.web.security;
 
 import com.example.be.web.base.RestData;
 
