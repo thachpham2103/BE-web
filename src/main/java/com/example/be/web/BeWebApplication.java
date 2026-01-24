@@ -14,14 +14,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.example.be")
 @Slf4j
 @RequiredArgsConstructor
-//@EnableConfigurationProperties({AdminInfoProperties.class, StorageProperties.class})
+@EnableJpaAuditing
+
+//@EnableConfigurationProperties({AdminInfoProperties.class})
 
 public class BeWebApplication {
 
@@ -69,7 +72,7 @@ public class BeWebApplication {
 						.fullName("Pham Ngoc Thach")
 						.role(roleRepository.findByRoleName(RoleConstant.USER))
 						.lastLogin(LocalDateTime.now())
-						.email("thachpham2103@gmail.com")
+						.email("thachktpm02@gmail.com")
 						.build();
 
 				userRepository.save(user);

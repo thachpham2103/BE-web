@@ -13,7 +13,7 @@ public interface AuthService {
 
 //    JwtResponse login(LoginRequest loginRequest);
 
-    JwtResponse refresh(RefreshRequest refreshRequest);
+//    JwtResponse refresh(RefreshRequest refreshRequest);
 
     TokenRefreshResponseDto refresh(TokenRefreshRequestDto request);
 
