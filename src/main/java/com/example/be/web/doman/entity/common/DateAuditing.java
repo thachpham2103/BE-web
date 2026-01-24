@@ -3,8 +3,7 @@ package com.example.be.web.doman.entity.common;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,6 +15,9 @@ import java.time.LocalDateTime;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
+//@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 
 public abstract class DateAuditing {
 
@@ -27,4 +29,19 @@ public abstract class DateAuditing {
     @Column(nullable = false)
     private LocalDateTime lastModifiedDate;
 
+//    public LocalDateTime getCreateDate() {
+//        return createDate;
+//    }
+//
+//    public void setCreateDate(LocalDateTime createDate) {
+//        this.createDate = createDate;
+//    }
+//
+//    public LocalDateTime getLastModifiedDate() {
+//        return lastModifiedDate;
+//    }
+//
+//    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+//        this.lastModifiedDate = lastModifiedDate;
+//    }
 }

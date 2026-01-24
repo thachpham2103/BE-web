@@ -18,7 +18,6 @@ public class ErrorMessage {
         public static final String ERR_INCORRECT_USERNAME = "exception.auth.incorrect.username";
     }
 
-
     public static class AttendanceSession {
         public static final String SESSION_NOT_FOUND = "Không tìm thấy buổi điểm danh với ID: %s";
         public static final String ERR_CREATE_SESSION = "Lỗi khi tạo buổi điểm danh";
@@ -33,5 +32,6 @@ public class ErrorMessage {
         public static final String ERR_GET_BY_SESSION = "Lỗi khi lấy bản ghi theo buổi học";
         public static final String ERR_GET_BY_USER = "Lỗi khi lấy bản ghi theo người dùng";
     }
+
 
 }
