@@ -71,7 +71,7 @@ public class BeWebApplication {
 						.fullName("Pham Ngoc Thach")
 						.role(roleRepository.findByRoleName(RoleConstant.USER))
 						.lastLogin(LocalDateTime.now())
-						.email("thachktpm02@gmail.com")
+						.email("thachktpm8386@gmail.com")
 						.build();
 
 				userRepository.save(user);

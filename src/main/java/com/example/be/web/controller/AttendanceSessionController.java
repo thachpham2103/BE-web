@@ -2,6 +2,7 @@ package com.example.be.web.controller;
 
 import com.example.be.web.doman.entity.AttendanceSession;
 import com.example.be.web.service.AttendanceSessionService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ public class AttendanceSessionController {
     // 1. Tạo buổi điểm danh
     @PreAuthorize("hasRole('TEACHER')")
     @PostMapping
+    @Operation(summary = "API tạo buổi điểm danh", description = "Admin / Leader")
     public ResponseEntity<AttendanceSession> createSession(@RequestBody AttendanceSession session) {
         AttendanceSession created = sessionService.createSession(session);
         return ResponseEntity.ok(created);
@@ -27,6 +29,7 @@ public class AttendanceSessionController {
     // 2. Cập nhật buổi điểm danh
     @PreAuthorize("hasRole('TEACHER')")
     @PutMapping("/{id}")
+    @Operation(summary = "API cập nhật buổi điểm danh", description = "Admin / Leader")
     public ResponseEntity<AttendanceSession> updateSession(@PathVariable Long id,
                                                            @RequestBody AttendanceSession session) {
         AttendanceSession updated = sessionService.updateSession(id, session);
@@ -36,6 +39,7 @@ public class AttendanceSessionController {
     // 3. Xóa buổi điểm danh
     @PreAuthorize("hasRole('TEACHER')")
     @DeleteMapping("/{id}")
+    @Operation(summary = "API xóa buổi điểm danh theo id", description = "Admin / Leader")
     public ResponseEntity<Void> deleteSession(@PathVariable Long id) {
         sessionService.deleteSession(id);
         return ResponseEntity.noContent().build();

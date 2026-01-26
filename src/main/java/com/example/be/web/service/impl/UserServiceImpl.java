@@ -14,6 +14,7 @@ import com.example.be.web.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,24 +31,28 @@ public class UserServiceImpl implements UserService {
 
     private final RoleRepository roleRepository;
 
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
-    public UserCreateDto createUser(UserCreateDto userCreateDto) {
-        User user = userMapper.toUser(userCreateDto);
-//        user.setPassword(passwordEncoder.encode(userCreateDto.getPassword()));
-        // set role thủ công
-        Role role = roleRepository.findById(userCreateDto.getRole().getId())
+    public UserCreateDto createUser(UserCreateDto dto) {
+        User user = userMapper.toUser(dto);
+
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+        Role role = roleRepository.findById(dto.getRole().getId())
                 .orElseThrow(() -> new RuntimeException(ErrorMessage.ROLE_NOT_FOUND));
         user.setRole(role);
 
-        user.setLastLogin(LocalDateTime.now());
         user.setCreateDate(LocalDateTime.now());
+        user.setLastLogin(LocalDateTime.now());
         user.setLastModifiedDate(LocalDateTime.now());
 
-        return userCreateDto;
+        userRepository.save(user);
+
+        return dto;
     }
+
 
     @Override
     @Cacheable(value = "userDto", key = "id")

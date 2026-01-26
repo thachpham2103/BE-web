@@ -6,6 +6,7 @@ import com.example.be.web.constant.ResponseMessage;
 import com.example.be.web.constant.UrlConstant;
 import com.example.be.web.doman.dto.request.user.UserCreateDto;
 import com.example.be.web.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
     @Tag(name="admin_leader")
+    @Operation(summary = "API AMIN, LEADER")
     @PostMapping(UrlConstant.User.CREATE_USER)
     public ResponseEntity<?> createUser(@RequestBody @Valid UserCreateDto createDto){
         return VsResponseUtil.success(userService.createUser(createDto));
@@ -39,6 +41,7 @@ public class UserController {
 
     @Tag(name="admin_leader")
     @DeleteMapping(UrlConstant.User.DELETE_USER)
+    @Operation(summary = "API delete user by id", description = "Admin / Leader")
     public ResponseEntity<?> deleteUsers(@PathVariable Long id){
             userService.deleteUsers(id);
             return VsResponseUtil.success(ResponseMessage.User.USER_DELETE);

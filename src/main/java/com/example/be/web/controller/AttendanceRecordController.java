@@ -2,6 +2,7 @@ package com.example.be.web.controller;
 
 import com.example.be.web.doman.entity.AttendanceRecord;
 import com.example.be.web.service.AttendanceRecordService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +21,7 @@ public class AttendanceRecordController {
     @PreAuthorize("hasAnyRole('USER')")
     // 1. Điểm danh (check-in)
     @PostMapping("/checkin")
+    @Operation(summary = "API record by user", description = "User")
     public ResponseEntity<AttendanceRecord> checkIn(
             @RequestParam Long sessionId,
             @RequestParam Long userId,
@@ -34,6 +36,7 @@ public class AttendanceRecordController {
     // 2. Lấy record theo ID
     @PreAuthorize("hasRole('TEACHER')")
     @GetMapping("/{id}")
+    @Operation(summary = "API get record by id", description = "Admin / Leader")
     public ResponseEntity<AttendanceRecord> getRecordById(@PathVariable Long id) {
         AttendanceRecord record = attendanceRecordService.getRecordById(id);
         return ResponseEntity.ok(record);
@@ -42,6 +45,7 @@ public class AttendanceRecordController {
     // 3. Lấy danh sách record theo session
     @PreAuthorize("hasRole('TEACHER')")
     @GetMapping("/session/{sessionId}")
+    @Operation(summary = "API get record by id", description = "Admin / Leader")
     public ResponseEntity<List<AttendanceRecord>> getRecordsBySession(@PathVariable Long sessionId) {
         List<AttendanceRecord> records = attendanceRecordService.getRecordsBySession(sessionId);
         return ResponseEntity.ok(records);

@@ -22,7 +22,7 @@ public class UserUpdateDto {
 
     private String birthday;
 
-    private String urlAvatar;
+    private String avatarUrl;
 
 
 }
