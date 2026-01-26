@@ -1,4 +1,4 @@
-package com.example.be.web.base;
+package com.example.be.web.config.properties;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,6 @@
 package com.example.be.web;
 
-import com.example.be.web.base.AdminInfoProperties;
+import com.example.be.web.config.properties.AdminInfoProperties;
 import com.example.be.web.constant.RoleConstant;
 import com.example.be.web.doman.entity.User;
 import com.example.be.web.doman.model.Role;
@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -19,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 
-@SpringBootApplication(scanBasePackages = "com.example.be")
+@SpringBootApplication(scanBasePackages = "com.example.be.web")
 @Slf4j
 @RequiredArgsConstructor
 @EnableJpaAuditing

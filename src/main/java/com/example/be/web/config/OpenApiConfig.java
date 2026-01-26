@@ -1,4 +1,4 @@
-package com.example.be.web.conflig;
+package com.example.be.web.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -29,11 +29,11 @@ public class OpenApiConfig {
                                         .bearerFormat("JWT")));
     }
 
-    @Bean
-    public GroupedOpenApi publicApi() {
-        return GroupedOpenApi.builder()
-                .group("public-api")
-                .packagesToScan("com.example.be.web.controller")
-                .build();
-    }
+//    @Bean
+//    public GroupedOpenApi publicApi() {
+//        return GroupedOpenApi.builder()
+//                .group("public-api")
+//                .packagesToScan("com.example.be.web.controller")
+//                .build();
+//    }
 }
