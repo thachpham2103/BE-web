@@ -1,7 +1,10 @@
 package com.example.be.web.service.impl;
 
 import com.example.be.web.constant.ErrorMessage;
+import com.example.be.web.doman.dto.request.attendance.AttendanceSessionRequestDto;
+import com.example.be.web.doman.dto.response.attendance.AttendanceSessionResponseDto;
 import com.example.be.web.doman.entity.AttendanceSession;
+import com.example.be.web.doman.mapper.AttendanceSessionMapper;
 import com.example.be.web.exception.extended.NotFoundException;
 import com.example.be.web.repository.AttendanceSessionRepository;
 import com.example.be.web.service.AttendanceSessionService;
@@ -20,63 +23,67 @@ import java.util.List;
 public class AttendanceSessionServiceImpl implements AttendanceSessionService {
 
     private final AttendanceSessionRepository sessionRepository;
+    private final AttendanceSessionMapper mapper;
 
     @Override
-    public AttendanceSession createSession(AttendanceSession session) {
-        try {
-            session.setCreateAt(LocalDateTime.now());
-            session.setUpdateAt(LocalDateTime.now());
-            return sessionRepository.save(session);
-        } catch (Exception e) {
-            log.error("Lỗi khi tạo AttendanceSession: {}", e.getMessage());
-            throw new RuntimeException(ErrorMessage.AttendanceSession.ERR_CREATE_SESSION, e);
-        }
+    public AttendanceSessionResponseDto createSession(AttendanceSessionRequestDto requestDto) {
+        AttendanceSession session = mapper.toEntity(requestDto);
+        session.setCreateAt(LocalDateTime.now());
+        session.setUpdateAt(LocalDateTime.now());
+        AttendanceSession saved = sessionRepository.save(session);
+        return mapper.toResponse(saved);
     }
 
     @Override
-    public AttendanceSession updateSession(Long id, AttendanceSession session) {
+    public AttendanceSessionResponseDto updateSession(Long id, AttendanceSessionRequestDto requestDto) {
         AttendanceSession existing = sessionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.AttendanceSession.SESSION_NOT_FOUND, new String[]{id.toString()}));
-        try {
-            existing.setTitle(session.getTitle());
-            existing.setStartTime(session.getStartTime());
-            existing.setEndTime(session.getEndTime());
-            existing.setLocationLatitude(session.getLocationLatitude());
-            existing.setLocationLongatitude(session.getLocationLongatitude());
-            existing.setRadiusMeters(session.getRadiusMeters());
-            existing.setUpdateAt(LocalDateTime.now());
-            return sessionRepository.save(existing);
-        } catch (Exception e) {
-            log.error("Lỗi khi cập nhật AttendanceSession id {}: {}", id, e.getMessage());
-            throw new RuntimeException(ErrorMessage.AttendanceSession.ERR_UPDATE_SESSION, e);
-        }
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorMessage.AttendanceSession.SESSION_NOT_FOUND,
+                        new String[]{id.toString()}
+                ));
+
+        // cập nhật từ DTO sang entity
+        existing.setTitle(requestDto.getTitle());
+        existing.setStartTime(requestDto.getStartTime());
+        existing.setEndTime(requestDto.getEndTime());
+        existing.setLocationLatitude(requestDto.getLocationLatitude());
+        existing.setLocationLongitude(requestDto.getLocationLongitude());
+        existing.setRadiusMeters(requestDto.getRadiusMeters());
+        existing.setUpdateAt(LocalDateTime.now());
+
+        AttendanceSession updated = sessionRepository.save(existing);
+        return mapper.toResponse(updated);
     }
 
     @Override
     public void deleteSession(Long id) {
         AttendanceSession existing = sessionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.AttendanceSession.SESSION_NOT_FOUND, new String[]{id.toString()}));
-        try {
-            sessionRepository.delete(existing);
-        } catch (Exception e) {
-            log.error("Lỗi khi xóa AttendanceSession id {}: {}", id, e.getMessage());
-            throw new RuntimeException(ErrorMessage.AttendanceSession.ERR_DELETE_SESSION, e);
-        }
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorMessage.AttendanceSession.SESSION_NOT_FOUND,
+                        new String[]{id.toString()}
+                ));
+        sessionRepository.delete(existing);
     }
 
     @Override
-    public AttendanceSession getSessionById(Long id) {
-        return sessionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.AttendanceSession.SESSION_NOT_FOUND, new String[]{id.toString()}));
+    public AttendanceSessionResponseDto getSessionById(Long id) {
+        AttendanceSession entity = sessionRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorMessage.AttendanceSession.SESSION_NOT_FOUND,
+                        new String[]{id.toString()}
+                ));
+        return mapper.toResponse(entity);
     }
 
     @Override
-    public List<AttendanceSession> getAllSessions() {
+    public List<AttendanceSessionResponseDto> getAllSessions() {
         try {
-            return sessionRepository.findAll();
+            List<AttendanceSession> entities = sessionRepository.findAll();
+            return mapper.toResponses(entities);
         } catch (Exception e) {
-            log.error("Lỗi khi lấy danh sách AttendanceSession: {}", e.getMessage());
+            log.error("Error fetching AttendanceSessions: {}", e.getMessage(), e);
             throw new RuntimeException(ErrorMessage.AttendanceSession.ERR_GET_ALL_SESSION, e);
         }
     }
 }
+
