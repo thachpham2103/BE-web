@@ -69,7 +69,6 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsById(id)) {
             throw new RuntimeException(ErrorMessage.User.USER_NOT_FOUND_ID);
         }
-
         userRepository.deleteById(id);
     }
 

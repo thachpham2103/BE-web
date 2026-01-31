@@ -45,8 +45,8 @@ public class AttendanceSession {
     private double locationLatitude;
 
     //vĩ độ
-    @Column(name="location_longatitude", nullable = false)
-    private double locationLongatitude;
+    @Column(name="location_longitude", nullable = false)
+    private double locationLongitude ;
 
     @Column(name="radius_meters", nullable = false)
     private int radiusMeters;
@@ -54,6 +54,10 @@ public class AttendanceSession {
     @ManyToOne
     @JoinColumn(name="class_id",foreignKey = @ForeignKey(name = "FK_CLASS_ID"))
     private ClassRoom classRoom;
+
+    @ManyToOne
+    @JoinColumn(name="created_by", foreignKey = @ForeignKey(name = "FK_CREATED_BY_USER"))
+    private User createdByUser;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "attendanceSession")
     @JsonIgnore
