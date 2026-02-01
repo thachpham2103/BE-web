@@ -1,18 +1,26 @@
 package com.example.be.web.service.impl;
 
 import com.example.be.web.constant.ErrorMessage;
+import com.example.be.web.doman.dto.request.attendance.AttendanceRecordRequestDto;
+import com.example.be.web.doman.dto.response.attendance.AttendanceRecordResponseDto;
 import com.example.be.web.doman.entity.AttendanceRecord;
 import com.example.be.web.doman.entity.AttendanceSession;
 import com.example.be.web.doman.entity.User;
+import com.example.be.web.doman.mapper.AttendanceRecordMapper;
 import com.example.be.web.doman.model.RecordStatus;
+import com.example.be.web.exception.extended.BadRequestException;
+import com.example.be.web.exception.extended.InternalServerException;
 import com.example.be.web.exception.extended.NotFoundException;
 import com.example.be.web.repository.AttendanceRecordRepository;
 import com.example.be.web.repository.AttendanceSessionRepository;
 import com.example.be.web.repository.UserRepository;
+import com.example.be.web.security.UserPrincipal;
 import com.example.be.web.service.AttendanceRecordService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,19 +36,22 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
     private final AttendanceRecordRepository recordRepository;
     private final AttendanceSessionRepository sessionRepository;
     private final UserRepository userRepository;
+    private final AttendanceRecordMapper mapper;
 
     @Override
-    public AttendanceRecord checkIn(Long sessionId, Long userId, MultipartFile faceImage, double gpsLat, double gpsLng) {
+    public AttendanceRecordResponseDto checkIn(Long sessionId, MultipartFile faceImage, double gpsLat, double gpsLng) {
         AttendanceSession session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new NotFoundException("Session not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.AttendanceSession.SESSION_NOT_FOUND));
 
+        Long userId = getCurrentUserId(); // lấy từ context
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID));
 
         // 1. Kiểm tra GPS
-        double distance = calculateDistance(session.getLocationLatitude(), session.getLocationLongatitude(), gpsLat, gpsLng);
+        double distance = calculateDistance(session.getLocationLatitude(), session.getLocationLongitude(), gpsLat, gpsLng);
         if (distance > session.getRadiusMeters()) {
-            throw new RuntimeException("Bạn đang ngoài phạm vi điểm danh");
+            log.warn("User {} ngoài phạm vi điểm danh tại session {}", userId, sessionId);
+            throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_RANGE);
         }
 
         // 2. Gọi AI model nhận diện khuôn mặt
@@ -48,16 +59,22 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
         boolean faceResult = true; // giả sử luôn đúng để test *******
 
         // 3. Tạo record
-        AttendanceRecord record = new AttendanceRecord();
+        AttendanceRecordRequestDto dto = AttendanceRecordRequestDto.builder()
+                .checkinTime(LocalDateTime.now())
+                .gpsLatitude(gpsLat).gpsLongitude(gpsLng)
+                .resultFace(faceResult).recordStatus(faceResult ? RecordStatus.PRESENT : RecordStatus.INVALID)
+                .build();
+        AttendanceRecord record = mapper.toEntity(dto);
         record.setAttendanceSession(session);
         record.setUser(user);
-        record.setCheckinTime(LocalDateTime.now());
-        record.setGpsLatitude(gpsLat);
-        record.setGpsLongitude(gpsLng);
-        record.setResultFace(faceResult);
-        record.setRecordStatus(faceResult ? RecordStatus.PRESENT : RecordStatus.INVALID);
+        AttendanceRecord saved = recordRepository.save(record);
+        return mapper.toResponse(saved);
+    }
 
-        return recordRepository.save(record);
+    private Long getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        return userPrincipal.getId();
     }
 
 
@@ -80,29 +97,38 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
 //    }
 
     @Override
-    public AttendanceRecord getRecordById(Long id) {
-        return recordRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.AttendanceRecord.RECORD_NOT_FOUND, new String[]{id.toString()}));
+    public AttendanceRecordResponseDto getRecordById(Long id) {
+        AttendanceRecord record = recordRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.AttendanceRecord.RECORD_NOT_FOUND, new String[]{id.toString()}));
+        return mapper.toResponse(record);
     }
 
     @Override
-    public List<AttendanceRecord> getRecordsBySession(Long sessionId) {
+    public List<AttendanceRecordResponseDto> getRecordsBySession(Long sessionId) {
         try {
-            return recordRepository.findByAttendanceSession_SessionId(sessionId);
+            List<AttendanceRecord> records = recordRepository.findByAttendanceSession_SessionId(sessionId);
+            return mapper.toResponseList(records);
         } catch (Exception e) {
             log.error("Lỗi khi lấy danh sách record của session {}: {}", sessionId, e.getMessage());
-            throw new RuntimeException(ErrorMessage.AttendanceRecord.ERR_GET_BY_SESSION, e);
+            throw new InternalServerException(ErrorMessage.AttendanceRecord.ERR_GET_BY_SESSION);
         }
     }
 
     @Override
-    public List<AttendanceRecord> getRecordsByUser(Long userId) {
+    public List<AttendanceRecordResponseDto> getRecordsByUser(Long userId) {
         try {
-            return recordRepository.findByUser_Id(userId);
+            List<AttendanceRecord> records = recordRepository.findByUser_Id(userId);
+            return mapper.toResponseList(records);
         } catch (Exception e) {
             log.error("Lỗi khi lấy danh sách record của user {}: {}", userId, e.getMessage());
-            throw new RuntimeException(ErrorMessage.AttendanceRecord.ERR_GET_BY_USER, e);
+            throw new InternalServerException(ErrorMessage.AttendanceRecord.ERR_GET_BY_USER);
         }
+    }
+
+    @Override
+    public List<AttendanceRecordResponseDto> getMyRecords() {
+        Long userId = getCurrentUserId();
+        List<AttendanceRecord> records = recordRepository.findByUser_Id(userId);
+        return mapper.toResponseList(records);
     }
 
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
