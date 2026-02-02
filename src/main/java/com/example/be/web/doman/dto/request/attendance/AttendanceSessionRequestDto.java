@@ -1,5 +1,7 @@
 package com.example.be.web.doman.dto.request.attendance;
 
+import com.example.be.web.constant.ErrorMessage;
+import jakarta.validation.constraints.AssertTrue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,26 +23,34 @@ import java.time.LocalDateTime;
 @Builder
 public class AttendanceSessionRequestDto {
 
-    @NotBlank(message = "Title không được để trống")
+    @NotBlank(message = ErrorMessage.NOT_BLANK_FIELD)
     private String title;
 
-    @NotNull(message = "Start time không được null")
+    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
     private LocalDateTime startTime;
 
-    @NotNull(message = "End time không được null")
+    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
     private LocalDateTime endTime;
 
-    @NotNull(message = "Latitude không được null")
-    private double locationLatitude;
+    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
+    private Double  locationLatitude;
 
-    @NotNull(message = "Longitude không được null")
-    private double locationLongitude ;
+    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
+    private Double  locationLongitude ;
 
+    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
     @Positive(message = "Radius phải lớn hơn 0")
-    private int radiusMeters;
+    private Integer radiusMeters;
 
-    @NotNull(message = "CreatedByUserId không được null")
-    private Long createdByUserId;
+    // Kiểm tra tính hợp lệ của khoảng thời gian
+    @AssertTrue(message = "Start time must be before end time")
+    public boolean isValidTimeRange() {
+        return startTime != null && endTime != null && startTime.isBefore(endTime);
+    }
+
+
+//    @NotNull(message = "CreatedByUserId không được null")
+//    private Long createdByUserId;
 
 }
 

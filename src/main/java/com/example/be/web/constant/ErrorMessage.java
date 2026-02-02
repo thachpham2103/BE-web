@@ -34,6 +34,8 @@ public class ErrorMessage {
         public static final String ERR_CHECKIN = "Lỗi khi điểm danh";
         public static final String ERR_GET_BY_SESSION = "Lỗi khi lấy bản ghi theo buổi học";
         public static final String ERR_GET_BY_USER = "Lỗi khi lấy bản ghi theo người dùng";
+        public static final String OUT_OF_RANGE = "Bạn đang ngoài phạm vi điểm danh"; // thêm mới
+
     }
 
 

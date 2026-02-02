@@ -42,14 +42,14 @@ public class AttendanceSession {
 
     //kinh độ
     @Column(name="location_latitude",nullable = false)
-    private double locationLatitude;
+    private Double locationLatitude;
 
     //vĩ độ
     @Column(name="location_longitude", nullable = false)
-    private double locationLongitude ;
+    private Double locationLongitude ;
 
     @Column(name="radius_meters", nullable = false)
-    private int radiusMeters;
+    private Integer radiusMeters;
 
     @ManyToOne
     @JoinColumn(name="class_id",foreignKey = @ForeignKey(name = "FK_CLASS_ID"))
