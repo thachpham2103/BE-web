@@ -11,12 +11,17 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface AttendanceSessionMapper {
 
-    @Mapping(source = "createdByUser.id", target = "createdByUserId")
-//    @Mapping(source = "createdByUser.username", target = "createdByUserName")
-    AttendanceSessionResponseDto toResponse(AttendanceSession entity);
-    List<AttendanceSessionResponseDto> toResponses(List<AttendanceSession> entities);
-
-
+    @Mapping(target = "sessionId", ignore = true)
+    @Mapping(target = "createdByUser", ignore = true)
+    @Mapping(target = "attendanceRecords", ignore = true)
+    @Mapping(target = "createAt", ignore = true)
+    @Mapping(target = "updateAt", ignore = true)
+    @Mapping(target = "status", ignore = true)
     AttendanceSession toEntity(AttendanceSessionRequestDto request);
+
+    @Mapping(source = "createdByUser.id", target = "createdByUserId")
+    AttendanceSessionResponseDto toResponse(AttendanceSession entity);
+
+    List<AttendanceSessionResponseDto> toResponses(List<AttendanceSession> entities);
 }
 

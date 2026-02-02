@@ -46,7 +46,7 @@ public class AttendanceSession {
 
     //vĩ độ
     @Column(name="location_longitude", nullable = false)
-    private Double locationLongitude ;
+    private Double locationLongitude;
 
     @Column(name="radius_meters", nullable = false)
     private Integer radiusMeters;

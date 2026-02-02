@@ -13,7 +13,7 @@ public class AttendanceSessionResponseDto {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private double locationLatitude;
-    private double locationLongitude ;
+    private Double locationLongitude;
     private int radiusMeters;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;

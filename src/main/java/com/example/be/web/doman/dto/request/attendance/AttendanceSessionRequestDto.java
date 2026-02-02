@@ -33,10 +33,10 @@ public class AttendanceSessionRequestDto {
     private LocalDateTime endTime;
 
     @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
-    private Double  locationLatitude;
+    private Double locationLatitude;
 
     @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
-    private Double  locationLongitude ;
+    private Double locationLongitude;
 
     @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
     @Positive(message = "Radius phải lớn hơn 0")
