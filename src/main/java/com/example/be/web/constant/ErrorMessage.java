@@ -38,5 +38,13 @@ public class ErrorMessage {
 
     }
 
+    public static class Location {
+        public static final String LOCATION_NOT_FOUND = "Không tìm thấy vị trí với ID: %s";
+        public static final String ERR_CREATE_LOCATION = "Lỗi khi tạo vị trí";
+        public static final String ERR_UPDATE_LOCATION = "Lỗi khi cập nhật vị trí";
+        public static final String ERR_DELETE_LOCATION = "Lỗi khi xóa vị trí";
+        public static final String ERR_GET_ALL_LOCATION = "Lỗi khi lấy danh sách vị trí";
+    }
+
 
 }

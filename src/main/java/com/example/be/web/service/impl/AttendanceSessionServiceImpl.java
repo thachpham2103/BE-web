@@ -4,6 +4,7 @@ import com.example.be.web.constant.ErrorMessage;
 import com.example.be.web.doman.dto.request.attendance.AttendanceSessionRequestDto;
 import com.example.be.web.doman.dto.response.attendance.AttendanceSessionResponseDto;
 import com.example.be.web.doman.entity.AttendanceSession;
+import com.example.be.web.doman.entity.Location;
 import com.example.be.web.doman.entity.User;
 import com.example.be.web.doman.mapper.AttendanceSessionMapper;
 import com.example.be.web.exception.extended.InternalServerException;
@@ -64,10 +65,15 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
         existing.setTitle(requestDto.getTitle());
         existing.setStartTime(requestDto.getStartTime());
         existing.setEndTime(requestDto.getEndTime());
-        existing.setLocationLatitude(requestDto.getLocationLatitude());
-        existing.setLocationLongitude(requestDto.getLocationLongitude());
+//        existing.setLocationLatitude(requestDto.getLocationLatitude());
+//        existing.setLocationLongitude(requestDto.getLocationLongitude());
         existing.setRadiusMeters(requestDto.getRadiusMeters());
         existing.setUpdateAt(LocalDateTime.now());
+
+        // xử lý Location mới
+        Location location = locationRepository.findById(requestDto.getLocationId())
+                .orElseThrow(() -> new NotFoundException( ErrorMessage.Location.LOCATION_NOT_FOUND, new String[]{requestDto.getLocationId().toString()} ));
+        existing.setLocation(location);
 
         AttendanceSession updated = sessionRepository.save(existing);
         return mapper.toResponse(updated);

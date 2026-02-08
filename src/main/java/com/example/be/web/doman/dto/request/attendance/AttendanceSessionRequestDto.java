@@ -32,15 +32,15 @@ public class AttendanceSessionRequestDto {
     @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
     private LocalDateTime endTime;
 
-    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
-    private Double  locationLatitude;
-
-    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
-    private Double  locationLongitude ;
+//    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
+//    private Double  locationLatitude;
+//
+//    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
+//    private Double  locationLongitude ;
 
     @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
     @Positive(message = "Radius phải lớn hơn 0")
-    private Integer radiusMeters;
+    private Double radiusMeters;
 
     // Kiểm tra tính hợp lệ của khoảng thời gian
     @AssertTrue(message = "Start time must be before end time")
@@ -48,6 +48,8 @@ public class AttendanceSessionRequestDto {
         return startTime != null && endTime != null && startTime.isBefore(endTime);
     }
 
+    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
+    private Long locationId;
 
 //    @NotNull(message = "CreatedByUserId không được null")
 //    private Long createdByUserId;

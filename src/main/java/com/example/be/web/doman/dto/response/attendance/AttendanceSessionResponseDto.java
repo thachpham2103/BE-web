@@ -12,10 +12,11 @@ public class AttendanceSessionResponseDto {
     private String title;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private double locationLatitude;
-    private double locationLongitude ;
-    private int radiusMeters;
+//    private double locationLatitude;
+//    private double locationLongitude ;
+    private double radiusMeters;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
-    private int createdByUserId ;
+    private Long createdByUserId ;
+    private Long locationId;
 }

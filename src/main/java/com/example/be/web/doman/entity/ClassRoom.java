@@ -53,6 +53,12 @@ public class ClassRoom {
     @JsonIgnore
     private Set<AttendanceSession> attendanceSessions= new HashSet<>();
 
-
+    @ManyToMany
+    @JoinTable(
+            name = "class_locations",
+            joinColumns = @JoinColumn(name = "class_id"),
+            inverseJoinColumns = @JoinColumn(name = "location_id")
+    )
+    private Set<Location> locations = new HashSet<>();
 
 }
