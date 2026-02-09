@@ -14,7 +14,7 @@ public class AttendanceSessionResponseDto {
     private LocalDateTime endTime;
 //    private double locationLatitude;
 //    private double locationLongitude ;
-    private double radiusMeters;
+//    private double radiusMeters;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private Long createdByUserId ;

@@ -8,13 +8,17 @@ import lombok.*;
 import java.util.HashSet;
 import java.util.Set;
 
-
+@Setter
+@Getter
 @Entity
 @Table(name = "location")
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long locationId;
+
+    @Column(name = "location_code", nullable = false, length = 100)
+    private String locationCode;
 
     @Column(name = "latitude", nullable = false)
     private Double latitude;

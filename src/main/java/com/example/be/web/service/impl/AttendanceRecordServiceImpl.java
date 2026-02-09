@@ -5,6 +5,7 @@ import com.example.be.web.doman.dto.request.attendance.AttendanceRecordRequestDt
 import com.example.be.web.doman.dto.response.attendance.AttendanceRecordResponseDto;
 import com.example.be.web.doman.entity.AttendanceRecord;
 import com.example.be.web.doman.entity.AttendanceSession;
+import com.example.be.web.doman.entity.Location;
 import com.example.be.web.doman.entity.User;
 import com.example.be.web.doman.mapper.AttendanceRecordMapper;
 import com.example.be.web.doman.model.RecordStatus;
@@ -13,6 +14,7 @@ import com.example.be.web.exception.extended.InternalServerException;
 import com.example.be.web.exception.extended.NotFoundException;
 import com.example.be.web.repository.AttendanceRecordRepository;
 import com.example.be.web.repository.AttendanceSessionRepository;
+import com.example.be.web.repository.LocationRepository;
 import com.example.be.web.repository.UserRepository;
 import com.example.be.web.security.UserPrincipal;
 import com.example.be.web.service.AttendanceRecordService;
@@ -36,6 +38,7 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
     private final AttendanceRecordRepository recordRepository;
     private final AttendanceSessionRepository sessionRepository;
     private final UserRepository userRepository;
+    private final LocationRepository locationRepository;
     private final AttendanceRecordMapper mapper;
 
     @Override
@@ -47,9 +50,15 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID));
 
+        Location location = session.getLocation();
+        if (location == null) {
+            throw new NotFoundException(ErrorMessage.Location.LOCATION_NOT_FOUND);
+        }
+//        Location location = locationRepository.findById(current.getLocationId())
+//                .orElseThrow(() -> new NotFoundException( ErrorMessage.Location.LOCATION_NOT_FOUND, new String[]{current.getLocationId().toString()} ));
         // 1. Kiểm tra GPS
-        double distance = calculateDistance(session.getLocationLatitude(), session.getLocationLongitude(), gpsLat, gpsLng);
-        if (distance > session.getRadiusMeters()) {
+        double distance = calculateDistance(location.getLatitude(), location.getLongitude(), gpsLat, gpsLng);
+        if (distance > location.getRadiusMeters()) {
             log.warn("User {} ngoài phạm vi điểm danh tại session {}", userId, sessionId);
             throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_RANGE);
         }

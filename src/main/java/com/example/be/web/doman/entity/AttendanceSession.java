@@ -48,8 +48,8 @@ public class AttendanceSession {
 //    @Column(name="location_longitude", nullable = false)
 //    private Double locationLongitude ;
 
-    @Column(name="radius_meters", nullable = false)
-    private Double radiusMeters;
+//    @Column(name="radius_meters", nullable = false)
+//    private Double radiusMeters;
 
     @ManyToOne
     @JoinColumn(name="class_id",foreignKey = @ForeignKey(name = "FK_CLASS_ID"))

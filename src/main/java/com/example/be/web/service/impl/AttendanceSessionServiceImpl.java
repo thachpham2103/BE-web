@@ -10,6 +10,7 @@ import com.example.be.web.doman.mapper.AttendanceSessionMapper;
 import com.example.be.web.exception.extended.InternalServerException;
 import com.example.be.web.exception.extended.NotFoundException;
 import com.example.be.web.repository.AttendanceSessionRepository;
+import com.example.be.web.repository.LocationRepository;
 import com.example.be.web.repository.UserRepository;
 import com.example.be.web.security.UserPrincipal;
 import com.example.be.web.service.AttendanceSessionService;
@@ -31,6 +32,7 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
     private final AttendanceSessionRepository sessionRepository;
     private final AttendanceSessionMapper mapper;
     private final UserRepository userRepository;
+    private final LocationRepository locationRepository;
 
     @Override
     public AttendanceSessionResponseDto createSession(AttendanceSessionRequestDto requestDto) {
@@ -42,6 +44,11 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
         User creator = userRepository.findById(principal.getId())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID, new String[]{principal.getId().toString()}));
         session.setCreatedByUser(creator);
+
+        // xử lý Location
+        Location location = locationRepository.findById(requestDto.getLocationId())
+                .orElseThrow(() -> new NotFoundException( ErrorMessage.Location.LOCATION_NOT_FOUND, new String[]{requestDto.getLocationId().toString()} ));
+        session.setLocation(location);
 
         // set thời gian tạo và cập nhật
         session.setCreateAt(LocalDateTime.now());
@@ -67,8 +74,7 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
         existing.setEndTime(requestDto.getEndTime());
 //        existing.setLocationLatitude(requestDto.getLocationLatitude());
 //        existing.setLocationLongitude(requestDto.getLocationLongitude());
-        existing.setRadiusMeters(requestDto.getRadiusMeters());
-        existing.setUpdateAt(LocalDateTime.now());
+         existing.setUpdateAt(LocalDateTime.now());
 
         // xử lý Location mới
         Location location = locationRepository.findById(requestDto.getLocationId())

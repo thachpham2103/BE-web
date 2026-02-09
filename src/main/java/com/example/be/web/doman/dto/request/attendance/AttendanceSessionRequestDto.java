@@ -38,9 +38,9 @@ public class AttendanceSessionRequestDto {
 //    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
 //    private Double  locationLongitude ;
 
-    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
-    @Positive(message = "Radius phải lớn hơn 0")
-    private Double radiusMeters;
+//    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
+//    @Positive(message = "Radius phải lớn hơn 0")
+//    private Double radiusMeters;
 
     // Kiểm tra tính hợp lệ của khoảng thời gian
     @AssertTrue(message = "Start time must be before end time")
