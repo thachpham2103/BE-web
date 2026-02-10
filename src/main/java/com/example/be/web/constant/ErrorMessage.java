@@ -46,5 +46,13 @@ public class ErrorMessage {
         public static final String ERR_GET_ALL_LOCATION = "exception.not.get.all.location";
     }
 
+    public static class ClassRoom {
+        public static final String CLASS_NOT_FOUND = "exception.class.not.found";
+        public static final String ERR_CREATE_CLASS = "error.create.class";
+        public static final String ERR_UPDATE_CLASS = "error.update.class";
+        public static final String ERR_DELETE_CLASS = "error.delete.class";
+        public static final String ERR_GET_ALL_CLASS = "exception.not.get.all.class";
+    }
+
 
 }

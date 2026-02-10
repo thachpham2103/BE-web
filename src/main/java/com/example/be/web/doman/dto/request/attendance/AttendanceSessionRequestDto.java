@@ -1,6 +1,7 @@
 package com.example.be.web.doman.dto.request.attendance;
 
 import com.example.be.web.constant.ErrorMessage;
+import com.example.be.web.doman.model.AttendanceStatus;
 import jakarta.validation.constraints.AssertTrue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +32,15 @@ public class AttendanceSessionRequestDto {
 
     @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
     private LocalDateTime endTime;
+
+    private LocalDateTime createAt;
+
+    private LocalDateTime updateAt;
+
+    private AttendanceStatus status;
+
+    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
+    private Long classId;
 
 //    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
 //    private Double  locationLatitude;

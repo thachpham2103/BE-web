@@ -54,8 +54,6 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
         if (location == null) {
             throw new NotFoundException(ErrorMessage.Location.LOCATION_NOT_FOUND);
         }
-//        Location location = locationRepository.findById(current.getLocationId())
-//                .orElseThrow(() -> new NotFoundException( ErrorMessage.Location.LOCATION_NOT_FOUND, new String[]{current.getLocationId().toString()} ));
         // 1. Kiểm tra GPS
         double distance = calculateDistance(location.getLatitude(), location.getLongitude(), gpsLat, gpsLng);
         if (distance > location.getRadiusMeters()) {
@@ -86,24 +84,6 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
         return userPrincipal.getId();
     }
 
-
-//    @Override
-//    public AttendanceRecord checkIn(Long sessionId, Long userId, AttendanceRecord record) {
-//        AttendanceSession session = sessionRepository.findById(sessionId)
-//                .orElseThrow(() -> new NotFoundException(ErrorMessage.AttendanceSession.SESSION_NOT_FOUND, new String[]{sessionId.toString()}));
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID, new String[]{userId.toString()}));
-//
-//        try {
-//            record.setAttendanceSession(session);
-//            record.setUser(user);
-//            record.setCheckinTime(LocalDateTime.now());
-//            return recordRepository.save(record);
-//        } catch (Exception e) {
-//            log.error("Lỗi khi điểm danh user {} tại session {}: {}", userId, sessionId, e.getMessage());
-//            throw new RuntimeException(ErrorMessage.AttendanceRecord.ERR_CHECKIN, e);
-//        }
-//    }
 
     @Override
     public AttendanceRecordResponseDto getRecordById(Long id) {

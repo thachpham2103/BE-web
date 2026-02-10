@@ -1,5 +1,6 @@
 package com.example.be.web.doman.dto.response.attendance;
 
+import com.example.be.web.doman.model.AttendanceStatus;
 import lombok.Data;
 import java.time.LocalDateTime;
 
@@ -17,6 +18,8 @@ public class AttendanceSessionResponseDto {
 //    private double radiusMeters;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
+    private AttendanceStatus status;
+    private Long classroomId;
     private Long createdByUserId ;
     private Long locationId;
 }

@@ -4,12 +4,14 @@ import com.example.be.web.constant.ErrorMessage;
 import com.example.be.web.doman.dto.request.attendance.AttendanceSessionRequestDto;
 import com.example.be.web.doman.dto.response.attendance.AttendanceSessionResponseDto;
 import com.example.be.web.doman.entity.AttendanceSession;
+import com.example.be.web.doman.entity.ClassRoom;
 import com.example.be.web.doman.entity.Location;
 import com.example.be.web.doman.entity.User;
 import com.example.be.web.doman.mapper.AttendanceSessionMapper;
 import com.example.be.web.exception.extended.InternalServerException;
 import com.example.be.web.exception.extended.NotFoundException;
 import com.example.be.web.repository.AttendanceSessionRepository;
+import com.example.be.web.repository.ClassRepository;
 import com.example.be.web.repository.LocationRepository;
 import com.example.be.web.repository.UserRepository;
 import com.example.be.web.security.UserPrincipal;
@@ -33,11 +35,20 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
     private final AttendanceSessionMapper mapper;
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
+    private final ClassRepository classRepository;
 
     @Override
     public AttendanceSessionResponseDto createSession(AttendanceSessionRequestDto requestDto) {
 
         AttendanceSession session = mapper.toEntity(requestDto);
+
+        // xử lý ClassRoom
+        ClassRoom classRoom = classRepository.findById(requestDto.getClassId())
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorMessage.ClassRoom.CLASS_NOT_FOUND,
+                        new String[]{requestDto.getClassId().toString()}
+                ));
+        session.setClassRoom(classRoom);
 
         // lấy user đang đăng nhập từ SecurityContext
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -68,13 +79,21 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
                         new String[]{id.toString()}
                 ));
 
-        // cập nhật từ DTO sang entity
-        existing.setTitle(requestDto.getTitle());
-        existing.setStartTime(requestDto.getStartTime());
-        existing.setEndTime(requestDto.getEndTime());
+//        // cập nhật từ DTO sang entity
+//        existing.setTitle(requestDto.getTitle());
+//        existing.setStartTime(requestDto.getStartTime());
+//        existing.setEndTime(requestDto.getEndTime());
 //        existing.setLocationLatitude(requestDto.getLocationLatitude());
 //        existing.setLocationLongitude(requestDto.getLocationLongitude());
+
+        // sử dụng mapper để cập nhật
+         mapper.updateEntityFromDto(requestDto, existing);
          existing.setUpdateAt(LocalDateTime.now());
+
+         // xử lý classroom
+         ClassRoom classRoom = classRepository.findById(requestDto.getClassId())
+                 .orElseThrow(() -> new NotFoundException( ErrorMessage.ClassRoom.CLASS_NOT_FOUND, new String[]{requestDto.getClassId().toString()}));
+         existing.setClassRoom(classRoom);
 
         // xử lý Location mới
         Location location = locationRepository.findById(requestDto.getLocationId())
