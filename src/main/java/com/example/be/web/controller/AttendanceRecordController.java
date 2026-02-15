@@ -43,7 +43,7 @@ public class AttendanceRecordController {
     }
 
     // 2. Lấy record theo ID
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
     @GetMapping("/{id}")
     @Operation(summary = "API get record by id", description = "Admin / Leader")
     public ResponseEntity<AttendanceRecordResponseDto> getRecordById(@PathVariable Long id) {

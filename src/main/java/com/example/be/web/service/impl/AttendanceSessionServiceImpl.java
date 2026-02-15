@@ -63,7 +63,7 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
 
         // set thời gian tạo và cập nhật
         session.setCreateAt(LocalDateTime.now());
-        session.setUpdateAt(LocalDateTime.now());
+//        session.setUpdateAt(LocalDateTime.now());
 
         // lưu vào DB
         AttendanceSession saved = sessionRepository.save(session);
