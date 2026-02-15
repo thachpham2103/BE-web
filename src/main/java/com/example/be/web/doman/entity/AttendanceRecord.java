@@ -45,6 +45,4 @@ public class AttendanceRecord {
     @ManyToOne
     @JoinColumn(name="attendanceSession_id", foreignKey = @ForeignKey(name = "FK_ATTENDANCESESSION_ID"))
     private AttendanceSession attendanceSession;
-
-
 }

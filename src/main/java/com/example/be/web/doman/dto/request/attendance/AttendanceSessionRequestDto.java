@@ -1,6 +1,7 @@
 package com.example.be.web.doman.dto.request.attendance;
 
 import com.example.be.web.constant.ErrorMessage;
+import com.example.be.web.doman.model.AttendanceStatus;
 import jakarta.validation.constraints.AssertTrue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +33,11 @@ public class AttendanceSessionRequestDto {
     @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
     private LocalDateTime endTime;
 
+    private LocalDateTime createAt;
+
+    private LocalDateTime updateAt;
+
+    private AttendanceStatus status;
     @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
     private Double locationLatitude;
 
@@ -39,8 +45,7 @@ public class AttendanceSessionRequestDto {
     private Double locationLongitude;
 
     @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
-    @Positive(message = "Radius phải lớn hơn 0")
-    private Integer radiusMeters;
+    private Long classId;
 
     // Kiểm tra tính hợp lệ của khoảng thời gian
     @AssertTrue(message = "Start time must be before end time")
@@ -48,9 +53,8 @@ public class AttendanceSessionRequestDto {
         return startTime != null && endTime != null && startTime.isBefore(endTime);
     }
 
-
-//    @NotNull(message = "CreatedByUserId không được null")
-//    private Long createdByUserId;
+    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
+    private Long locationId;
 
 }
 

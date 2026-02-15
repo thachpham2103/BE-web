@@ -22,20 +22,36 @@ public class ErrorMessage {
     }
 
     public static class AttendanceSession {
-        public static final String SESSION_NOT_FOUND = "Không tìm thấy buổi điểm danh với ID: %s";
-        public static final String ERR_CREATE_SESSION = "Lỗi khi tạo buổi điểm danh";
-        public static final String ERR_UPDATE_SESSION = "Lỗi khi cập nhật buổi điểm danh";
-        public static final String ERR_DELETE_SESSION = "Lỗi khi xóa buổi điểm danh";
-        public static final String ERR_GET_ALL_SESSION = "Lỗi khi lấy danh sách buổi điểm danh";
+        public static final String SESSION_NOT_FOUND = "exception.session.not.found";
+        public static final String ERR_CREATE_SESSION = "error.create.attendance.session";
+            public static final String ERR_UPDATE_SESSION = "error.update.attendance.session";
+        public static final String ERR_DELETE_SESSION = "error.delete.attendance.session";
+        public static final String ERR_GET_ALL_SESSION = "exception.not.get.all.session";
     }
 
     public static class AttendanceRecord {
-        public static final String RECORD_NOT_FOUND = "Không tìm thấy bản ghi điểm danh với ID: %s";
-        public static final String ERR_CHECKIN = "Lỗi khi điểm danh";
-        public static final String ERR_GET_BY_SESSION = "Lỗi khi lấy bản ghi theo buổi học";
-        public static final String ERR_GET_BY_USER = "Lỗi khi lấy bản ghi theo người dùng";
-        public static final String OUT_OF_RANGE = "Bạn đang ngoài phạm vi điểm danh"; // thêm mới
+        public static final String RECORD_NOT_FOUND = "exception.record.not.found";
+        public static final String ERR_CHECKIN = "error.check-in.attendance.record";
+        public static final String ERR_GET_BY_SESSION = "error.attendance.record.get.by.session";
+        public static final String ERR_GET_BY_USER = "error.attendance.record.get.by.user";
+        public static final String OUT_OF_RANGE = "error.user.out.of.range"; // thêm mới
 
+    }
+
+    public static class Location {
+        public static final String LOCATION_NOT_FOUND = "exception.location.not.found";
+        public static final String ERR_CREATE_LOCATION = "error.create.location";
+        public static final String ERR_UPDATE_LOCATION = "error.update.location";
+        public static final String ERR_DELETE_LOCATION = "error.delete.location";
+        public static final String ERR_GET_ALL_LOCATION = "exception.not.get.all.location";
+    }
+
+    public static class ClassRoom {
+        public static final String CLASS_NOT_FOUND = "exception.class.not.found";
+        public static final String ERR_CREATE_CLASS = "error.create.class";
+        public static final String ERR_UPDATE_CLASS = "error.update.class";
+        public static final String ERR_DELETE_CLASS = "error.delete.class";
+        public static final String ERR_GET_ALL_CLASS = "exception.not.get.all.class";
     }
 
 

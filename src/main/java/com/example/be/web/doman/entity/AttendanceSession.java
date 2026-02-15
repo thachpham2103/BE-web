@@ -40,10 +40,15 @@ public class AttendanceSession {
     @Enumerated(EnumType.STRING)
     private AttendanceStatus status;
 
-    //kinh độ
-    @Column(name="location_latitude",nullable = false)
-    private Double locationLatitude;
-
+//    //kinh độ
+//    @Column(name="location_latitude",nullable = false)
+//    private Double locationLatitude;
+//
+//    //vĩ độ
+//    @Column(name="location_longitude", nullable = false)
+//    private Double locationLongitude ;
+//    @Column(name="radius_meters", nullable = false)
+//    private Double radiusMeters;
     //vĩ độ
     @Column(name="location_longitude", nullable = false)
     private Double locationLongitude;
@@ -63,5 +68,8 @@ public class AttendanceSession {
     @JsonIgnore
     private Set<AttendanceRecord> attendanceRecords= new HashSet<>();
 
+    @ManyToOne
+    @JoinColumn(name = "location_id", foreignKey = @ForeignKey(name = "FK_ATTENDANCE_LOCATION"))
+    private Location location;
 
 }
