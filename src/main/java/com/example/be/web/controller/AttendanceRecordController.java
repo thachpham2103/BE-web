@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
+
 
 import java.util.List;
 
@@ -19,17 +21,24 @@ public class AttendanceRecordController {
 
     private final AttendanceRecordService attendanceRecordService;
 
-    @PreAuthorize("hasAnyRole('USER')")
+//    @PreAuthorize("hasAnyRole('USER')")
     // 1. Điểm danh (check-in)
-    @PostMapping("/checkin")
+    @PostMapping(
+            value = "/checkin",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+
+    @PreAuthorize("hasAnyRole('USER')")
     @Operation(summary = "API record by user", description = "User")
     public ResponseEntity<AttendanceRecordResponseDto> checkIn(
-            @RequestParam Long sessionId,
-            @RequestParam MultipartFile faceImage,
-            @RequestParam double gpsLat,
-            @RequestParam double gpsLng) {
+            @RequestParam("sessionId") Long sessionId,
+            @RequestParam("faceImage") MultipartFile faceImage,
+            @RequestParam("gpsLat") double gpsLat,
+            @RequestParam("gpsLng") double gpsLng) {
 
-        AttendanceRecordResponseDto record = attendanceRecordService.checkIn(sessionId, faceImage, gpsLat, gpsLng);
+        AttendanceRecordResponseDto record =
+                attendanceRecordService.checkIn(sessionId, faceImage, gpsLat, gpsLng);
+
         return ResponseEntity.ok(record);
     }
 

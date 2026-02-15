@@ -14,6 +14,7 @@ public interface AttendanceRecordMapper {
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.username", target = "userName")
     @Mapping(source = "attendanceSession.sessionId", target = "attendanceSessionId")
+//    @Mapping(source = "attendanceSession.id", target = "attendanceSessionId")
     @Mapping(source = "attendanceSession.title", target = "attendanceSessionTitle")
     AttendanceRecordResponseDto toResponse(AttendanceRecord entity);
 

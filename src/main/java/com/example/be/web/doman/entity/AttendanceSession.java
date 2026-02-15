@@ -47,9 +47,14 @@ public class AttendanceSession {
 //    //vĩ độ
 //    @Column(name="location_longitude", nullable = false)
 //    private Double locationLongitude ;
-
 //    @Column(name="radius_meters", nullable = false)
 //    private Double radiusMeters;
+    //vĩ độ
+    @Column(name="location_longitude", nullable = false)
+    private Double locationLongitude;
+
+    @Column(name="radius_meters", nullable = false)
+    private Integer radiusMeters;
 
     @ManyToOne
     @JoinColumn(name="class_id",foreignKey = @ForeignKey(name = "FK_CLASS_ID"))
