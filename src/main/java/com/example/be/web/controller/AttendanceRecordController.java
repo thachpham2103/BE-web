@@ -43,7 +43,7 @@ public class AttendanceRecordController {
     }
 
     // 2. Lấy record theo ID
-    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @GetMapping("/{id}")
     @Operation(summary = "API get record by id", description = "Admin / Leader")
     public ResponseEntity<AttendanceRecordResponseDto> getRecordById(@PathVariable Long id) {
@@ -52,7 +52,7 @@ public class AttendanceRecordController {
     }
 
     // 3. Lấy danh sách record theo session
-    @PreAuthorize("hasRole('TEACHER')")
+//    @PreAuthorize("hasRole('TEACHER')")
     @GetMapping("/session/{sessionId}")
     @Operation(summary = "API get record by session", description = "Admin / Leader")
     public ResponseEntity<List<AttendanceRecordResponseDto>> getRecordsBySession(@PathVariable Long sessionId) {
@@ -61,7 +61,7 @@ public class AttendanceRecordController {
     }
 
     // 4. Lấy danh sách record theo user
-    @PreAuthorize("hasAnyRole('TEACHER')")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @GetMapping("/user/{userId}")
     @Operation(summary = "API get records by userId", description = "Teacher/Admin xem danh sách record của một user cụ thể")
     public ResponseEntity<List<AttendanceRecordResponseDto>> getRecordsByUser(@PathVariable Long userId) {

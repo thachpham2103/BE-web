@@ -24,7 +24,6 @@ public class UserController {
 
     private final UserService userService;
 
-
     @Tag(name="admin_leader")
     @GetMapping
     public ResponseEntity<?> getUserById(@PathVariable Long userId){
@@ -33,7 +32,7 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
     @Tag(name="admin_leader")
-    @Operation(summary = "API AMIN, LEADER")
+    @Operation(summary = "create users")
     @PostMapping(UrlConstant.User.CREATE_USER)
     public ResponseEntity<?> createUser(@RequestBody @Valid UserCreateDto createDto){
         return VsResponseUtil.success(userService.createUser(createDto));

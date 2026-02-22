@@ -43,12 +43,12 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
         AttendanceSession session = mapper.toEntity(requestDto);
 
         // xử lý ClassRoom
-        ClassRoom classRoom = classRepository.findById(requestDto.getClassId())
-                .orElseThrow(() -> new NotFoundException(
-                        ErrorMessage.ClassRoom.CLASS_NOT_FOUND,
-                        new String[]{requestDto.getClassId().toString()}
-                ));
-        session.setClassRoom(classRoom);
+//        ClassRoom classRoom = classRepository.findById(requestDto.getClassId())
+//                .orElseThrow(() -> new NotFoundException(
+//                        ErrorMessage.ClassRoom.CLASS_NOT_FOUND,
+//                        new String[]{requestDto.getClassId().toString()}
+//                ));
+//        session.setClassRoom(classRoom);
 
         // lấy user đang đăng nhập từ SecurityContext
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -91,9 +91,9 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
          existing.setUpdateAt(LocalDateTime.now());
 
          // xử lý classroom
-         ClassRoom classRoom = classRepository.findById(requestDto.getClassId())
-                 .orElseThrow(() -> new NotFoundException( ErrorMessage.ClassRoom.CLASS_NOT_FOUND, new String[]{requestDto.getClassId().toString()}));
-         existing.setClassRoom(classRoom);
+//         ClassRoom classRoom = classRepository.findById(requestDto.getClassId())
+//                 .orElseThrow(() -> new NotFoundException( ErrorMessage.ClassRoom.CLASS_NOT_FOUND, new String[]{requestDto.getClassId().toString()}));
+//         existing.setClassRoom(classRoom);
 
         // xử lý Location mới
         Location location = locationRepository.findById(requestDto.getLocationId())

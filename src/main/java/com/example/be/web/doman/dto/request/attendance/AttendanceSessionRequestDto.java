@@ -44,8 +44,8 @@ public class AttendanceSessionRequestDto {
     @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
     private Double locationLongitude;
 
-    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
-    private Long classId;
+//    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
+//    private Long classId;
 
     // Kiểm tra tính hợp lệ của khoảng thời gian
     @AssertTrue(message = "Start time must be before end time")

@@ -5,6 +5,7 @@ import com.example.be.web.doman.dto.response.attendance.AttendanceSessionRespons
 import com.example.be.web.doman.entity.AttendanceSession;
 import com.example.be.web.service.AttendanceSessionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,16 +21,18 @@ public class AttendanceSessionController {
     private final AttendanceSessionService sessionService;
 
     // 1. Tạo buổi điểm danh
-    @PreAuthorize("hasRole('TEACHER')")
+
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @Operation(summary = "API tạo buổi điểm danh", description = "Admin / Leader")
+    @Tag(name="admin_leader")
     public ResponseEntity<AttendanceSessionResponseDto> createSession(@RequestBody AttendanceSessionRequestDto requestDto) {
         AttendanceSessionResponseDto created = sessionService.createSession(requestDto);
         return ResponseEntity.ok(created);
     }
 
     // 2. Cập nhật buổi điểm danh
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @PutMapping("/{id}")
     @Operation(summary = "API cập nhật buổi điểm danh", description = "Admin / Leader")
     public ResponseEntity<AttendanceSessionResponseDto> updateSession(@PathVariable Long id,
@@ -39,7 +42,7 @@ public class AttendanceSessionController {
     }
 
     // 3. Xóa buổi điểm danh
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @DeleteMapping("/{id}")
     @Operation(summary = "API xóa buổi điểm danh theo id", description = "Admin / Leader")
     public ResponseEntity<Void> deleteSession(@PathVariable Long id) {
@@ -48,7 +51,7 @@ public class AttendanceSessionController {
     }
 
     // 4. Lấy buổi điểm danh theo ID
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @GetMapping("/{id}")
     public ResponseEntity<AttendanceSessionResponseDto> getSessionById(@PathVariable Long id) {
         AttendanceSessionResponseDto session = sessionService.getSessionById(id);
@@ -56,7 +59,7 @@ public class AttendanceSessionController {
     }
 
     // 5. Lấy tất cả buổi điểm danh
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @GetMapping
     public ResponseEntity<List<AttendanceSessionResponseDto>> getAllSessions() {
         List<AttendanceSessionResponseDto> sessions = sessionService.getAllSessions();
