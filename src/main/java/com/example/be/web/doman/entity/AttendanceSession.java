@@ -40,24 +40,36 @@ public class AttendanceSession {
     @Enumerated(EnumType.STRING)
     private AttendanceStatus status;
 
-    //kinh độ
-    @Column(name="location_latitude",nullable = false)
-    private double locationLatitude;
-
+//    //kinh độ
+//    @Column(name="location_latitude",nullable = false)
+//    private Double locationLatitude;
+//
+//    //vĩ độ
+//    @Column(name="location_longitude", nullable = false)
+//    private Double locationLongitude ;
+//    @Column(name="radius_meters", nullable = false)
+//    private Double radiusMeters;
     //vĩ độ
-    @Column(name="location_longatitude", nullable = false)
-    private double locationLongatitude;
+    @Column(name="location_longitude", nullable = false)
+    private Double locationLongitude;
 
     @Column(name="radius_meters", nullable = false)
-    private int radiusMeters;
+    private Integer radiusMeters;
 
     @ManyToOne
     @JoinColumn(name="class_id",foreignKey = @ForeignKey(name = "FK_CLASS_ID"))
     private ClassRoom classRoom;
 
+    @ManyToOne
+    @JoinColumn(name="created_by", foreignKey = @ForeignKey(name = "FK_CREATED_BY_USER"))
+    private User createdByUser;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "attendanceSession")
     @JsonIgnore
     private Set<AttendanceRecord> attendanceRecords= new HashSet<>();
 
+    @ManyToOne
+    @JoinColumn(name = "location_id", foreignKey = @ForeignKey(name = "FK_ATTENDANCE_LOCATION"))
+    private Location location;
 
 }

@@ -1,6 +1,6 @@
 package com.example.be.web;
 
-import com.example.be.web.base.AdminInfoProperties;
+import com.example.be.web.config.properties.AdminInfoProperties;
 import com.example.be.web.constant.RoleConstant;
 import com.example.be.web.doman.entity.User;
 import com.example.be.web.doman.model.Role;
@@ -11,17 +11,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.example.be.web")
 @Slf4j
 @RequiredArgsConstructor
-//@EnableConfigurationProperties({AdminInfoProperties.class, StorageProperties.class})
+@EnableJpaAuditing
+
+//@EnableConfigurationProperties({AdminInfoProperties.class})
 
 public class BeWebApplication {
 
@@ -69,7 +71,7 @@ public class BeWebApplication {
 						.fullName("Pham Ngoc Thach")
 						.role(roleRepository.findByRoleName(RoleConstant.USER))
 						.lastLogin(LocalDateTime.now())
-						.email("thachpham2103@gmail.com")
+						.email("thachktpm8386@gmail.com")
 						.build();
 
 				userRepository.save(user);

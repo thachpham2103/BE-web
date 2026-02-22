@@ -10,9 +10,9 @@ public class UrlConstant {
 
    public static class Auth{
 
-       private static final String PREFIX = "/auth";
-       public static final String LOGIN = PREFIX + "/login";
-       public static final String refreshToken = PREFIX + "/refresh-token";
+//       private static final String PREFIX = "/auth";
+       public static final String LOGIN =  "/login";
+       public static final String refreshToken = "/refresh-token";
    }
 
 }

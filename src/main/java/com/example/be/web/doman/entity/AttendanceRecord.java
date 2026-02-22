@@ -23,7 +23,7 @@ public class AttendanceRecord {
     @Column(name="checkin_time", nullable = false)
     private LocalDateTime checkinTime;
 
-    @Column(name="note", nullable = false)
+    @Column(name="note", nullable = true)
     private String note;
 
     @Column(name="result_face", nullable = false)
@@ -45,6 +45,4 @@ public class AttendanceRecord {
     @ManyToOne
     @JoinColumn(name="attendanceSession_id", foreignKey = @ForeignKey(name = "FK_ATTENDANCESESSION_ID"))
     private AttendanceSession attendanceSession;
-
-
 }
