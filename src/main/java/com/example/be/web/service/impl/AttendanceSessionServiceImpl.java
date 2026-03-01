@@ -54,7 +54,7 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User creator = userRepository.findById(principal.getId())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID, new String[]{principal.getId().toString()}));
-        session.setCreatedByUser(creator);
+        session.setCreatedByUser(creator); 
 
         // xử lý Location
         Location location = locationRepository.findById(requestDto.getLocationId())

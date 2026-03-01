@@ -70,6 +70,8 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
                 .checkinTime(LocalDateTime.now())
                 .gpsLatitude(gpsLat).gpsLongitude(gpsLng)
                 .resultFace(faceResult).recordStatus(faceResult ? RecordStatus.PRESENT : RecordStatus.INVALID)
+//                .userId(userId)
+//                .attendanceSessionId(sessionId)
                 .build();
         AttendanceRecord record = mapper.toEntity(dto);
         record.setAttendanceSession(session);
