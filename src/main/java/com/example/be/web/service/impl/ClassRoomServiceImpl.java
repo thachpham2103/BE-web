@@ -2,11 +2,14 @@ package com.example.be.web.service.impl;
 
 import com.example.be.web.constant.ErrorMessage;
 import com.example.be.web.doman.dto.request.classRoom.ClassRoomRequestDto;
+import com.example.be.web.doman.dto.response.attendance.SessionAttendanceStatsDto;
 import com.example.be.web.doman.dto.response.classRoom.ClassRoomResponseDto;
 import com.example.be.web.doman.entity.ClassRoom;
 import com.example.be.web.doman.entity.Location;
 import com.example.be.web.doman.entity.User;
 import com.example.be.web.doman.mapper.ClassRoomMapper;
+import com.example.be.web.doman.model.RecordStatus;
+import com.example.be.web.doman.model.RegistrationStatus;
 import com.example.be.web.exception.extended.NotFoundException;
 import com.example.be.web.repository.ClassRepository;
 import com.example.be.web.repository.LocationRepository;
@@ -22,7 +25,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -125,6 +130,42 @@ public class ClassRoomServiceImpl implements ClassRoomService {
 
         // Map từng entity sang DTO
         return classRooms.map(mapper::toResponse);
+    }
+
+    // Đếm số lượng học sinh đã đăng ký vào lớp học (status = APPROVED)
+    @Override
+    public long countStudentsInClassRoom(Long classId) {
+        ClassRoom classRoom = classRepository.findById(classId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ClassRoom.CLASS_NOT_FOUND, new String[]{classId.toString()}));
+
+        // Đếm số lượng học sinh đã đăng ký (status = APPROVED)
+        return classRoom.getRegistrations().stream()
+                .filter(reg -> reg.getStatus() == RegistrationStatus.ACCEPTED)
+                .count();
+    }
+
+    //chưa làm mapper cho SessionAttendanceStatsDto nên tạm thời viết thủ công
+    // Thống kê số lượng học sinh tham gia từng buổi điểm danh của lớp học
+    @Override
+    public List<SessionAttendanceStatsDto> getAttendanceStatsBySession(Long classId) {
+        ClassRoom classRoom = classRepository.findById(classId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ClassRoom.CLASS_NOT_FOUND));
+
+        return classRoom.getAttendanceSessions().stream()
+                .map(session -> {
+                    long total = session.getAttendanceRecords().size();
+                    long present = session.getAttendanceRecords().stream()
+                            .filter(record -> record.getRecordStatus() == RecordStatus.PRESENT)
+                            .count();
+
+                    SessionAttendanceStatsDto dto = new SessionAttendanceStatsDto();
+                    dto.setSessionId(session.getSessionId());
+                    dto.setTitle(session.getTitle());
+                    dto.setTotalCount(total);
+                    dto.setPresentCount(present);
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
 }

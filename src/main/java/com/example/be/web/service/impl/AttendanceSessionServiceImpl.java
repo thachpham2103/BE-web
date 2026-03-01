@@ -8,6 +8,7 @@ import com.example.be.web.doman.entity.ClassRoom;
 import com.example.be.web.doman.entity.Location;
 import com.example.be.web.doman.entity.User;
 import com.example.be.web.doman.mapper.AttendanceSessionMapper;
+import com.example.be.web.doman.model.RecordStatus;
 import com.example.be.web.exception.extended.InternalServerException;
 import com.example.be.web.exception.extended.NotFoundException;
 import com.example.be.web.repository.AttendanceSessionRepository;
@@ -134,6 +135,20 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
             throw new InternalServerException(ErrorMessage.AttendanceSession.ERR_GET_ALL_SESSION);
         }
     }
+
+    @Override
+    public long countPresentStudentsInSession(Long sessionId) {
+        AttendanceSession session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorMessage.AttendanceSession.SESSION_NOT_FOUND,
+                        new String[]{sessionId.toString()}
+                ));
+        return session.getAttendanceRecords().stream()
+                .filter(record -> record.getRecordStatus() == RecordStatus.PRESENT)
+                .count();
+    }
+
+
 
 
 }
