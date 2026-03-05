@@ -42,13 +42,13 @@ public class AttendanceSession {
 
     //cần xóa
     //kinh độ
-    @Column(name="location_latitude",nullable = false)
+    @Column(name="location_latitude",nullable = true)
     private Double locationLatitude;
 
     //vĩ độ
-    @Column(name="location_longitude", nullable = false)
+    @Column(name="location_longitude", nullable = true)
     private Double locationLongitude ;
-    @Column(name="radius_meters", nullable = false)
+    @Column(name="radius_meters", nullable = true)
     private Double radiusMeters;
 
     @ManyToOne

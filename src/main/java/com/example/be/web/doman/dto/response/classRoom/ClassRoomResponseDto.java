@@ -1,8 +1,15 @@
 package com.example.be.web.doman.dto.response.classRoom;
 
+import lombok.*;
+
 import java.time.LocalDate;
 import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 public class ClassRoomResponseDto {
     private Long  classId;
     private String title;

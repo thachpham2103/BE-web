@@ -18,10 +18,10 @@ import java.util.List;
 )
 public interface LocationMapper {
 
-    @Mapping(target = "locationCode", ignore = true)
-    @Mapping(target = "latitude", ignore = true)
-    @Mapping(target = "longitude", ignore = true)
-    @Mapping(target = "radiusMeters", ignore = true)
+//    @Mapping(target = "locationCode", ignore = true)
+//    @Mapping(target = "latitude", ignore = true)
+//    @Mapping(target = "longitude", ignore = true)
+//    @Mapping(target = "radiusMeters", ignore = true)
     Location toEntity(LocationRequestDto location);
 
     LocationResponseDto toResponseDto(Location location);

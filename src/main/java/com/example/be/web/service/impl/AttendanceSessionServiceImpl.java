@@ -64,7 +64,7 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
 
         // set thời gian tạo và cập nhật
         session.setCreateAt(LocalDateTime.now());
-//        session.setUpdateAt(LocalDateTime.now());
+        session.setUpdateAt(LocalDateTime.now());
 
         // lưu vào DB
         AttendanceSession saved = sessionRepository.save(session);
@@ -136,6 +136,7 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
         }
     }
 
+    //   Đếm số lượng sinh viên đã điểm danh có mặt trong buổi điểm danh
     @Override
     public long countPresentStudentsInSession(Long sessionId) {
         AttendanceSession session = sessionRepository.findById(sessionId)
@@ -147,9 +148,6 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
                 .filter(record -> record.getRecordStatus() == RecordStatus.PRESENT)
                 .count();
     }
-
-
-
 
 }
 

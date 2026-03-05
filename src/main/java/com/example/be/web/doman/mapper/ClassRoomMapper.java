@@ -20,9 +20,9 @@ import java.util.Set;
 )
 public interface ClassRoomMapper {
 
-    @Mapping(target = "teacherId", ignore = true)
-    @Mapping(target = "userName", ignore = true)
-    @Mapping(target = "startDate", ignore = true)
+//    @Mapping(target = "teacherId", ignore = true)
+//    @Mapping(target = "userName", ignore = true)
+//    @Mapping(target = "startDate", ignore = true)
     ClassRoom toEntity(ClassRoomRequestDto classRoomRequestDto);
 
 //    @Mapping(source = "location.locationId", target = "locationId")

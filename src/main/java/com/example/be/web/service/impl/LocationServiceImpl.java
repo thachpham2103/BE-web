@@ -20,8 +20,8 @@ import org.springframework.stereotype.Service;
 @Transactional
 @Service
 public class LocationServiceImpl implements LocationService {
-    private LocationRepository locationRepository;
-    private LocationMapper mapper;
+    private final LocationRepository locationRepository;
+    private final LocationMapper mapper;
 
     @Override
     public LocationResponseDto createLocation(LocationRequestDto requestDto) {

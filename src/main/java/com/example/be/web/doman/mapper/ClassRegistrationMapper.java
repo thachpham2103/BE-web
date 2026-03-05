@@ -13,7 +13,7 @@ public interface ClassRegistrationMapper {
     @Mapping(source = "classEntity.classId", target = "classId")
     @Mapping(source = "classEntity.title", target = "classTitle")
     @Mapping(source = "student.id", target = "studentId")
-    @Mapping(source = "student.name", target = "studentName")
+    @Mapping(source = "student.fullName", target = "studentName")
     ClassRegistrationResponseDto toResponseDto(ClassRegistration registration);
 
     List<ClassRegistrationResponseDto> toResponseDtoList(List<ClassRegistration> registrations);

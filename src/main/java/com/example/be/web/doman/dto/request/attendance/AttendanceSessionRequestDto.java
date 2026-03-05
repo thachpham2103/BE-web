@@ -40,6 +40,9 @@ public class AttendanceSessionRequestDto {
     private AttendanceStatus status;
 
 //    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
+//    private Double radiusMeters; // Bán kính điểm danh (tùy chọn)
+
+//    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
 //    private Double locationLatitude;
 //
 //    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
