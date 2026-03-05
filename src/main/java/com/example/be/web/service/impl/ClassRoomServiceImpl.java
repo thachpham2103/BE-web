@@ -8,6 +8,7 @@ import com.example.be.web.doman.entity.ClassRoom;
 import com.example.be.web.doman.entity.Location;
 import com.example.be.web.doman.entity.User;
 import com.example.be.web.doman.mapper.ClassRoomMapper;
+import com.example.be.web.doman.mapper.SessionAttendanceStatsMapper;
 import com.example.be.web.doman.model.RecordStatus;
 import com.example.be.web.doman.model.RegistrationStatus;
 import com.example.be.web.exception.extended.NotFoundException;
@@ -38,6 +39,7 @@ public class ClassRoomServiceImpl implements ClassRoomService {
     private final ClassRoomMapper mapper;
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
+    private final SessionAttendanceStatsMapper statsMapper;
 
 
     @Override
@@ -152,20 +154,31 @@ public class ClassRoomServiceImpl implements ClassRoomService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ClassRoom.CLASS_NOT_FOUND));
 
         return classRoom.getAttendanceSessions().stream()
-                .map(session -> {
-                    long total = session.getAttendanceRecords().size();
-                    long present = session.getAttendanceRecords().stream()
-                            .filter(record -> record.getRecordStatus() == RecordStatus.PRESENT)
-                            .count();
-
-                    SessionAttendanceStatsDto dto = new SessionAttendanceStatsDto();
-                    dto.setSessionId(session.getSessionId());
-                    dto.setTitle(session.getTitle());
-                    dto.setTotalCount(total);
-                    dto.setPresentCount(present);
-                    return dto;
-                })
+                .map(statsMapper::toDto)   // gọi mapper thay vì viết inline
                 .collect(Collectors.toList());
     }
+
+//    @Override
+//    public List<SessionAttendanceStatsDto> getAttendanceStatsBySession(Long classId) {
+//        ClassRoom classRoom = classRepository.findById(classId)
+//                .orElseThrow(() -> new NotFoundException(ErrorMessage.ClassRoom.CLASS_NOT_FOUND));
+//
+//        return classRoom.getAttendanceSessions().stream()
+//                .map(session -> {
+//                    long total = session.getAttendanceRecords().size();
+//                    long present = session.getAttendanceRecords().stream()
+//                            .filter(record -> record.getRecordStatus() == RecordStatus.PRESENT)
+//                            .count();
+//
+//                    SessionAttendanceStatsDto dto = new SessionAttendanceStatsDto();
+//                    dto.setSessionId(session.getSessionId());
+//                    dto.setTitle(session.getTitle());
+//                    dto.setTotalCount(total);
+//                    dto.setPresentCount(present);
+//                    return dto;
+//                })
+//                .collect(Collectors.toList());
+//    }
+
 
 }

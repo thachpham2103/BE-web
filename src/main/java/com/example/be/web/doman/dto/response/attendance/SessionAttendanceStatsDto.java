@@ -12,6 +12,5 @@ public class SessionAttendanceStatsDto {
     private String title;
     private long presentCount;
     private long totalCount;
-
 }
 

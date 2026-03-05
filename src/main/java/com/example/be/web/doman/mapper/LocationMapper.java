@@ -18,6 +18,7 @@ import java.util.List;
 )
 public interface LocationMapper {
 
+
 //    @Mapping(target = "locationCode", ignore = true)
 //    @Mapping(target = "latitude", ignore = true)
 //    @Mapping(target = "longitude", ignore = true)
