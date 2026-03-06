@@ -8,6 +8,7 @@ import com.example.be.web.doman.entity.ClassRoom;
 import com.example.be.web.doman.entity.Location;
 import com.example.be.web.doman.entity.User;
 import com.example.be.web.doman.mapper.AttendanceSessionMapper;
+import com.example.be.web.doman.model.RecordStatus;
 import com.example.be.web.exception.extended.InternalServerException;
 import com.example.be.web.exception.extended.NotFoundException;
 import com.example.be.web.repository.AttendanceSessionRepository;
@@ -42,19 +43,19 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
 
         AttendanceSession session = mapper.toEntity(requestDto);
 
-        // xử lý ClassRoom
-//        ClassRoom classRoom = classRepository.findById(requestDto.getClassId())
-//                .orElseThrow(() -> new NotFoundException(
-//                        ErrorMessage.ClassRoom.CLASS_NOT_FOUND,
-//                        new String[]{requestDto.getClassId().toString()}
-//                ));
-//        session.setClassRoom(classRoom);
+//         xử lý ClassRoom
+        ClassRoom classRoom = classRepository.findById(requestDto.getClassId())
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorMessage.ClassRoom.CLASS_NOT_FOUND,
+                        new String[]{requestDto.getClassId().toString()}
+                ));
+        session.setClassRoom(classRoom);
 
         // lấy user đang đăng nhập từ SecurityContext
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User creator = userRepository.findById(principal.getId())
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID, new String[]{principal.getId().toString()}));
-        session.setCreatedByUser(creator);
+        session.setCreatedByUser(creator); 
 
         // xử lý Location
         Location location = locationRepository.findById(requestDto.getLocationId())
@@ -63,7 +64,7 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
 
         // set thời gian tạo và cập nhật
         session.setCreateAt(LocalDateTime.now());
-//        session.setUpdateAt(LocalDateTime.now());
+        session.setUpdateAt(LocalDateTime.now());
 
         // lưu vào DB
         AttendanceSession saved = sessionRepository.save(session);
@@ -91,9 +92,9 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
          existing.setUpdateAt(LocalDateTime.now());
 
          // xử lý classroom
-//         ClassRoom classRoom = classRepository.findById(requestDto.getClassId())
-//                 .orElseThrow(() -> new NotFoundException( ErrorMessage.ClassRoom.CLASS_NOT_FOUND, new String[]{requestDto.getClassId().toString()}));
-//         existing.setClassRoom(classRoom);
+         ClassRoom classRoom = classRepository.findById(requestDto.getClassId())
+                 .orElseThrow(() -> new NotFoundException( ErrorMessage.ClassRoom.CLASS_NOT_FOUND, new String[]{requestDto.getClassId().toString()}));
+         existing.setClassRoom(classRoom);
 
         // xử lý Location mới
         Location location = locationRepository.findById(requestDto.getLocationId())
@@ -135,6 +136,18 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
         }
     }
 
+    //   Đếm số lượng sinh viên đã điểm danh có mặt trong buổi điểm danh
+    @Override
+    public long countPresentStudentsInSession(Long sessionId) {
+        AttendanceSession session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorMessage.AttendanceSession.SESSION_NOT_FOUND,
+                        new String[]{sessionId.toString()}
+                ));
+        return session.getAttendanceRecords().stream()
+                .filter(record -> record.getRecordStatus() == RecordStatus.PRESENT)
+                .count();
+    }
 
 }
 

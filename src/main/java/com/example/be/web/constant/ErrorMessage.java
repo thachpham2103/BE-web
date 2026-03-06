@@ -54,5 +54,13 @@ public class ErrorMessage {
         public static final String ERR_GET_ALL_CLASS = "exception.not.get.all.class";
     }
 
+    public static class ClassRegistration{
+        public static final String REGISTRATION_NOT_FOUND = "exception.registration.not.found";
+        public static final String ERR_CREATE_REGISTRATION = "error.create.class.registration";
+        public static final String ERR_DELETE_REGISTRATION = "error.delete.class.registration";
+        public static final String ERR_GET_BY_CLASS = "error.class.registration.get.by.class";
+        public static final String ERR_GET_BY_USER = "error.class.registration.get.by.user";
+        public static final String REGISTERED = "error.student.already.registered";
+    }
 
 }

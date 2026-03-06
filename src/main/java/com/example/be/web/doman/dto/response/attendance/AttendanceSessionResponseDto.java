@@ -16,9 +16,6 @@ public class AttendanceSessionResponseDto {
 //    private double locationLatitude;
 //    private double locationLongitude ;
 //    private double radiusMeters;
-    private double locationLatitude;
-    private Double locationLongitude;
-    private int radiusMeters;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private AttendanceStatus status;

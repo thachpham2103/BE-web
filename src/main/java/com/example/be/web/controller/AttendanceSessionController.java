@@ -65,5 +65,16 @@ public class AttendanceSessionController {
         List<AttendanceSessionResponseDto> sessions = sessionService.getAllSessions();
         return ResponseEntity.ok(sessions);
     }
+
+    // 6. Đếm số lượng sinh viên đã điểm danh có mặt trong buổi điểm danh
+    @Tag(name="admin_leader")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @GetMapping("/{sessionId}/present-count")
+    @Operation(summary = "API đếm số lượng sinh viên đã điểm danh có mặt trong buổi điểm danh", description = "Admin / Leader")
+    public ResponseEntity<Long> countPresentStudentsInSession(@PathVariable Long sessionId) {
+        long count = sessionService.countPresentStudentsInSession(sessionId);
+        return ResponseEntity.ok(count);
+    }
+
 }
 

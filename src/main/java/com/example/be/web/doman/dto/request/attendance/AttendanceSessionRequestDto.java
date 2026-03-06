@@ -38,20 +38,24 @@ public class AttendanceSessionRequestDto {
     private LocalDateTime updateAt;
 
     private AttendanceStatus status;
-    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
-    private Double locationLatitude;
-
-    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
-    private Double locationLongitude;
 
 //    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
-//    private Long classId;
+//    private Double radiusMeters; // Bán kính điểm danh (tùy chọn)
+
+//    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
+//    private Double locationLatitude;
+//
+//    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
+//    private Double locationLongitude;
+
+    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
+    private Long classId;
 
     // Kiểm tra tính hợp lệ của khoảng thời gian
-    @AssertTrue(message = "Start time must be before end time")
-    public boolean isValidTimeRange() {
-        return startTime != null && endTime != null && startTime.isBefore(endTime);
-    }
+//    @AssertTrue(message = "Start time must be before end time")
+//    public boolean isValidTimeRange() {
+//        return startTime != null && endTime != null && startTime.isBefore(endTime);
+//    }
 
     @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
     private Long locationId;

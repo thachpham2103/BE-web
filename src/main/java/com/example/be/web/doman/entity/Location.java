@@ -8,6 +8,9 @@ import lombok.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@AllArgsConstructor
+@NoArgsConstructor
+
 @Setter
 @Getter
 @Entity
@@ -24,7 +27,7 @@ public class Location {
     private Double latitude;
 
     @Column(name = "longitude", nullable = false)
-    private Double longitude;
+        private Double longitude;
 
     @Column(name = "address", length = 255)
     private String address;
