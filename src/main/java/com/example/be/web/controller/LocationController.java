@@ -18,7 +18,7 @@ public class LocationController {
 
     private final LocationService locationService;
 
-    @Tag(name="admin_leader")
+    @Tag(name="Location")
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
     @Operation(summary = "API get all locations with pagination", description = "Admin / Leader")
@@ -28,7 +28,7 @@ public class LocationController {
         return locationService.getAllLocations(PageRequest.of(page, size));
     }
 
-    @Tag(name="admin_leader")
+    @Tag(name="Location")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
     @Operation(summary = "API get location by id", description = "Admin / Leader")
@@ -36,7 +36,7 @@ public class LocationController {
         return locationService.getLocationById(id);
     }
 
-    @Tag(name="admin_leader")
+    @Tag(name="Location")
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
     @Operation(summary = "API create new location", description = "Admin / Leader")
@@ -44,7 +44,7 @@ public class LocationController {
         return locationService.createLocation(requestDto);
     }
 
-    @Tag(name="admin_leader")
+    @Tag(name="Location")
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
     @Operation(summary = "API update location by id", description = "Admin / Leader")
@@ -53,7 +53,7 @@ public class LocationController {
         return locationService.updateLocation(id, requestDto);
     }
 
-    @Tag(name="admin_leader")
+    @Tag(name="Location")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
     @Operation(summary = "API delete location by id", description = "Admin / Leader")

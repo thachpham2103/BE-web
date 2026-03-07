@@ -55,11 +55,11 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
             throw new NotFoundException(ErrorMessage.Location.LOCATION_NOT_FOUND);
         }
         // 1. Kiểm tra GPS
-        double distance = calculateDistance(location.getLatitude(), location.getLongitude(), gpsLat, gpsLng);
-        if (distance > location.getRadiusMeters()) {
-            log.warn("User {} ngoài phạm vi điểm danh tại session {}", userId, sessionId);
-            throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_RANGE);
-        }
+//        double distance = calculateDistance(location.getLatitude(), location.getLongitude(), gpsLat, gpsLng);
+//        if (distance > location.getRadiusMeters()) {
+//            log.warn("User {} ngoài phạm vi điểm danh tại session {}", userId, sessionId);
+//            throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_RANGE);
+//        }
 
         // 2. Gọi AI model nhận diện khuôn mặt
 //        boolean faceResult = aiFaceRecognitionService.verifyFace(user, faceImage);

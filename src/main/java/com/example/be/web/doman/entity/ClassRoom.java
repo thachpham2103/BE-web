@@ -16,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "classes")
+@Table(name = "class")
 
 public class ClassRoom {
 

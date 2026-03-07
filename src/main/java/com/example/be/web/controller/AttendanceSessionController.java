@@ -59,12 +59,12 @@ public class AttendanceSessionController {
     }
 
     // 5. Lấy tất cả buổi điểm danh
-    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
-    @GetMapping
-    public ResponseEntity<List<AttendanceSessionResponseDto>> getAllSessions() {
-        List<AttendanceSessionResponseDto> sessions = sessionService.getAllSessions();
-        return ResponseEntity.ok(sessions);
-    }
+//    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+//    @GetMapping
+//    public ResponseEntity<List<AttendanceSessionResponseDto>> getAllSessions() {
+//        List<AttendanceSessionResponseDto> sessions = sessionService.getAllSessions();
+//        return ResponseEntity.ok(sessions);
+//    }
 
     // 6. Đếm số lượng sinh viên đã điểm danh có mặt trong buổi điểm danh
     @Tag(name="admin_leader")

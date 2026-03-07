@@ -43,7 +43,7 @@ public class ClassRoomController {
     }
 
     // Tạo mới classroom
-    @Tag(name="admin_leader")
+    @Tag(name="classRoom")
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @Operation(summary = "API create new classroom", description = "Admin / Leader")
@@ -52,7 +52,7 @@ public class ClassRoomController {
     }
 
     // Cập nhật classroom theo id
-    @Tag(name="admin_leader")
+    @Tag(name="classRoom")
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @Operation(summary = "API update classroom by id", description = "Admin / Leader")
@@ -62,7 +62,7 @@ public class ClassRoomController {
     }
 
     // Xóa classroom theo id
-    @Tag(name="admin_leader")
+    @Tag(name="classRoom")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @Operation(summary = "API delete classroom by id", description = "Admin / Leader")
@@ -70,7 +70,7 @@ public class ClassRoomController {
         classRoomService.deleteClassRoom(id);
     }
 
-    @Tag(name="admin_leader")
+    @Tag(name="classRoom")
     @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @GetMapping("/{classId}/attendance/stats")
     @Operation(summary = "API thống kê điểm danh theo buổi của lớp học", description = "Admin / Leader")

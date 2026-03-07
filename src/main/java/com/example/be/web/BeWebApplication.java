@@ -66,7 +66,7 @@ public class BeWebApplication {
 						.lastLogin(LocalDateTime.now())
 						.email(userInfo.getEmail())
 						.build();
-				User user = User.builder().username("thachpn")
+				User user = User.builder().username("phamthach")
 						.password(passwordEncoder.encode("210305"))
 						.fullName("Pham Ngoc Thach")
 						.role(roleRepository.findByRoleName(RoleConstant.USER))

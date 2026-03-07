@@ -1,5 +1,6 @@
 package com.example.be.web.service.impl;
 
+import com.example.be.web.base.RestStatus;
 import com.example.be.web.constant.ErrorMessage;
 import com.example.be.web.doman.dto.request.attendance.AttendanceSessionRequestDto;
 import com.example.be.web.doman.dto.response.attendance.AttendanceSessionResponseDto;
@@ -8,7 +9,9 @@ import com.example.be.web.doman.entity.ClassRoom;
 import com.example.be.web.doman.entity.Location;
 import com.example.be.web.doman.entity.User;
 import com.example.be.web.doman.mapper.AttendanceSessionMapper;
+import com.example.be.web.doman.model.AttendanceStatus;
 import com.example.be.web.doman.model.RecordStatus;
+import com.example.be.web.doman.model.RegistrationStatus;
 import com.example.be.web.exception.extended.InternalServerException;
 import com.example.be.web.exception.extended.NotFoundException;
 import com.example.be.web.repository.AttendanceSessionRepository;
@@ -65,6 +68,7 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
         // set thời gian tạo và cập nhật
         session.setCreateAt(LocalDateTime.now());
         session.setUpdateAt(LocalDateTime.now());
+        session.setStatus(requestDto.getStatus() != null ? requestDto.getStatus() : AttendanceStatus.CLOSED);
 
         // lưu vào DB
         AttendanceSession saved = sessionRepository.save(session);

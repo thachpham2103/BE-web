@@ -49,8 +49,8 @@ public class LocationServiceImpl implements LocationService {
                 ));
 
         existing.setLocationCode(requestDto.getLocationCode());
-        existing.setLatitude(requestDto.getLatitude());
-        existing.setLongitude(requestDto.getLongitude());
+//        existing.setLatitude(requestDto.getLatitude());
+//        existing.setLongitude(requestDto.getLongitude());
         existing.setRadiusMeters(requestDto.getRadiusMeters());
         existing.setAddress(requestDto.getAddress());
 

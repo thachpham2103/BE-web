@@ -24,26 +24,26 @@ public class UserController {
 
     private final UserService userService;
 
-    @Tag(name="admin_leader")
+    @Tag(name="User_Controller")
     @GetMapping
     public ResponseEntity<?> getUserById(@PathVariable Long userId){
         return VsResponseUtil.success(userService.getUserById(userId));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
-    @Tag(name="admin_leader")
+    @Tag(name="User_Controller")
     @Operation(summary = "create users")
     @PostMapping(UrlConstant.User.CREATE_USER)
     public ResponseEntity<?> createUser(@RequestBody @Valid UserCreateDto createDto){
         return VsResponseUtil.success(userService.createUser(createDto));
     }
 
-    @Tag(name="admin_leader")
+    @Tag(name="User_Controller")
     @DeleteMapping(UrlConstant.User.DELETE_USER)
-    @Operation(summary = "API delete user by id", description = "Admin / Leader")
-    public ResponseEntity<?> deleteUsers(@PathVariable Long id){
-            userService.deleteUsers(id);
-            return VsResponseUtil.success(ResponseMessage.User.USER_DELETE);
+    @Operation(summary = "Delete user by id", description = "Admin / Leader")
+    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
+        userService.deleteUsers(id);
+        return VsResponseUtil.success(ResponseMessage.User.USER_DELETE);
     }
 
 }

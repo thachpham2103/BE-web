@@ -33,9 +33,9 @@ public class AttendanceSessionRequestDto {
     @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
     private LocalDateTime endTime;
 
-    private LocalDateTime createAt;
-
-    private LocalDateTime updateAt;
+//    private LocalDateTime createAt;
+//
+//    private LocalDateTime updateAt;
 
     private AttendanceStatus status;
 
