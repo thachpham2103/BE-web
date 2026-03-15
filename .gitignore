@@ -1,6 +1,9 @@
 # ignore file chứa biến môi trường
-.evn
+# env
+.env
+.env.*
 application.properties
+application.yml
 
 HELP.md
 target/
