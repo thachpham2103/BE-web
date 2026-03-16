@@ -79,6 +79,7 @@ public class ClassRoomController {
         return ResponseEntity.ok(stats);
     }
 
+    // Đếm tổng số sinh viên đã đăng ký trong lớp học
     @GetMapping("/{classId}/totalStudent")
     @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @Operation(summary = "API lấy tổng số sinh viên của lớp học", description = "Admin / Leader")

@@ -104,5 +104,19 @@ public class ClassRegistrationServiceImpl implements ClassRegistrationService {
         return registrations;
     }
 
+    @Override
+    public Page<ClassRegistrationResponseDto> getByStudentIdAndStatus(Pageable pageable, Long studentId, RegistrationStatus status) {
+        Page<ClassRegistrationResponseDto> registrations = classRegistrationRepository.findByStudent_IdAndStatus(pageable, studentId, status)
+                .map(mapper::toResponseDto);
+        return registrations;
+    }
+
+    @Override
+    public Page<ClassRegistrationResponseDto> getByClassIdAndStatus(Pageable pageable, Long classId, RegistrationStatus status) {
+        Page<ClassRegistrationResponseDto> registrations = classRegistrationRepository.findByClassEntity_ClassIdAndStatus(pageable, classId, status)
+                .map(mapper::toResponseDto);
+        return registrations;
+    }
+
 
 }

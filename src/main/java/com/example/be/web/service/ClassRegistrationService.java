@@ -12,4 +12,6 @@ public interface ClassRegistrationService {
     void deleteRegistration(Long registrationId);
     Page<ClassRegistrationResponseDto> getByStudentId (Pageable pageable, Long studentId);
     Page<ClassRegistrationResponseDto> getByClassId (Pageable pageable, Long classId);
+    Page<ClassRegistrationResponseDto> getByStudentIdAndStatus(Pageable pageable, Long studentId, RegistrationStatus status);
+    Page<ClassRegistrationResponseDto> getByClassIdAndStatus(Pageable pageable, Long classId, RegistrationStatus status);
 }
