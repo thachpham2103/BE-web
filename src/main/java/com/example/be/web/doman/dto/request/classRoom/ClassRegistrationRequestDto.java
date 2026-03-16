@@ -13,6 +13,6 @@ import lombok.*;
 public class ClassRegistrationRequestDto {
     private Long classId;
     private Long studentId;
-//    private RegistrationStatus status; // optional, mặc định PENDING
+    private RegistrationStatus status; // optional, mặc định PENDING
 }
 

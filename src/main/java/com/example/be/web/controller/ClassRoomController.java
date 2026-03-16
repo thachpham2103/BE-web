@@ -25,7 +25,7 @@ public class ClassRoomController {
 
     // Lấy danh sách classrooms (phân trang)
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+//    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @Operation(summary = "API get all classrooms with pagination", description = "Admin / Leader")
     public Page<ClassRoomResponseDto> getAllClassRooms(
             @RequestParam(defaultValue = "0") int page,
@@ -35,6 +35,7 @@ public class ClassRoomController {
     }
 
     // Lấy chi tiết classroom theo id
+    @Tag(name="classRoom")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('USER','ADMIN','LEADER')")
     @Operation(summary = "API get classroom by id", description = "Admin / Leader")
@@ -80,6 +81,7 @@ public class ClassRoomController {
     }
 
     // Đếm tổng số sinh viên đã đăng ký trong lớp học
+    @Tag(name="classRoom")
     @GetMapping("/{classId}/totalStudent")
     @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @Operation(summary = "API lấy tổng số sinh viên của lớp học", description = "Admin / Leader")

@@ -7,12 +7,13 @@ public class ErrorMessage {
     public static final String INVALID_FORMAT_EMAIL="invalid.email-format";
     public static final String ROLE_NOT_FOUND="invalid.role.not-found";
     public static final String UNAUTHORIZED = "exception.unauthorized";
+    public static final String FORBIDDEN_UPDATE_DELETE = "exception.forbidden.update-delete";
 
     public static class User{
 
         public static final String USER_NOT_FOUND_ID="exception.user.not.found.id";
         public static final String ERR_NOT_FOUND_USERNAME = "exception.user.not.found.username";
-//        public static final String ERR_NOT_FOUND_ID = "exception.user.not.found.id";
+        public static final String ERR_NOT_FOUND = "exception.user.not.found";
     }
 
     public static class Auth{
@@ -58,6 +59,7 @@ public class ErrorMessage {
     public static class ClassRegistration{
         public static final String REGISTRATION_NOT_FOUND = "exception.registration.not.found";
         public static final String ERR_CREATE_REGISTRATION = "error.create.class.registration";
+        public static final String GET_MY_REGISTRATIONS_FAILED = "exception.class-registration.get_my_registrations_failed";
         public static final String ERR_DELETE_REGISTRATION = "error.delete.class.registration";
         public static final String ERR_GET_BY_CLASS = "error.class.registration.get.by.class";
         public static final String ERR_GET_BY_USER = "error.class.registration.get.by.user";

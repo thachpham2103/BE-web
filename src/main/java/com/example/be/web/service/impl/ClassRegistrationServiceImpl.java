@@ -8,20 +8,24 @@ import com.example.be.web.doman.entity.ClassRoom;
 import com.example.be.web.doman.entity.User;
 import com.example.be.web.doman.mapper.ClassRegistrationMapper;
 import com.example.be.web.doman.model.RegistrationStatus;
+import com.example.be.web.exception.extended.ForbiddenException;
 import com.example.be.web.exception.extended.InvalidException;
 import com.example.be.web.exception.extended.NotFoundException;
 import com.example.be.web.repository.ClassRegistrationRepository;
 import com.example.be.web.repository.ClassRepository;
 import com.example.be.web.repository.UserRepository;
+import com.example.be.web.security.UserPrincipal;
 import com.example.be.web.service.ClassRegistrationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -104,6 +108,8 @@ public class ClassRegistrationServiceImpl implements ClassRegistrationService {
         return registrations;
     }
 
+
+
     @Override
     public Page<ClassRegistrationResponseDto> getByStudentIdAndStatus(Pageable pageable, Long studentId, RegistrationStatus status) {
         Page<ClassRegistrationResponseDto> registrations = classRegistrationRepository.findByStudent_IdAndStatus(pageable, studentId, status)
@@ -116,6 +122,33 @@ public class ClassRegistrationServiceImpl implements ClassRegistrationService {
         Page<ClassRegistrationResponseDto> registrations = classRegistrationRepository.findByClassEntity_ClassIdAndStatus(pageable, classId, status)
                 .map(mapper::toResponseDto);
         return registrations;
+    }
+
+    @Override
+    public Page<ClassRegistrationResponseDto> getRegistrationsByUser(Long userId, Pageable pageable, UserPrincipal principal) {
+        if (!principal.getId().equals(userId) && !principal.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            throw new ForbiddenException(ErrorMessage.FORBIDDEN_UPDATE_DELETE);
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND));
+
+
+        Page<ClassRegistration> registrations = classRegistrationRepository.findByStudent(user, pageable);
+
+        return registrations.map(this::toReponse);
+    }
+
+    public ClassRegistrationResponseDto toReponse(ClassRegistration reg) {
+        return ClassRegistrationResponseDto.builder()
+                .registrationId(reg.getRegistrationId())
+                .classTitle(reg.getClassEntity().getTitle())
+                .registeredAt(reg.getRegisteredAt())
+                .pending(reg.isPending())
+
+//                .RegistrationStatus(reg.getStatus().name())
+//                .classRoom(classMapper.toDTO(reg.getClassEntity()))
+                .build();
     }
 
 
