@@ -10,7 +10,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @AllArgsConstructor
 
-public class ListUserResponseDto {
+public class  ListUserResponseDto {
     List<UserResponseDto> data;
     Long amountOfAllUsers;
 }
