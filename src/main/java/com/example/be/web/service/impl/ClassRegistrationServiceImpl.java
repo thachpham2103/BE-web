@@ -17,6 +17,8 @@ import com.example.be.web.service.ClassRegistrationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -53,7 +55,7 @@ public class ClassRegistrationServiceImpl implements ClassRegistrationService {
         ClassRegistration registration = ClassRegistration.builder()
                 .classEntity(classRoom)
                 .student(student)
-                .status(requestDto.getStatus() != null ? requestDto.getStatus() : RegistrationStatus.PENDING)
+                .status(RegistrationStatus.PENDING)
                 .pending(true)
                 .registeredAt(LocalDateTime.now())
                 .build();
@@ -86,6 +88,34 @@ public class ClassRegistrationServiceImpl implements ClassRegistrationService {
                         new String[]{registrationId.toString()}
                 ));
         classRegistrationRepository.delete(registration);
+    }
+
+    @Override
+    public Page<ClassRegistrationResponseDto> getByStudentId(Pageable pageable, Long studentId) {
+        Page<ClassRegistrationResponseDto> registrations = classRegistrationRepository.findByStudent_Id(pageable, studentId)
+                .map(mapper::toResponseDto);
+        return registrations;
+    }
+
+    @Override
+    public Page<ClassRegistrationResponseDto> getByClassId(Pageable pageable, Long classId) {
+        Page<ClassRegistrationResponseDto> registrations = classRegistrationRepository.findByClassEntity_ClassId(pageable, classId)
+                .map(mapper::toResponseDto);
+        return registrations;
+    }
+
+    @Override
+    public Page<ClassRegistrationResponseDto> getByStudentIdAndStatus(Pageable pageable, Long studentId, RegistrationStatus status) {
+        Page<ClassRegistrationResponseDto> registrations = classRegistrationRepository.findByStudent_IdAndStatus(pageable, studentId, status)
+                .map(mapper::toResponseDto);
+        return registrations;
+    }
+
+    @Override
+    public Page<ClassRegistrationResponseDto> getByClassIdAndStatus(Pageable pageable, Long classId, RegistrationStatus status) {
+        Page<ClassRegistrationResponseDto> registrations = classRegistrationRepository.findByClassEntity_ClassIdAndStatus(pageable, classId, status)
+                .map(mapper::toResponseDto);
+        return registrations;
     }
 
 

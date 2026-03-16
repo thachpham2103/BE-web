@@ -27,6 +27,7 @@ public interface AttendanceSessionMapper {
 
     @Mapping(source = "createdByUser.id", target = "createdByUserId")
     @Mapping(source = "location.locationId", target = "locationId")
+//    @Mapping(source = classRoom.classRoomId, target = "classRoomId")
     AttendanceSessionResponseDto toResponse(AttendanceSession entity);
 //    AttendanceSession toEntity(AttendanceSessionRequestDto request);
 
