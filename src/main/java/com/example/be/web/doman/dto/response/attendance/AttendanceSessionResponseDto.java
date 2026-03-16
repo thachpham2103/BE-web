@@ -19,7 +19,7 @@ public class AttendanceSessionResponseDto {
 //    private LocalDateTime createAt;
 //    private LocalDateTime updateAt;
     private AttendanceStatus status;
-//    private Long classroomId;
+    private Long classroomId;
     private Long createdByUserId ;
     private Long locationId;
 }
