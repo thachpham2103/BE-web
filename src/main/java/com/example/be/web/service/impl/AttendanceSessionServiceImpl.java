@@ -14,15 +14,15 @@ import com.example.be.web.doman.model.RecordStatus;
 import com.example.be.web.doman.model.RegistrationStatus;
 import com.example.be.web.exception.extended.InternalServerException;
 import com.example.be.web.exception.extended.NotFoundException;
-import com.example.be.web.repository.AttendanceSessionRepository;
-import com.example.be.web.repository.ClassRepository;
-import com.example.be.web.repository.LocationRepository;
-import com.example.be.web.repository.UserRepository;
+import com.example.be.web.repository.*;
 import com.example.be.web.security.UserPrincipal;
 import com.example.be.web.service.AttendanceSessionService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +40,7 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
     private final ClassRepository classRepository;
+    private final ClassRegistrationRepository classRegistrationRepository;
 
     @Override
     public AttendanceSessionResponseDto createSession(AttendanceSessionRequestDto requestDto) {
@@ -68,7 +69,8 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
         // set thời gian tạo và cập nhật
         session.setCreateAt(LocalDateTime.now());
         session.setUpdateAt(LocalDateTime.now());
-        session.setStatus(requestDto.getStatus() != null ? requestDto.getStatus() : AttendanceStatus.CLOSED);
+//        session.setStatus(requestDto.getStatus() != null ? requestDto.getStatus() : AttendanceStatus.CLOSED);
+        session.setStatus(AttendanceStatus.OPEN); // mặc định khi tạo buổi điểm danh sẽ có trạng thái là OPEN
 
         // lưu vào DB
         AttendanceSession saved = sessionRepository.save(session);
@@ -152,6 +154,71 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
                 .filter(record -> record.getRecordStatus() == RecordStatus.PRESENT)
                 .count();
     }
+
+//    @Override
+//    public Page<AttendanceSessionResponseDto> getOpenSessionsByStudent(Long userId, Pageable pageable) {
+//        Page<AttendanceSession> sessions = classRegistrationRepository.findOpenSessionsByStudent(userId, pageable);
+//
+//        LocalDateTime now = LocalDateTime.now();
+//
+//        // Lazy update: nếu endTime < now thì đóng ngay
+//        for (AttendanceSession session : sessions) {
+//            if (session.getEndTime().isBefore(now)) {
+//                session.setStatus(AttendanceStatus.CLOSED);
+//                sessionRepository.save(session);
+//            }
+//        }
+//
+//        return sessions
+//                .filter(session  -> session .getStatus() == AttendanceStatus.OPEN)
+//                .map(mapper::toResponse);
+//    }
+
+    @Override
+    public Page<AttendanceSessionResponseDto> getOpenSessionsForStudent(Pageable pageable) { //getOpenSessionsForStudent
+        // lấy user đang đăng nhập từ SecurityContext
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findById(principal.getId())
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID, new String[]{principal.getId().toString()}));
+
+        Page<AttendanceSession> sessions = classRegistrationRepository.findOpenSessionsByStudent(user.getId(), pageable);
+
+//        LocalDateTime now = LocalDateTime.now();
+//
+//        // Lazy update: nếu endTime < now thì đóng ngay
+//        sessions.forEach(session -> {
+//            if (session.getEndTime().isBefore(now)) {
+//                session.setStatus(AttendanceStatus.CLOSED);
+//                sessionRepository.save(session);
+//            }
+//        });
+//
+//        List<AttendanceSessionResponseDto> dtoList = sessions.stream()
+//                .filter(s -> s.getStatus() == AttendanceStatus.OPEN)
+//                .map(mapper::toResponse)
+//                .toList();
+//
+//        return new PageImpl<>(dtoList, pageable, dtoList.size());   //ể lạ quá
+        return sessions.map(mapper::toResponse);
+    }
+
+    //cần viết thêm hàm riêng lấy user id
+    // Lấy buổi điểm danh đang mở của giáo viên
+    @Override
+    public AttendanceSessionResponseDto getOpenSessionForTeacher() {
+        // lấy user đang đăng nhập từ SecurityContext
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findById(principal.getId())
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID, new String[]{principal.getId().toString()}));
+
+        AttendanceSession session = sessionRepository.findOpenSessionForTeacher(user.getId())
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorMessage.AttendanceSession.OPEN_SESSION_NOT_FOUND_FOR_TEACHER,
+                        new String[]{user.getId().toString()}
+                ));
+        return mapper.toResponse(session);
+    }
+
 
 }
 

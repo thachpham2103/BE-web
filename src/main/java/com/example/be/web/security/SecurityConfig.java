@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) //bị quên cái này
+//@EnableMethodSecurity(prePostEnabled = true) //bị quên cái này
 //@RequiredArgsConstructor
 public class SecurityConfig {
 
