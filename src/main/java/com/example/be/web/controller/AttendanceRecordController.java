@@ -52,7 +52,7 @@ public class AttendanceRecordController {
     }
 
     // 3. Lấy danh sách record theo session
-//    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @GetMapping("/session/{sessionId}")
     @Operation(summary = "API get record by session", description = "Admin / Leader")
     public ResponseEntity<List<AttendanceRecordResponseDto>> getRecordsBySession(@PathVariable Long sessionId) {

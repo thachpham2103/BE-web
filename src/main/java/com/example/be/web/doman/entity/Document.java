@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "documents")
 
-public class Document {
+public class  Document {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
