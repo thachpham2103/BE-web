@@ -34,11 +34,17 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
-    @Value("${jwt.access.expiration_time}")
-    private long EXPIRATION_TIME_ACCESS_TOKEN;
+    @Value("${jwt.access.expiration_ms}")
+    private long ACCESS_TOKEN_MS;
 
-    @Value("${jwt.refresh.expiration_time}")
-    private long EXPIRATION_TIME_REFRESH_TOKEN;
+    @Value("${jwt.refresh.expiration_ms}")
+    private long REFRESH_TOKEN_MS;
+
+//    @Value("${jwt.access.expiration_time}")
+//    private long EXPIRATION_TIME_ACCESS_TOKEN;
+//
+//    @Value("${jwt.refresh.expiration_time}")
+//    private long EXPIRATION_TIME_REFRESH_TOKEN;
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
@@ -60,14 +66,12 @@ public class JwtTokenProvider {
     /* ===================== GENERATE TOKEN ===================== */
 
     public String generateToken(UserPrincipal userPrincipal, boolean isRefreshToken) {
-
         String authorities = userPrincipal.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        long expirationMinutes = isRefreshToken
-                ? EXPIRATION_TIME_REFRESH_TOKEN
-                : EXPIRATION_TIME_ACCESS_TOKEN;
+        // Đổi tên thành expirationMs cho đúng bản chất
+        long expirationMs = isRefreshToken ? REFRESH_TOKEN_MS : ACCESS_TOKEN_MS;
 
         return Jwts.builder()
                 .setSubject(userPrincipal.getId().toString())
@@ -75,7 +79,8 @@ public class JwtTokenProvider {
                 .claim(USERNAME_KEY, userPrincipal.getUsername())
                 .claim(AUTHORITIES_KEY, authorities)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationMinutes ))
+                // System.currentTimeMillis() trả về ms, nên expirationMs cũng phải là ms
+                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -125,8 +130,16 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            getClaims(token);
+            Claims claims = getClaims(token);
+
+            String type = claims.get("type", String.class);
+            if (!"access".equals(type)) {
+                log.error("Token is not access token");
+                return false;
+            }
+
             return true;
+
         } catch (SecurityException | MalformedJwtException e) {
             log.error("Invalid JWT signature");
         } catch (ExpiredJwtException e) {

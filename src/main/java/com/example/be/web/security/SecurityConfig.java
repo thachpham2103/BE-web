@@ -54,7 +54,7 @@ public class SecurityConfig {
                 // 2. Tắt CSRF vì chúng ta dùng JWT (Stateless)
                 .csrf(csrf -> csrf.disable())
 
-                // 3. Quản lý lỗi Authentication (Trả về 401 thay vì chuyển hướng)
+
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 )
@@ -97,7 +97,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
-        configuration.setAllowCredentials(false); // Đặt là false nếu allowedOrigins là "*"
+        configuration.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
