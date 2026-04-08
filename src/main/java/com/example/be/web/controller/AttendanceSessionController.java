@@ -48,15 +48,16 @@ public class AttendanceSessionController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
+    @Operation(summary = "API lấy buổi điểm danh theo id", description = "Admin / Leader / User")
     public ResponseEntity<AttendanceSessionResponseDto> getSessionById(@PathVariable Long id) {
         AttendanceSessionResponseDto session = sessionService.getSessionById(id);
         return ResponseEntity.ok(session);
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
-    @Operation(summary = "API lấy tất cả buổi điểm danh", description = "Admin / Leader")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
+    @Operation(summary = "API lấy tất cả buổi điểm danh", description = "Admin / Leader / User")
     public ResponseEntity<List<AttendanceSessionResponseDto>> getAllSessions() {
         List<AttendanceSessionResponseDto> sessions = sessionService.getAllSessions();
         return ResponseEntity.ok(sessions);
