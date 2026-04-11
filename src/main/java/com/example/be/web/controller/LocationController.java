@@ -30,8 +30,8 @@ public class LocationController {
 
     @Tag(name = "Location")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'STUDENT')")
-    @Operation(summary = "API get location by id", description = "Admin / Leader / Student")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'USER')")
+    @Operation(summary = "API get location by id", description = "Admin / Leader / user")
     public LocationResponseDto getLocationById(@PathVariable Long id) {
         return locationService.getLocationById(id);
     }
