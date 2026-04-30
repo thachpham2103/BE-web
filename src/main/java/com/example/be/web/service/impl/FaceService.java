@@ -7,10 +7,16 @@ import com.example.be.web.doman.entity.FaceData;
 import com.example.be.web.doman.entity.User;
 import com.example.be.web.repository.FaceDataRepository;
 import com.example.be.web.repository.UserRepository;
+import com.example.be.web.security.UserPrincipal;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,12 +33,14 @@ public class FaceService {
     // ===============================
     // REGISTER
     // ===============================
-    public void register(Long userId, String base64) {
+    public void register(Long userId, MultipartFile imageFile) throws IOException {
+        File tempFile = File.createTempFile("upload-", imageFile.getOriginalFilename());
+        imageFile.transferTo(tempFile);
 
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException(ErrorMessage.User.ERR_NOT_FOUND));
 
-        double[] embedding = faceAIClient.getEmbedding(base64);
+        double[] embedding = faceAIClient.getOriginalEmbedding(tempFile);
 
         FaceData face = FaceData.builder()
                 .faceEncoding(gson.toJson(embedding))
@@ -46,9 +54,11 @@ public class FaceService {
     // ===============================
     // RECOGNIZE
     // ===============================
-    public FaceResponse recognize(String base64) {
+    public FaceResponse recognize(MultipartFile imageFile) throws IOException {
 
-        double[] input = faceAIClient.getEmbedding(base64);
+        File tempFile = File.createTempFile("upload-", imageFile.getOriginalFilename());
+        imageFile.transferTo(tempFile);
+        double[] input = faceAIClient.getAttendanceEmbedding(tempFile);
 
         List<FaceData> all = faceRepo.findAll();
 
@@ -56,8 +66,19 @@ public class FaceService {
         User bestUser = null;
 
         for (FaceData f : all) {
-
+            //danh cho du lieu embbeding da dua ve mang 1D
             double[] db = gson.fromJson(f.getFaceEncoding(), double[].class);
+
+//            List<List<Double>> outer = gson.fromJson(f.getFaceEncoding(), List.class);
+//            List<Double> inner = outer.get(0);
+//            double[] db = inner.stream().mapToDouble(Number::doubleValue).toArray();
+
+//            List<?> outer = gson.fromJson(f.getFaceEncoding(), List.class);
+//            List<?> inner = (List<?>) outer.get(0);
+//            double[] db = inner.stream()
+//                    .mapToDouble(val -> ((Number) val).doubleValue())
+//                    .toArray();
+
 
             double score = cosine(input, db);
 
@@ -91,5 +112,11 @@ public class FaceService {
         }
 
         return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+    }
+
+    private Long getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        return userPrincipal.getId();
     }
 }
