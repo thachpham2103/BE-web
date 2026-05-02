@@ -87,7 +87,7 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
 //    }
 
     @Override
-    public FaceResponse checkIn(Long sessionId, MultipartFile faceImage) throws IOException {
+    public FaceResponse checkIn(Long sessionId, MultipartFile faceImage, double gpsLat, double gpsLng) throws IOException {
         AttendanceSession session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.AttendanceSession.SESSION_NOT_FOUND));
 
@@ -131,7 +131,7 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
             // 3. Tạo record
             AttendanceRecordRequestDto dto = AttendanceRecordRequestDto.builder()
                     .checkinTime(LocalDateTime.now())
-                    //            .gpsLatitude(gpsLat).gpsLongitude(gpsLng)
+                    .gpsLatitude(gpsLat).gpsLongitude(gpsLng)
                     .resultFace(faceResult).recordStatus(faceResult ? RecordStatus.PRESENT : RecordStatus.INVALID)
                     //                .userId(userId)
                     //                .attendanceSessionId(sessionId)

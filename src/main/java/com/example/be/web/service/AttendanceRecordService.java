@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface AttendanceRecordService {
-    FaceResponse checkIn(Long sessionId, MultipartFile faceImage) throws IOException;
+    FaceResponse checkIn(Long sessionId, MultipartFile faceImage, double gpsLat, double gpsLng) throws IOException;
 //    AttendanceRecord checkIn(Long sessionId, Long userId, AttendanceRecord record);
     AttendanceRecordResponseDto  getRecordById(Long id);
     List<AttendanceRecordResponseDto > getRecordsBySession(Long sessionId);
