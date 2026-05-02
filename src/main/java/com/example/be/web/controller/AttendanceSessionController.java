@@ -35,9 +35,7 @@ public class AttendanceSessionController {
     // 2. Cập nhật buổi điểm danh
     @Tag(name = "attendanceSession")
     @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
-
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @Operation(summary = "API cập nhật buổi điểm danh", description = "Admin / Leader")
     public ResponseEntity<AttendanceSessionResponseDto> updateSession(
             @PathVariable Long id,
@@ -49,7 +47,6 @@ public class AttendanceSessionController {
 
     // 3. Xóa buổi điểm danh
     @Tag(name = "attendanceSession")
-    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @Operation(summary = "API xóa buổi điểm danh theo id", description = "Admin / Leader")

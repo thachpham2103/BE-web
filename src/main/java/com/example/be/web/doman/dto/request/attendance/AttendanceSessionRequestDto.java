@@ -58,6 +58,9 @@ public class AttendanceSessionRequestDto {
 //    }
 
     @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
+    private AttendanceStatus status;
+
+    @NotNull(message = ErrorMessage.NOT_BLANK_FIELD)
     private Long locationId;
 
 }
