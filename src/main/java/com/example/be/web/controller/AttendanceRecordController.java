@@ -30,10 +30,12 @@ public class AttendanceRecordController {
     @Operation(summary = "API record by user", description = "User check-in attendance")
     public ResponseEntity<FaceResponse> checkIn(
             @RequestParam("sessionId") Long sessionId,
-            @RequestParam("faceImage") MultipartFile faceImage
+            @RequestParam("faceImage") MultipartFile faceImage,
+            @RequestParam("gpsLat") double gpsLat,
+            @RequestParam("gpsLng") double gpsLng
     ) throws IOException {
         FaceResponse record =
-                attendanceRecordService.checkIn(sessionId, faceImage);
+                attendanceRecordService.checkIn(sessionId, faceImage, gpsLat, gpsLng);
 
         return ResponseEntity.ok(record);
     }
