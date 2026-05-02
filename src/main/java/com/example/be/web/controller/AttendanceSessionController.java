@@ -76,5 +76,13 @@ public class AttendanceSessionController {
         return ResponseEntity.ok(count);
     }
 
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
+    @Operation(summary = "API lấy tất cả buổi điểm danh", description = "Admin / Leader / User")
+    public ResponseEntity<List<AttendanceSessionResponseDto>> getAllSessions() {
+        List<AttendanceSessionResponseDto> sessions = sessionService.getAllSessions();
+        return ResponseEntity.ok(sessions);
+    }
+
 }
 
