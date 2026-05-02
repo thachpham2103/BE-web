@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "face_data")
 @Getter
@@ -14,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class FaceData {
 
     @Id
@@ -24,19 +22,16 @@ public class FaceData {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
     @Lob
     @Column(name = "face_encoding", nullable = false, columnDefinition = "TEXT")
     private String faceEncoding;
 
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-            name = "user_id",
-            nullable = false,
-            foreignKey = @ForeignKey(name = "FK_FACE_DATA_USER")
-    )
+    @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
     private User user;
+
 }

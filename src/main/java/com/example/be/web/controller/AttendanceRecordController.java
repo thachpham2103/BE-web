@@ -1,16 +1,14 @@
 package com.example.be.web.controller;
 
 import com.example.be.web.doman.dto.response.attendance.AttendanceRecordResponseDto;
-import com.example.be.web.doman.entity.AttendanceRecord;
 import com.example.be.web.service.AttendanceRecordService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.http.MediaType;
-
 
 import java.util.List;
 
@@ -21,60 +19,70 @@ public class AttendanceRecordController {
 
     private final AttendanceRecordService attendanceRecordService;
 
-//    @PreAuthorize("hasAnyRole('USER')")
-    // 1. Điểm danh (check-in)
+    // 1. User điểm danh / check-in
     @PostMapping(
             value = "/checkin",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-
     @PreAuthorize("hasAnyRole('USER')")
-    @Operation(summary = "API record by user", description = "User")
+    @Operation(summary = "API record by user", description = "User check-in attendance")
     public ResponseEntity<AttendanceRecordResponseDto> checkIn(
             @RequestParam("sessionId") Long sessionId,
             @RequestParam("faceImage") MultipartFile faceImage,
             @RequestParam("gpsLat") double gpsLat,
-            @RequestParam("gpsLng") double gpsLng) {
-
+            @RequestParam("gpsLng") double gpsLng
+    ) {
         AttendanceRecordResponseDto record =
                 attendanceRecordService.checkIn(sessionId, faceImage, gpsLat, gpsLng);
 
         return ResponseEntity.ok(record);
     }
 
-    // 2. Lấy record theo ID
-    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    // 2. Admin / Leader lấy record theo ID
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
     @Operation(summary = "API get record by id", description = "Admin / Leader")
-    public ResponseEntity<AttendanceRecordResponseDto> getRecordById(@PathVariable Long id) {
+    public ResponseEntity<AttendanceRecordResponseDto> getRecordById(
+            @PathVariable Long id
+    ) {
         AttendanceRecordResponseDto record = attendanceRecordService.getRecordById(id);
         return ResponseEntity.ok(record);
     }
 
-    // 3. Lấy danh sách record theo session
-//    @PreAuthorize("hasRole('TEACHER')")
+    // 3. Admin / Leader lấy danh sách record theo session
     @GetMapping("/session/{sessionId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
     @Operation(summary = "API get record by session", description = "Admin / Leader")
-    public ResponseEntity<List<AttendanceRecordResponseDto>> getRecordsBySession(@PathVariable Long sessionId) {
-        List<AttendanceRecordResponseDto> records = attendanceRecordService.getRecordsBySession(sessionId);
+    public ResponseEntity<List<AttendanceRecordResponseDto>> getRecordsBySession(
+            @PathVariable Long sessionId
+    ) {
+        List<AttendanceRecordResponseDto> records =
+                attendanceRecordService.getRecordsBySession(sessionId);
+
         return ResponseEntity.ok(records);
     }
 
-    // 4. Lấy danh sách record theo user
-    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    // 4. Admin / Leader xem lịch sử của một user bất kỳ theo userId
+    // Lưu ý: USER thường không được gọi API này.
     @GetMapping("/user/{userId}")
-    @Operation(summary = "API get records by userId", description = "Teacher/Admin xem danh sách record của một user cụ thể")
-    public ResponseEntity<List<AttendanceRecordResponseDto>> getRecordsByUser(@PathVariable Long userId) {
-        List<AttendanceRecordResponseDto> records = attendanceRecordService.getRecordsByUser(userId);
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
+    @Operation(summary = "API get records by userId", description = "Admin / Leader xem danh sách record của một user cụ thể")
+    public ResponseEntity<List<AttendanceRecordResponseDto>> getRecordsByUser(
+            @PathVariable Long userId
+    ) {
+        List<AttendanceRecordResponseDto> records =
+                attendanceRecordService.getRecordsByUser(userId);
+
         return ResponseEntity.ok(records);
     }
 
+    // 5. USER xem lịch sử điểm danh của chính mình
+    // Flutter sinh viên nên gọi API này: GET /api/attendance/user/me
     @GetMapping("/user/me")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER')")
     @Operation(summary = "API get records of current user", description = "User xem danh sách record của chính mình")
     public ResponseEntity<List<AttendanceRecordResponseDto>> getMyRecords() {
         List<AttendanceRecordResponseDto> records = attendanceRecordService.getMyRecords();
         return ResponseEntity.ok(records);
     }
-
 }
