@@ -115,11 +115,9 @@ public class ClassRegistrationController {
     @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @Operation(summary = "lấy danh sách sinh viên đã đăng ký của lớp học theo trạng thái đăng ký", description = "Admin / Leader")
     public Page<ClassRegistrationResponseDto> getRegisteredStudentsForClassByStatus(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @ParameterObject Pageable pageable,
             @PathVariable Long classId,
             @RequestParam("status") RegistrationStatus status) {
-        Pageable pageable = PageRequest.of(page, size);
         return classRegistrationService.getByClassIdAndStatus(pageable, classId, status);
     }
 }
