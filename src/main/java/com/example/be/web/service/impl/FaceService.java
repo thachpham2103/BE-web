@@ -2,6 +2,7 @@ package com.example.be.web.service.impl;
 
 
 import com.example.be.web.constant.ErrorMessage;
+import com.example.be.web.doman.dto.response.facedata.EmbeddingResultDto;
 import com.example.be.web.doman.dto.response.facedata.FaceResponse;
 import com.example.be.web.doman.entity.FaceData;
 import com.example.be.web.doman.entity.User;
@@ -58,7 +59,18 @@ public class FaceService {
 
         File tempFile = File.createTempFile("upload-", imageFile.getOriginalFilename());
         imageFile.transferTo(tempFile);
-        double[] input = faceAIClient.getAttendanceEmbedding(tempFile);
+//        double[] input = faceAIClient.getAttendanceEmbedding(tempFile);
+        EmbeddingResultDto result = faceAIClient.getAttendanceEmbedding(tempFile);
+
+        if (result.getEmbedding() == null) {
+            return FaceResponse.builder()
+                    .name("Unknown")
+                    .confidence(0.0)
+                    .message(result.getStatus())
+                    .build();
+        }
+
+        double[] input = result.getEmbedding();
 
         List<FaceData> all = faceRepo.findAll();
 
@@ -95,6 +107,7 @@ public class FaceService {
         return FaceResponse.builder()
                 .name(name)
                 .confidence(best)
+                .message(result.getStatus())
                 .build();
     }
 
@@ -119,4 +132,54 @@ public class FaceService {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         return userPrincipal.getId();
     }
+
+//    public void register(Long userId, String base64) {
+//
+//        User user = userRepo.findById(userId)
+//                .orElseThrow(() -> new RuntimeException(ErrorMessage.User.ERR_NOT_FOUND));
+//
+//        double[] embedding = faceAIClient.getOriginalEmbedding(base64);
+//
+//        FaceData face = FaceData.builder()
+//                .faceEncoding(gson.toJson(embedding))
+//                .createdAt(LocalDateTime.now())
+//                .user(user)
+//                .build();
+//
+//        faceRepo.save(face);
+//    }
+//
+//    // ===============================
+//    // RECOGNIZE
+//    // ===============================
+//    public FaceResponse recognize(String base64) {
+//
+//        double[] input = faceAIClient.getAttendanceEmbedding(base64);
+//
+//        List<FaceData> all = faceRepo.findAll();
+//
+//        double best = 0;
+//        User bestUser = null;
+//
+//        for (FaceData f : all) {
+//
+//            double[] db = gson.fromJson(f.getFaceEncoding(), double[].class);
+//
+//            double score = cosine(input, db);
+//
+//            if (score > best) {
+//                best = score;
+//                bestUser = f.getUser();
+//            }
+//        }
+//
+//        String name = (best > 0.6 && bestUser != null)
+//                ? bestUser.getUsername()
+//                : "Unknown";
+//
+//        return FaceResponse.builder()
+//                .name(name)
+//                .confidence(best)
+//                .build();
+//    }
 }

@@ -3,10 +3,8 @@ package com.example.be.web.service.impl;
 import com.example.be.web.constant.ErrorMessage;
 import com.example.be.web.doman.dto.request.attendance.AttendanceRecordRequestDto;
 import com.example.be.web.doman.dto.response.attendance.AttendanceRecordResponseDto;
-import com.example.be.web.doman.entity.AttendanceRecord;
-import com.example.be.web.doman.entity.AttendanceSession;
-import com.example.be.web.doman.entity.Location;
-import com.example.be.web.doman.entity.User;
+import com.example.be.web.doman.dto.response.facedata.FaceResponse;
+import com.example.be.web.doman.entity.*;
 import com.example.be.web.doman.mapper.AttendanceRecordMapper;
 import com.example.be.web.doman.model.RecordStatus;
 import com.example.be.web.exception.extended.BadRequestException;
@@ -26,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,9 +39,55 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
     private final AttendanceRecordMapper mapper;
+    private final FaceService faceService;
+
+//    @Override
+//    public AttendanceRecordResponseDto checkIn(Long sessionId, MultipartFile faceImage, double gpsLat, double gpsLng) {
+//        AttendanceSession session = sessionRepository.findById(sessionId)
+//                .orElseThrow(() -> new NotFoundException(ErrorMessage.AttendanceSession.SESSION_NOT_FOUND));
+//
+//        Long userId = getCurrentUserId(); // lấy từ context
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID));
+//
+//        Location location = session.getLocation();
+//        if (location == null) {
+//            throw new NotFoundException(ErrorMessage.Location.LOCATION_NOT_FOUND);
+//        }
+//        // 1. Kiểm tra GPS
+//        double distance = calculateDistance(location.getLatitude(), location.getLongitude(), gpsLat, gpsLng);
+//        if (distance > location.getRadiusMeters()) {
+////            log.warn("User {} ngoài phạm vi điểm danh tại session {}", userId, sessionId);
+//            throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_RANGE);
+//        }
+//
+//        // 2. Kiểm tra thời gian điểm danh ***
+//        LocalDateTime now = LocalDateTime.now();
+//        if (now.isBefore(session.getStartTime()) || now.isAfter(session.getEndTime())) {
+//            throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_TIME);
+//        }
+//
+//        // 2. Gọi AI model nhận diện khuôn mặt
+////        boolean faceResult = aiFaceRecognitionService.verifyFace(user, faceImage);
+//        boolean faceResult = true; // giả sử luôn đúng để test *******
+//
+//        // 3. Tạo record
+//        AttendanceRecordRequestDto dto = AttendanceRecordRequestDto.builder()
+//                .checkinTime(LocalDateTime.now())
+//                .gpsLatitude(gpsLat).gpsLongitude(gpsLng)
+//                .resultFace(faceResult).recordStatus(faceResult ? RecordStatus.PRESENT : RecordStatus.INVALID)
+////                .userId(userId)
+////                .attendanceSessionId(sessionId)
+//                .build();
+//        AttendanceRecord record = mapper.toEntity(dto);
+//        record.setAttendanceSession(session);
+//        record.setUser(user);
+//        AttendanceRecord saved = recordRepository.save(record);
+//        return mapper.toResponse(saved);
+//    }
 
     @Override
-    public AttendanceRecordResponseDto checkIn(Long sessionId, MultipartFile faceImage, double gpsLat, double gpsLng) {
+    public FaceResponse checkIn(Long sessionId, MultipartFile faceImage) throws IOException {
         AttendanceSession session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.AttendanceSession.SESSION_NOT_FOUND));
 
@@ -54,36 +99,52 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
         if (location == null) {
             throw new NotFoundException(ErrorMessage.Location.LOCATION_NOT_FOUND);
         }
-        // 1. Kiểm tra GPS
-        double distance = calculateDistance(location.getLatitude(), location.getLongitude(), gpsLat, gpsLng);
-        if (distance > location.getRadiusMeters()) {
-//            log.warn("User {} ngoài phạm vi điểm danh tại session {}", userId, sessionId);
-            throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_RANGE);
-        }
+    //    // 1. Kiểm tra GPS
+    //    double distance = calculateDistance(location.getLatitude(), location.getLongitude(), gpsLat, gpsLng);
+    //    if (distance > location.getRadiusMeters()) {
+    ////            log.warn("User {} ngoài phạm vi điểm danh tại session {}", userId, sessionId);
+    //        throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_RANGE);
+    //    }
 
         // 2. Kiểm tra thời gian điểm danh ***
-        LocalDateTime now = LocalDateTime.now();
-        if (now.isBefore(session.getStartTime()) || now.isAfter(session.getEndTime())) {
-            throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_TIME);
-        }
+    //    tạm ẩn
+    //*******************************************
+    //    LocalDateTime now = LocalDateTime.now();
+    //    if (now.isBefore(session.getStartTime()) || now.isAfter(session.getEndTime())) {
+    //        throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_TIME);
+    //    }
 
         // 2. Gọi AI model nhận diện khuôn mặt
-//        boolean faceResult = aiFaceRecognitionService.verifyFace(user, faceImage);
-        boolean faceResult = true; // giả sử luôn đúng để test *******
+    //        boolean faceResult = aiFaceRecognitionService.verifyFace(user, faceImage);
+        FaceResponse recognize = faceService.recognize(faceImage);
+        boolean faceResult = false;
+        if (recognize.getConfidence() > 0 && recognize.getConfidence() < 0.6) {
+            recognize.setMessage("Face not match"); //nên đẩy sang bên faceService*******************
+//            return recognize;
+            // Có thể throw exception hoặc trả về response với status INVALID
+        }
+        else {
+            faceResult = true;
 
-        // 3. Tạo record
-        AttendanceRecordRequestDto dto = AttendanceRecordRequestDto.builder()
-                .checkinTime(LocalDateTime.now())
-                .gpsLatitude(gpsLat).gpsLongitude(gpsLng)
-                .resultFace(faceResult).recordStatus(faceResult ? RecordStatus.PRESENT : RecordStatus.INVALID)
-//                .userId(userId)
-//                .attendanceSessionId(sessionId)
-                .build();
-        AttendanceRecord record = mapper.toEntity(dto);
-        record.setAttendanceSession(session);
-        record.setUser(user);
-        AttendanceRecord saved = recordRepository.save(record);
-        return mapper.toResponse(saved);
+            //    boolean faceResult = true; // giả sử luôn đúng để test *******
+
+            // 3. Tạo record
+            AttendanceRecordRequestDto dto = AttendanceRecordRequestDto.builder()
+                    .checkinTime(LocalDateTime.now())
+                    //            .gpsLatitude(gpsLat).gpsLongitude(gpsLng)
+                    .resultFace(faceResult).recordStatus(faceResult ? RecordStatus.PRESENT : RecordStatus.INVALID)
+                    //                .userId(userId)
+                    //                .attendanceSessionId(sessionId)
+                    .build();
+            AttendanceRecord record = mapper.toEntity(dto);
+            record.setAttendanceSession(session);
+            record.setUser(user);
+            AttendanceRecord saved = recordRepository.save(record);
+//        return mapper.toResponse(saved);
+        }
+        log.info("FaceResponse: name={}, confidence={}, message={}",
+                recognize.getName(), recognize.getConfidence(), recognize.getMessage());
+        return recognize;
     }
 
     private Long getCurrentUserId() {

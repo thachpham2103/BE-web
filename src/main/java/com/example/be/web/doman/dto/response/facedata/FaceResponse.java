@@ -13,4 +13,5 @@ public class FaceResponse {
 
     private String name;
     private double confidence;
+    private String message;
 }

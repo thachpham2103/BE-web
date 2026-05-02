@@ -1,5 +1,6 @@
 package com.example.be.web.service.impl;
 
+import com.example.be.web.doman.dto.response.facedata.EmbeddingResultDto;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -57,7 +58,7 @@ public class FaceAIClient {
         return list.stream().mapToDouble(Double::doubleValue).toArray();
     }
 
-    public double[] getAttendanceEmbedding(File imageFile) {
+    public EmbeddingResultDto getAttendanceEmbedding(File imageFile) {
         String url = "http://localhost:6000/attendance_embedding";
 
         FileSystemResource resource = new FileSystemResource(imageFile);
@@ -72,9 +73,20 @@ public class FaceAIClient {
 
         ResponseEntity<Map> response =
                 restTemplate.postForEntity(url, requestEntity, Map.class);
+        Map body1 = response.getBody();
 
-        List<Double> list = (List<Double>) response.getBody().get("embedding");
-        return list.stream().mapToDouble(Double::doubleValue).toArray();
+        String status = (String) body1.get("message");
+        List<Double> list = (List<Double>) body1.get("embedding");
+
+        double[] emb = null;
+        if (list != null) {
+            emb = list.stream().mapToDouble(Double::doubleValue).toArray();
+        }
+
+        return new EmbeddingResultDto(emb, status);
+
+//        List<Double> list = (List<Double>) response.getBody().get("embedding");
+//        return list.stream().mapToDouble(Double::doubleValue).toArray();
     }
 
 
