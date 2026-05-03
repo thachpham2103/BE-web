@@ -24,6 +24,8 @@ public class ClassRoomController {
     private final ClassRoomService classRoomService;
 
     // Lấy danh sách classrooms (phân trang)
+
+
     @GetMapping
 //    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @Operation(summary = "API get all classrooms with pagination", description = "Admin / Leader")
@@ -63,6 +65,11 @@ public class ClassRoomController {
     }
 
     // Xóa classroom theo id
+
+    /**
+     *
+     * @param id xóa lơp học theo id
+     */
     @Tag(name="classRoom")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','LEADER')")

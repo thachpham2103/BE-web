@@ -1,6 +1,5 @@
 package com.example.be.web.service.impl;
 
-import com.example.be.web.base.RestStatus;
 import com.example.be.web.constant.ErrorMessage;
 import com.example.be.web.doman.dto.request.attendance.AttendanceSessionRequestDto;
 import com.example.be.web.doman.dto.response.attendance.AttendanceSessionResponseDto;
@@ -11,18 +10,16 @@ import com.example.be.web.doman.entity.User;
 import com.example.be.web.doman.mapper.AttendanceSessionMapper;
 import com.example.be.web.doman.model.AttendanceStatus;
 import com.example.be.web.doman.model.RecordStatus;
-import com.example.be.web.doman.model.RegistrationStatus;
 import com.example.be.web.exception.extended.InternalServerException;
 import com.example.be.web.exception.extended.NotFoundException;
-import com.example.be.web.repository.AttendanceSessionRepository;
-import com.example.be.web.repository.ClassRepository;
-import com.example.be.web.repository.LocationRepository;
-import com.example.be.web.repository.UserRepository;
+import com.example.be.web.repository.*;
 import com.example.be.web.security.UserPrincipal;
 import com.example.be.web.service.AttendanceSessionService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -40,13 +37,18 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
     private final ClassRepository classRepository;
+    private final ClassRegistrationRepository classRegistrationRepository;
+
 
     @Override
     public AttendanceSessionResponseDto createSession(AttendanceSessionRequestDto requestDto) {
 
+        if (requestDto.getLocationId() == null) {
+            throw new NotFoundException("LOCATION_ID_NULL");
+        }
+
         AttendanceSession session = mapper.toEntity(requestDto);
 
-//         xử lý ClassRoom
         ClassRoom classRoom = classRepository.findById(requestDto.getClassId())
                 .orElseThrow(() -> new NotFoundException(
                         ErrorMessage.ClassRoom.CLASS_NOT_FOUND,
@@ -54,24 +56,39 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
                 ));
         session.setClassRoom(classRoom);
 
-        // lấy user đang đăng nhập từ SecurityContext
-        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User creator = userRepository.findById(principal.getId())
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID, new String[]{principal.getId().toString()}));
-        session.setCreatedByUser(creator); 
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
 
-        // xử lý Location
+        User creator = userRepository.findById(principal.getId())
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorMessage.User.USER_NOT_FOUND_ID,
+                        new String[]{principal.getId().toString()}
+                ));
+
+        session.setCreatedByUser(creator);
+
         Location location = locationRepository.findById(requestDto.getLocationId())
-                .orElseThrow(() -> new NotFoundException( ErrorMessage.Location.LOCATION_NOT_FOUND, new String[]{requestDto.getLocationId().toString()} ));
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorMessage.Location.LOCATION_NOT_FOUND,
+                        new String[]{requestDto.getLocationId().toString()}
+                ));
+
         session.setLocation(location);
 
-        // set thời gian tạo và cập nhật
         session.setCreateAt(LocalDateTime.now());
         session.setUpdateAt(LocalDateTime.now());
-        session.setStatus(requestDto.getStatus() != null ? requestDto.getStatus() : AttendanceStatus.CLOSED);
+        session.setStatus(
+                requestDto.getStatus() != null
+                        ? requestDto.getStatus()
+                        : AttendanceStatus.CLOSED
+        );
 
-        // lưu vào DB
+//        session.setStatus(requestDto.getStatus() != null ? requestDto.getStatus() : AttendanceStatus.CLOSED);
+        session.setStatus(AttendanceStatus.OPEN); // mặc định khi tạo buổi điểm danh sẽ có trạng thái là OPEN
+
+
         AttendanceSession saved = sessionRepository.save(session);
+
         return mapper.toResponse(saved);
     }
 
@@ -84,26 +101,26 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
                         new String[]{id.toString()}
                 ));
 
-//        // cập nhật từ DTO sang entity
-//        existing.setTitle(requestDto.getTitle());
-//        existing.setStartTime(requestDto.getStartTime());
-//        existing.setEndTime(requestDto.getEndTime());
-//        existing.setLocationLatitude(requestDto.getLocationLatitude());
-//        existing.setLocationLongitude(requestDto.getLocationLongitude());
+        mapper.updateEntityFromDto(requestDto, existing);
+        existing.setUpdateAt(LocalDateTime.now());
 
-        // sử dụng mapper để cập nhật
-         mapper.updateEntityFromDto(requestDto, existing);
-         existing.setUpdateAt(LocalDateTime.now());
+        if (requestDto.getClassId() != null) {
+            ClassRoom classRoom = classRepository.findById(requestDto.getClassId())
+                    .orElseThrow(() -> new NotFoundException(
+                            ErrorMessage.ClassRoom.CLASS_NOT_FOUND,
+                            new String[]{requestDto.getClassId().toString()}
+                    ));
+            existing.setClassRoom(classRoom);
+        }
 
-         // xử lý classroom
-         ClassRoom classRoom = classRepository.findById(requestDto.getClassId())
-                 .orElseThrow(() -> new NotFoundException( ErrorMessage.ClassRoom.CLASS_NOT_FOUND, new String[]{requestDto.getClassId().toString()}));
-         existing.setClassRoom(classRoom);
-
-        // xử lý Location mới
-        Location location = locationRepository.findById(requestDto.getLocationId())
-                .orElseThrow(() -> new NotFoundException( ErrorMessage.Location.LOCATION_NOT_FOUND, new String[]{requestDto.getLocationId().toString()} ));
-        existing.setLocation(location);
+        if (requestDto.getLocationId() != null) {
+            Location location = locationRepository.findById(requestDto.getLocationId())
+                    .orElseThrow(() -> new NotFoundException(
+                            ErrorMessage.Location.LOCATION_NOT_FOUND,
+                            new String[]{requestDto.getLocationId().toString()}
+                    ));
+            existing.setLocation(location);
+        }
 
         AttendanceSession updated = sessionRepository.save(existing);
         return mapper.toResponse(updated);
@@ -140,7 +157,6 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
         }
     }
 
-    //   Đếm số lượng sinh viên đã điểm danh có mặt trong buổi điểm danh
     @Override
     public long countPresentStudentsInSession(Long sessionId) {
         AttendanceSession session = sessionRepository.findById(sessionId)
@@ -153,5 +169,29 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
                 .count();
     }
 
-}
+    @Override
+    public Page<AttendanceSessionResponseDto> getOpenSessionsForStudent(Pageable pageable) {
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findById(principal.getId())
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID, new String[]{principal.getId().toString()}));
 
+        Page<AttendanceSession> sessions = classRegistrationRepository.findOpenSessionsByStudent(user.getId(), pageable);
+
+        return sessions.map(mapper::toResponse);
+    }
+
+    @Override
+    public AttendanceSessionResponseDto getOpenSessionForTeacher() {
+        // lấy user đang đăng nhập từ SecurityContext
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findById(principal.getId())
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID, new String[]{principal.getId().toString()}));
+
+        AttendanceSession session = sessionRepository.findOpenSessionForTeacher(user.getId())
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorMessage.AttendanceSession.OPEN_SESSION_NOT_FOUND_FOR_TEACHER,
+                        new String[]{user.getId().toString()}
+                ));
+        return mapper.toResponse(session);
+    }
+}

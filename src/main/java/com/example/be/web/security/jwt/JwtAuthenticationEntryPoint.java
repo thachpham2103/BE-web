@@ -25,8 +25,24 @@ public class JwtAuthenticationEntryPoint implements org.springframework.security
         MessageSource messageSource = BeanUtil.getBean(MessageSource.class);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        String message = messageSource.getMessage(ErrorMessage.UNAUTHORIZED, null, LocaleContextHolder.getLocale());
-        response.getOutputStream().write(new ObjectMapper().writeValueAsBytes(RestData.error(message)));
+
+        // THÊM: Nội dung mặc định nếu không tìm thấy key trong message source
+        String defaultMessage = "Unauthorized: Token is invalid or expired";
+
+        String message;
+        try {
+            message = messageSource.getMessage(
+                    ErrorMessage.UNAUTHORIZED,
+                    null,
+                    LocaleContextHolder.getLocale()
+            );
+        } catch (Exception e) {
+            // Nếu không tìm thấy key 'exception.unauthorized', dùng message mặc định
+            message = defaultMessage;
+        }
+
+        // Ghi dữ liệu ra response
+        new ObjectMapper().writeValue(response.getOutputStream(), RestData.error(message));
     }
 
 }

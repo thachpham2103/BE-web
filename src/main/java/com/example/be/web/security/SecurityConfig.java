@@ -17,10 +17,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) //bị quên cái này
+//@EnableMethodSecurity(prePostEnabled = true) //bị quên cái này
 //@RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -43,27 +48,60 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) throws Exception {
         http
+                // 1. Cấu hình CORS (Phải đặt trước authorizeHttpRequests)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+                // 2. Tắt CSRF vì chúng ta dùng JWT (Stateless)
                 .csrf(csrf -> csrf.disable())
+
+
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                )
+
+                // 4. Phân quyền Request
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/auth/**",
+                                "/auth/**",           // Cho phép đăng nhập, đăng ký
+                                "/api/public/**",     // Các API công khai (nếu có)
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/favicon.ico"
                         ).permitAll()
-                        // cho phép login/refresh
-                        .anyRequest().authenticated()
+                        .anyRequest().authenticated() // Tất cả các request khác phải có Token
                 )
-                .formLogin(form -> form.disable())            // tắt form login mặc định
-                .httpBasic(basic -> basic.disable())          // tắt basic auth
+
+                // 5. Cấu hình Stateless (Không lưu Session trên Server)
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // không dùng session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+
+                // 6. Tắt các chế độ đăng nhập mặc định của trình duyệt
+                .formLogin(form -> form.disable())
+                .httpBasic(basic -> basic.disable())
+
+                // 7. Thêm Provider và Filter xử lý JWT
                 .authenticationProvider(daoAuthProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        ;
 
         return http.build();
+    }
+
+    // 8. Bean cấu hình CORS để Flutter gọi được API
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // Cho phép các nguồn cụ thể hoặc "*" (tất cả) để test đồ án cho nhanh
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization"));
+        configuration.setAllowCredentials(false);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean

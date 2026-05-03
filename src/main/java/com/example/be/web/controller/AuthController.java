@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Validated
 @RequestMapping("/auth")
-public class AuthController {
+public class  AuthController {
 
     private final AuthService authService;
 
