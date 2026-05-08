@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +56,7 @@ public class FaceService {
     // ===============================
     // RECOGNIZE
     // ===============================
-    public FaceResponse recognize(MultipartFile imageFile) throws IOException {
+    public FaceResponse recognize(MultipartFile imageFile, Long userId) throws IOException {
 
         File tempFile = File.createTempFile("upload-", imageFile.getOriginalFilename());
         imageFile.transferTo(tempFile);
@@ -72,35 +73,40 @@ public class FaceService {
 
         double[] input = result.getEmbedding();
 
-        List<FaceData> all = faceRepo.findAll();
+//        List<FaceData> all = faceRepo.findAll();
+        // Lấy dữ liệu embedding theo userId với trường hợp 1 user có nhiều embbeding
+//        List<FaceData> faceDataList = faceRepo.findByUserId(userId);
+        Optional<FaceData> userFace = Optional.ofNullable(faceRepo.findOneByUserId(userId)
+                .orElseThrow(() -> new RuntimeException(ErrorMessage.FaceData.ERR_NOT_FOUND_USERID)));
 
         double best = 0;
         User bestUser = null;
 
-        for (FaceData f : all) {
-            //danh cho du lieu embbeding da dua ve mang 1D
+        if (userFace.isPresent()){
+            FaceData f = userFace.get();
             double[] db = gson.fromJson(f.getFaceEncoding(), double[].class);
-
-//            List<List<Double>> outer = gson.fromJson(f.getFaceEncoding(), List.class);
-//            List<Double> inner = outer.get(0);
-//            double[] db = inner.stream().mapToDouble(Number::doubleValue).toArray();
-
-//            List<?> outer = gson.fromJson(f.getFaceEncoding(), List.class);
-//            List<?> inner = (List<?>) outer.get(0);
-//            double[] db = inner.stream()
-//                    .mapToDouble(val -> ((Number) val).doubleValue())
-//                    .toArray();
-
-
             double score = cosine(input, db);
-
             if (score > best) {
                 best = score;
                 bestUser = f.getUser();
             }
         }
 
-        String name = (best > 0.6 && bestUser != null)
+
+//        for (FaceData f : faceDataList) {
+//            //danh cho du lieu embbeding da dua ve mang 1D
+//            double[] db = gson.fromJson(f.getFaceEncoding(), double[].class);
+//
+//            double score = cosine(input, db);
+//
+//            if (score > best) {
+//                best = score;
+//                bestUser = f.getUser();
+//            }
+//        }
+
+//        String name = (best > 0.6 && bestUser != null)
+        String name = (best > 0.6)
                 ? bestUser.getUsername()
                 : "Unknown";
 
@@ -132,54 +138,4 @@ public class FaceService {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         return userPrincipal.getId();
     }
-
-//    public void register(Long userId, String base64) {
-//
-//        User user = userRepo.findById(userId)
-//                .orElseThrow(() -> new RuntimeException(ErrorMessage.User.ERR_NOT_FOUND));
-//
-//        double[] embedding = faceAIClient.getOriginalEmbedding(base64);
-//
-//        FaceData face = FaceData.builder()
-//                .faceEncoding(gson.toJson(embedding))
-//                .createdAt(LocalDateTime.now())
-//                .user(user)
-//                .build();
-//
-//        faceRepo.save(face);
-//    }
-//
-//    // ===============================
-//    // RECOGNIZE
-//    // ===============================
-//    public FaceResponse recognize(String base64) {
-//
-//        double[] input = faceAIClient.getAttendanceEmbedding(base64);
-//
-//        List<FaceData> all = faceRepo.findAll();
-//
-//        double best = 0;
-//        User bestUser = null;
-//
-//        for (FaceData f : all) {
-//
-//            double[] db = gson.fromJson(f.getFaceEncoding(), double[].class);
-//
-//            double score = cosine(input, db);
-//
-//            if (score > best) {
-//                best = score;
-//                bestUser = f.getUser();
-//            }
-//        }
-//
-//        String name = (best > 0.6 && bestUser != null)
-//                ? bestUser.getUsername()
-//                : "Unknown";
-//
-//        return FaceResponse.builder()
-//                .name(name)
-//                .confidence(best)
-//                .build();
-//    }
 }

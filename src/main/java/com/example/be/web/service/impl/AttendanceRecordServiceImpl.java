@@ -41,50 +41,6 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
     private final AttendanceRecordMapper mapper;
     private final FaceService faceService;
 
-//    @Override
-//    public AttendanceRecordResponseDto checkIn(Long sessionId, MultipartFile faceImage, double gpsLat, double gpsLng) {
-//        AttendanceSession session = sessionRepository.findById(sessionId)
-//                .orElseThrow(() -> new NotFoundException(ErrorMessage.AttendanceSession.SESSION_NOT_FOUND));
-//
-//        Long userId = getCurrentUserId(); // lấy từ context
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID));
-//
-//        Location location = session.getLocation();
-//        if (location == null) {
-//            throw new NotFoundException(ErrorMessage.Location.LOCATION_NOT_FOUND);
-//        }
-//        // 1. Kiểm tra GPS
-//        double distance = calculateDistance(location.getLatitude(), location.getLongitude(), gpsLat, gpsLng);
-//        if (distance > location.getRadiusMeters()) {
-////            log.warn("User {} ngoài phạm vi điểm danh tại session {}", userId, sessionId);
-//            throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_RANGE);
-//        }
-//
-//        // 2. Kiểm tra thời gian điểm danh ***
-//        LocalDateTime now = LocalDateTime.now();
-//        if (now.isBefore(session.getStartTime()) || now.isAfter(session.getEndTime())) {
-//            throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_TIME);
-//        }
-//
-//        // 2. Gọi AI model nhận diện khuôn mặt
-////        boolean faceResult = aiFaceRecognitionService.verifyFace(user, faceImage);
-//        boolean faceResult = true; // giả sử luôn đúng để test *******
-//
-//        // 3. Tạo record
-//        AttendanceRecordRequestDto dto = AttendanceRecordRequestDto.builder()
-//                .checkinTime(LocalDateTime.now())
-//                .gpsLatitude(gpsLat).gpsLongitude(gpsLng)
-//                .resultFace(faceResult).recordStatus(faceResult ? RecordStatus.PRESENT : RecordStatus.INVALID)
-////                .userId(userId)
-////                .attendanceSessionId(sessionId)
-//                .build();
-//        AttendanceRecord record = mapper.toEntity(dto);
-//        record.setAttendanceSession(session);
-//        record.setUser(user);
-//        AttendanceRecord saved = recordRepository.save(record);
-//        return mapper.toResponse(saved);
-//    }
 
     @Override
     public FaceResponse checkIn(Long sessionId, MultipartFile faceImage, double gpsLat, double gpsLng) throws IOException {
@@ -116,7 +72,7 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
 
         // 2. Gọi AI model nhận diện khuôn mặt
     //        boolean faceResult = aiFaceRecognitionService.verifyFace(user, faceImage);
-        FaceResponse recognize = faceService.recognize(faceImage);
+        FaceResponse recognize = faceService.recognize(faceImage, userId);
         boolean faceResult = false;
         if (recognize.getConfidence() > 0 && recognize.getConfidence() < 0.6) {
             recognize.setMessage("Face not match"); //nên đẩy sang bên faceService*******************

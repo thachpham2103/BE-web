@@ -67,4 +67,8 @@ public class ErrorMessage {
         public static final String REGISTERED = "error.student.already.registered";
     }
 
+    public static class FaceData{
+        public static final String ERR_NOT_FOUND_USERID = "exception.face-data.not.found.userId";
+    }
+
 }
