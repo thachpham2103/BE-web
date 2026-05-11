@@ -40,10 +40,10 @@ public class FaceController {
             value = "/recognize",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public ResponseEntity<FaceResponse> recognize(@ModelAttribute FaceRequest req) throws IOException{
+    public ResponseEntity<FaceResponse> recognize(@ModelAttribute FaceRequest req, Long userID) throws IOException{
 
         return ResponseEntity.ok(
-                faceService.recognize(req.getImage())
+                faceService.recognize(req.getImage(),userID)
         );
     }
 }

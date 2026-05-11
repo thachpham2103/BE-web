@@ -38,6 +38,7 @@ public class ErrorMessage {
         public static final String ERR_GET_BY_USER = "error.attendance.record.get.by.user";
         public static final String OUT_OF_RANGE = "error.user.out.of.range"; // thêm mới
         public static final String OUT_OF_TIME = "error.user.out.of.time";
+        public static final String FACE_NOT_MATCH = "error.face.not.match";
 
     }
 
@@ -65,6 +66,10 @@ public class ErrorMessage {
         public static final String ERR_GET_BY_CLASS = "error.class.registration.get.by.class";
         public static final String ERR_GET_BY_USER = "error.class.registration.get.by.user";
         public static final String REGISTERED = "error.student.already.registered";
+    }
+
+    public static class FaceData{
+        public static final String ERR_NOT_FOUND_USERID = "exception.face-data.not.found.userId";
     }
 
 }

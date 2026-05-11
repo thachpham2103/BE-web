@@ -1,6 +1,7 @@
 package com.example.be.web.controller;
 
 import com.example.be.web.doman.dto.response.attendance.AttendanceRecordResponseDto;
+import com.example.be.web.doman.dto.response.facedata.FaceResponse;
 import com.example.be.web.doman.dto.response.attendance.StudentAttendanceStatsResponseDto;
 import com.example.be.web.service.AttendanceRecordService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -27,13 +29,13 @@ public class AttendanceRecordController {
     )
     @PreAuthorize("hasAnyRole('USER')")
     @Operation(summary = "API record by user", description = "User check-in attendance")
-    public ResponseEntity<AttendanceRecordResponseDto> checkIn(
+    public ResponseEntity<FaceResponse> checkIn(
             @RequestParam("sessionId") Long sessionId,
             @RequestParam("faceImage") MultipartFile faceImage,
             @RequestParam("gpsLat") double gpsLat,
             @RequestParam("gpsLng") double gpsLng
-    ) {
-        AttendanceRecordResponseDto record =
+    ) throws IOException {
+        FaceResponse record =
                 attendanceRecordService.checkIn(sessionId, faceImage, gpsLat, gpsLng);
 
         return ResponseEntity.ok(record);
