@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 @Transactional
 @Service
 public class LocationServiceImpl implements LocationService {
+
     private final LocationRepository locationRepository;
     private final LocationMapper mapper;
 
@@ -37,6 +38,7 @@ public class LocationServiceImpl implements LocationService {
                         ErrorMessage.Location.LOCATION_NOT_FOUND,
                         new String[]{id.toString()}
                 ));
+
         return mapper.toResponseDto(location);
     }
 
@@ -48,14 +50,29 @@ public class LocationServiceImpl implements LocationService {
                         new String[]{id.toString()}
                 ));
 
-        existing.setLocationCode(requestDto.getLocationCode());
-        existing.setLatitude(requestDto.getLatitude());
-        existing.setLongitude(requestDto.getLongitude());
-        existing.setRadiusMeters(requestDto.getRadiusMeters());
-        existing.setAddress(requestDto.getAddress());
+        if (requestDto.getLocationCode() != null) {
+            existing.setLocationCode(requestDto.getLocationCode());
+        }
+
+        if (requestDto.getLatitude() != null) {
+            existing.setLatitude(requestDto.getLatitude());
+        }
+
+        if (requestDto.getLongitude() != null) {
+            existing.setLongitude(requestDto.getLongitude());
+        }
+
+        if (requestDto.getRadiusMeters() != null) {
+            existing.setRadiusMeters(requestDto.getRadiusMeters());
+        }
+
+        if (requestDto.getAddress() != null) {
+            existing.setAddress(requestDto.getAddress());
+        }
 
         Location updated = locationRepository.save(existing);
-        return mapper.toResponseDto(updated);    }
+        return mapper.toResponseDto(updated);
+    }
 
     @Override
     public void deleteLocation(Long id) {

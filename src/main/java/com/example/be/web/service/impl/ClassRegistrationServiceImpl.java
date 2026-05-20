@@ -59,7 +59,7 @@ public class ClassRegistrationServiceImpl implements ClassRegistrationService {
         ClassRegistration registration = ClassRegistration.builder()
                 .classEntity(classRoom)
                 .student(student)
-                .status(RegistrationStatus.OPENING)
+                .status(RegistrationStatus.PENDING)
                 .pending(true)
                 .registeredAt(LocalDateTime.now())
                 .build();

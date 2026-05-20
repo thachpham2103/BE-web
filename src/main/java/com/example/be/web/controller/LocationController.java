@@ -14,49 +14,48 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/locations")
 @RequiredArgsConstructor
+@Tag(name = "Location")
 public class LocationController {
 
     private final LocationService locationService;
 
-    @Tag(name = "Location")
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
-    @Operation(summary = "API get all locations with pagination", description = "Admin / Leader")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'USER')")
+    @Operation(summary = "API get all locations with pagination")
     public Page<LocationResponseDto> getAllLocations(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "100") int size
+    ) {
         return locationService.getAllLocations(PageRequest.of(page, size));
     }
 
-    @Tag(name = "Location")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'USER')")
-    @Operation(summary = "API get location by id", description = "Admin / Leader / user")
+    @Operation(summary = "API get location by id")
     public LocationResponseDto getLocationById(@PathVariable Long id) {
         return locationService.getLocationById(id);
     }
 
-    @Tag(name = "Location")
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
-    @Operation(summary = "API create new location", description = "Admin / Leader")
+    @Operation(summary = "API create new location")
     public LocationResponseDto createLocation(@RequestBody LocationRequestDto requestDto) {
         return locationService.createLocation(requestDto);
     }
 
-    @Tag(name = "Location")
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
-    @Operation(summary = "API update location by id", description = "Admin / Leader")
-    public LocationResponseDto updateLocation(@PathVariable Long id,
-                                              @RequestBody LocationRequestDto requestDto) {
+    @Operation(summary = "API update location by id")
+    public LocationResponseDto updateLocation(
+            @PathVariable Long id,
+            @RequestBody LocationRequestDto requestDto
+    ) {
         return locationService.updateLocation(id, requestDto);
     }
 
-    @Tag(name = "Location")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'LEADER')")
-    @Operation(summary = "API delete location by id", description = "Admin / Leader")
+    @Operation(summary = "API delete location by id")
     public void deleteLocation(@PathVariable Long id) {
         locationService.deleteLocation(id);
     }
