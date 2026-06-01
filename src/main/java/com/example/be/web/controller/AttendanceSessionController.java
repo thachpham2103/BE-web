@@ -100,4 +100,12 @@ public class AttendanceSessionController {
         return ResponseEntity.ok(session);
     }
 
+    @Tag(name = "attendanceSession")
+    @PreAuthorize("hasAnyRole('USER','ADMIN','LEADER')")
+    @GetMapping("/class/{classId}/count")
+    @Operation(summary = "API đếm số buổi điểm danh của lớp học")
+    public ResponseEntity<Long> countSessionsByClassId(@PathVariable Long classId) {
+            long count = sessionService.countSessionsByClassId(classId);
+            return ResponseEntity.ok(count);
+        }
 }

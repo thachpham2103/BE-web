@@ -17,7 +17,7 @@ public interface AttendanceSessionRepository extends JpaRepository<AttendanceSes
     @Query("SELECT a FROM AttendanceSession a WHERE a.endTime > CURRENT_TIMESTAMP AND a.status = AttendanceStatus.OPEN AND a.createdByUser.id = :teacherId")
     Optional<AttendanceSession> findOpenSessionForTeacher(@Param("teacherId") Long teacherId);
 //    Page<AttendanceSession> findOpenSessionsForTeacher(@Param("teacherId") Long teacherId , Pageable pageable);
-
+    long countByClassRoom_ClassId(Long classId);
 
 }
 
