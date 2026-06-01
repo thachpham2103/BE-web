@@ -194,4 +194,15 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
                 ));
         return mapper.toResponse(session);
     }
+
+    @Override
+    public long countSessionsByClassId(Long classId) {
+        // Kiểm tra xem lớp học có tồn tại không
+        ClassRoom classRoom = classRepository.findById(classId)
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorMessage.ClassRoom.CLASS_NOT_FOUND,
+                        new String[]{classId.toString()}
+                ));
+        return sessionRepository.countByClassRoom_ClassId(classId);
+    }
 }
