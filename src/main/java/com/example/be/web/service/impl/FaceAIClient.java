@@ -85,8 +85,6 @@ public class FaceAIClient {
 
         return new EmbeddingResultDto(emb, status);
 
-//        List<Double> list = (List<Double>) response.getBody().get("embedding");
-//        return list.stream().mapToDouble(Double::doubleValue).toArray();
     }
 
 

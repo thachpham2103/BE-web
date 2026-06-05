@@ -55,7 +55,8 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
         AttendanceSession session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.AttendanceSession.SESSION_NOT_FOUND));
 
-        Long userId = getCurrentUserId(); // lấy từ context
+        Long userId = getCurrentUserId();
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID));
 
@@ -63,51 +64,49 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
         if (location == null) {
             throw new NotFoundException(ErrorMessage.Location.LOCATION_NOT_FOUND);
         }
-    //    // 1. Kiểm tra GPS
-    //    double distance = calculateDistance(location.getLatitude(), location.getLongitude(), gpsLat, gpsLng);
-    //    if (distance > location.getRadiusMeters()) {
-    ////            log.warn("User {} ngoài phạm vi điểm danh tại session {}", userId, sessionId);
-    //        throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_RANGE);
-    //    }
 
-        // 2. Kiểm tra thời gian điểm danh ***
-    //    tạm ẩn
-    //*******************************************
-    //    LocalDateTime now = LocalDateTime.now();
-    //    if (now.isBefore(session.getStartTime()) || now.isAfter(session.getEndTime())) {
-    //        throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_TIME);
-    //    }
+        // 1. Kiểm tra GPS - tạm ẩn
+//    double distance = calculateDistance(location.getLatitude(), location.getLongitude(), gpsLat, gpsLng);
+//    if (distance > location.getRadiusMeters()) {
+//        throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_RANGE);
+//    }
 
-        // 2. Gọi AI model nhận diện khuôn mặt
-    //        boolean faceResult = aiFaceRecognitionService.verifyFace(user, faceImage);
+        // 2. Kiểm tra thời gian điểm danh - tạm ẩn
+//    LocalDateTime now = LocalDateTime.now();
+//    if (now.isBefore(session.getStartTime()) || now.isAfter(session.getEndTime())) {
+//        throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_TIME);
+//    }
+
+        // 3. Gọi AI nhận diện khuôn mặt
         FaceResponse recognize = faceService.recognize(faceImage, userId);
-        boolean faceResult = false;
-        if (recognize.getConfidence() > 0 && recognize.getConfidence() < 0.6) {
-            recognize.setMessage("Face not match"); //nên đẩy sang bên faceService*******************
-//            return recognize;
-            // Có thể throw exception hoặc trả về response với status INVALID
-        }
-        else {
-            faceResult = true;
 
-            //    boolean faceResult = true; // giả sử luôn đúng để test *******
-
-            // 3. Tạo record
-            AttendanceRecordRequestDto dto = AttendanceRecordRequestDto.builder()
-                    .checkinTime(LocalDateTime.now())
-                    .gpsLatitude(gpsLat).gpsLongitude(gpsLng)
-                    .resultFace(faceResult).recordStatus(faceResult ? RecordStatus.PRESENT : RecordStatus.INVALID)
-                    //                .userId(userId)
-                    //                .attendanceSessionId(sessionId)
-                    .build();
-            AttendanceRecord record = mapper.toEntity(dto);
-            record.setAttendanceSession(session);
-            record.setUser(user);
-            AttendanceRecord saved = recordRepository.save(record);
-//        return mapper.toResponse(saved);
-        }
         log.info("FaceResponse: name={}, confidence={}, message={}",
                 recognize.getName(), recognize.getConfidence(), recognize.getMessage());
+
+        double confidence = recognize.getConfidence();
+
+        // Nếu AI không nhận diện được hoặc độ tin cậy thấp thì KHÔNG lưu vào DB
+        if (confidence <= 0 || confidence < 0.6) {
+            recognize.setMessage("Face not match");
+            return recognize;
+        }
+
+        // Chỉ đến đây mới là khuôn mặt đúng, lúc này mới lưu DB
+        AttendanceRecordRequestDto dto = AttendanceRecordRequestDto.builder()
+                .checkinTime(LocalDateTime.now())
+                .gpsLatitude(gpsLat)
+                .gpsLongitude(gpsLng)
+                .resultFace(true)
+                .recordStatus(RecordStatus.PRESENT)
+                .build();
+
+        AttendanceRecord record = mapper.toEntity(dto);
+        record.setAttendanceSession(session);
+        record.setUser(user);
+
+        AttendanceRecord saved = recordRepository.save(record);
+
+        recognize.setMessage("Check-in success");
         return recognize;
     }
 

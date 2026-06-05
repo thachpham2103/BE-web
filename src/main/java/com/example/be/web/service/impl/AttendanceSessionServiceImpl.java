@@ -195,6 +195,7 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
         return mapper.toResponse(session);
     }
 
+  
     @Override
     public long countSessionsByClassId(Long classId) {
         // Kiểm tra xem lớp học có tồn tại không
