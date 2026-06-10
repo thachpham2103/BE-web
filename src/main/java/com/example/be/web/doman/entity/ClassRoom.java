@@ -1,10 +1,13 @@
 package com.example.be.web.doman.entity;
 
+import com.example.be.web.doman.model.ClassStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +47,29 @@ public class ClassRoom {
     @JsonIgnore
     private Set<User> users= new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "semester_id")
+    private Semester semester;
+
+    @Column(name = "max_students")
+    private Integer maxStudents;
+
+    @Column(name = "current_students")
+    private Integer currentStudents;
+
+    @Column(name = "tuition_fee", precision = 12, scale = 2)
+    private BigDecimal tuitionFee;
+
+    @Column(name = "registration_deadline")
+    private LocalDateTime registrationDeadline;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 30)
+    private ClassStatus status;
 
     @OneToMany(mappedBy = "classEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
@@ -52,6 +78,9 @@ public class ClassRoom {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "classRoom")
     @JsonIgnore
     private Set<AttendanceSession> attendanceSessions= new HashSet<>();
+
+    @OneToMany(mappedBy = "classRoom", cascade = CascadeType.ALL, orphanRemoval = false)
+    private List<ClassSession> classSessions = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(

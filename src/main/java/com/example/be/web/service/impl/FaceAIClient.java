@@ -24,21 +24,8 @@ public class FaceAIClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-//    public double[] getEmbedding(String base64) {
-//
-//        String url = "http://localhost:5000/embedding";
-//
-//        Map<String, String> body = new HashMap<>();
-//        body.put("image", base64);
-//
-//        ResponseEntity<Map> response =
-//                restTemplate.postForEntity(url, body, Map.class);
-//
-//        List<Double> list = (List<Double>) response.getBody().get("embedding");
-//
-//        return list.stream().mapToDouble(Double::doubleValue).toArray();
-//    }
     public double[] getOriginalEmbedding(File imageFile) {
+
         String url = "http://localhost:5000/original_embedding";
 
         FileSystemResource resource = new FileSystemResource(imageFile);
@@ -82,10 +69,6 @@ public class FaceAIClient {
         if (list != null) {
             emb = list.stream().mapToDouble(Double::doubleValue).toArray();
         }
-
         return new EmbeddingResultDto(emb, status);
-
     }
-
-
 }
