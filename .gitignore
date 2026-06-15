@@ -4,6 +4,7 @@
 .env.*
 application.properties
 application.yml
+src/main/java/com/example/be/web/BeWebApplication.java
 
 HELP.md
 target/

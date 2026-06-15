@@ -21,7 +21,7 @@ public interface ClassRegistrationRepository extends JpaRepository<ClassRegistra
     boolean existsByClassEntityAndStudent(ClassRoom classRoom, User student);
     Page<ClassRegistration> findByStudent(User student, Pageable pageable);
     Page<ClassRegistration> findByStudent_Id(Pageable pageable, Long userId);
-    Page<ClassRegistration> findByClassEntity_ClassId(Pageable pageable, Long classId); //ủa nó có quy tắc gì vậy nhỉ
+    Page<ClassRegistration> findByClassEntity_ClassId(Pageable pageable, Long classId);
     Page<ClassRegistration> findByStudent_IdAndStatus(Pageable pageable, Long userId, RegistrationStatus status);
     Page<ClassRegistration> findByClassEntity_ClassIdAndStatus(Pageable pageable, Long classId, RegistrationStatus status);
 //    Page<ClassRegistrationResponseDto> getRegistrationsByUser(Long userId, Pageable pageable, UserPrincipal principal);
@@ -32,6 +32,6 @@ public interface ClassRegistrationRepository extends JpaRepository<ClassRegistra
             "WHERE r.student.id = :userId " +
 //            "AND a.status = AttendanceStatus.OPEN" +
             "AND r.status = RegistrationStatus.ACCEPTED "+
-            "AND a.endTime > CURRENT_TIMESTAMP ")//cái này có ổn không nhỉ, có cần thêm điều kiện gì nữa không
+            "AND a.endTime > CURRENT_TIMESTAMP ")
     Page<AttendanceSession> findOpenSessionsByStudent(Long userId, Pageable pageable);
 }
