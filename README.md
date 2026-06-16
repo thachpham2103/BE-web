@@ -28,5 +28,8 @@ Theo dõi lịch sử điểm danh và phản hồi (khiếu nại) nếu có sa
 
 Nhận thông báo (Push Notification) nhắc nhở khi đến giờ điểm danh.
 
+3. Luồng hoạt động
 
-🛠 Công Nghệ Sử DụngDự án được xây dựng trên nền tảng các công nghệ hiện đại:Thành phầnCông nghệ đề xuấtMobile App (Sinh viên/Giảng viên)Flutter / React Native (hoặc Android Native Kotlin/iOS Swift)Web Admin / DashboardReactJS / VueJS / AngularBackend APINodeJS (Express) / Python (FastAPI/Django) / Java Spring BootDatabaseMongoDB / PostgreSQL / MySQLTrí tuệ nhân tạo (AI)OpenCV, FaceNet, hoặc InsightFaceĐịnh vị & Bản đồGoogle Maps API / CoreLocation / Geolocation API
+<img width="402" height="493" alt="Ảnh chụp màn hình 2026-04-26 225315" src="https://github.com/user-attachments/assets/073749da-bec7-4ee7-b6bc-ecd32175d712" />
+
+
