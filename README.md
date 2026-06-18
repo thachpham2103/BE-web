@@ -12,6 +12,7 @@ Tính Năng Cốt Lõi
    * Thời gian thực (Real-time): Ghi nhận chính xác giây phút điểm danh và tự động phân loại: Đi học đúng giờ, Đi muộn, Vắng mặt.
 
 2. Quản Lý Học Tập (LMS Sub-system)
+
 Đối với Giảng viên:
 
  - Tạo buổi học mới, thiết lập bán kính GPS phòng học và thời gian đóng/mở điểm danh.
