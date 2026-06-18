@@ -5,11 +5,11 @@ Tính Năng Cốt Lõi
 Ứng dụng hoạt động như một hệ thống LMS thu nhỏ với các nhóm tính năng chính:
 
 1. Phân Hệ Điểm Danh Công Nghệ Cao
-Nhận diện khuôn mặt (Face ID AI): Quét và đối khớp khuôn mặt sinh viên với dữ liệu đã đăng ký để ngăn ngừa tình trạng điểm danh hộ.
+   * Nhận diện khuôn mặt (Face ID AI): Quét và đối khớp khuôn mặt sinh viên với dữ liệu đã đăng ký để ngăn ngừa tình trạng điểm danh hộ.
 
-Định vị vị trí (GPS Geofencing): Xác thực sinh viên có đang ở trong bán kính phòng học cho phép hay không trước khi mở quyền điểm danh.
+   * Định vị vị trí (GPS Geofencing): Xác thực sinh viên có đang ở trong bán kính phòng học cho phép hay không trước khi mở quyền điểm danh.
 
-Thời gian thực (Real-time): Ghi nhận chính xác giây phút điểm danh và tự động phân loại: Đi học đúng giờ, Đi muộn, Vắng mặt.
+   * Thời gian thực (Real-time): Ghi nhận chính xác giây phút điểm danh và tự động phân loại: Đi học đúng giờ, Đi muộn, Vắng mặt.
 
 2. Quản Lý Học Tập (LMS Sub-system)
 Đối với Giảng viên:
