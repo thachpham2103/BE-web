@@ -1,4 +1,5 @@
- Ứng Dụng Điểm Danh Sinh Viên Thông Minh (LMS Face Recognition & GPS Attendance)
+ỨNG DỤNG ĐIỂM DANH SINH VIÊN THÔNG MINH (GPS AND FACE AL ID).
+
 Một giải pháp quản lý học tập (LMS) tích hợp tính năng điểm danh bằng khuôn mặt (Face Recognition) và định vị vị trí (GPS) dành riêng cho sinh viên và giảng viên. Hệ thống giúp tối ưu hóa quy trình điểm danh, chống gian lận và tích hợp sâu vào hệ thống quản lý lớp học trực tuyến.
 
 Tính Năng Cốt Lõi
@@ -12,7 +13,6 @@ Tính Năng Cốt Lõi
    * Thời gian thực (Real-time): Ghi nhận chính xác giây phút điểm danh và tự động phân loại: Đi học đúng giờ, Đi muộn, Vắng mặt.
 
 2. Quản Lý Học Tập (LMS Sub-system)
-
 Đối với Giảng viên:
 
  - Tạo buổi học mới, thiết lập bán kính GPS phòng học và thời gian đóng/mở điểm danh.
