@@ -72,4 +72,35 @@ public class ErrorMessage {
         public static final String ERR_NOT_FOUND_USERID = "exception.face-data.not.found.userId";
     }
 
+    public static class Assignment {
+        public static final String ASSIGNMENT_NOT_FOUND = "exception.assignment.not.found";
+        public static final String ASSIGNMENT_NOT_PUBLISHED = "exception.assignment.not.published";
+        public static final String ALREADY_SUBMITTED = "error.assignment.already.submitted";
+        public static final String DEADLINE_PASSED = "error.assignment.deadline.passed";
+        public static final String SCORE_EXCEEDS_MAX = "error.assignment.score.exceeds.max";
+        public static final String SUBMISSION_NOT_FOUND = "exception.assignment.submission.not.found";
+        public static final String SUBMISSION_ALREADY_GRADED = "error.assignment.submission.already.graded";
+    }
+
+    public static class AttendanceAdvanced {
+        public static final String POLICY_NOT_FOUND = "exception.attendance.policy.not.found";
+        public static final String POLICY_ALREADY_EXISTS = "error.attendance.policy.already.exists";
+        public static final String BAN_MUST_GREATER_THAN_WARNING = "error.attendance.policy.ban.must.greater.than.warning";
+        public static final String WARNING_NOT_FOUND = "exception.attendance.warning.not.found";
+        public static final String APPEAL_NOT_FOUND = "exception.attendance.appeal.not.found";
+        public static final String APPEAL_ALREADY_EXISTS = "error.attendance.appeal.already.exists";
+        public static final String APPEAL_ALREADY_REVIEWED = "error.attendance.appeal.already.reviewed";
+    }
+
+    public static class Payment {
+        public static final String PAYMENT_NOT_FOUND = "exception.payment.not.found";
+        public static final String PAYMENT_ALREADY_EXISTS = "error.payment.already.exists";
+        public static final String INVALID_STATUS_TRANSITION = "error.payment.invalid.status.transition";
+        public static final String INVOICE_NOT_FOUND = "exception.invoice.not.found";
+    }
+
+//    public static class ClassRegistration {
+//        public static final String REGISTRATION_NOT_FOUND = "exception.class.registration.not.found";
+//    }
+
 }

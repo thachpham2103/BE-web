@@ -90,4 +90,8 @@ public class ClassRoom {
     )
     private Set<Location> locations = new HashSet<>();
 
+    @OneToMany(mappedBy = "classRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Assignment> assignments = new ArrayList<>();
+
 }
