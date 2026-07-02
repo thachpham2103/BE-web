@@ -1,5 +1,6 @@
 package com.example.be.web.doman.entity;
 
+import com.example.be.web.doman.model.PaymentRegistrationStatus;
 import com.example.be.web.doman.model.RegistrationStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,6 +44,26 @@ public class ClassRegistration {
 
     @Column(name = "pending", nullable = false)
     private boolean pending;
+
+    /** Trạng thái thanh toán của đăng ký. */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status", length = 20)
+    @Builder.Default
+    private PaymentRegistrationStatus paymentStatus = PaymentRegistrationStatus.UNPAID;
+
+    /** Người duyệt đăng ký. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approved_by",
+            foreignKey = @ForeignKey(name = "FK_REGISTRATION_APPROVER"))
+    private User approvedBy;
+
+    /** Thời điểm duyệt. */
+    @Column(name = "approved_at")
+    private LocalDateTime approvedAt;
+
+    /** Ghi chú. */
+    @Column(name = "note", columnDefinition = "TEXT")
+    private String note;
 
     @PrePersist
     public void prePersist() {

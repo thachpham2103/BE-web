@@ -23,20 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * REST Controller quản lý bài tập ({@code Assignment}) và bài nộp ({@code AssignmentSubmission}).
- *
- * <p>Base path: {@code /api/v1/assignments}</p>
- *
- * <p>Phân quyền:
- * <ul>
- *     <li>ADMIN, LEADER: toàn quyền CRUD bài tập, xem & chấm bài nộp.</li>
- *     <li>USER (sinh viên): xem bài tập, nộp bài, xem bài nộp của mình.</li>
- * </ul>
- * </p>
- *
- * @author auto-generated
- */
 @RestController
 @RequestMapping("/api/v1/assignments")
 @RequiredArgsConstructor

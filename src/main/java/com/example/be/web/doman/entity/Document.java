@@ -44,6 +44,27 @@ public class  Document {
     @JoinColumn(name = "class_id")
     private ClassRoom classRoom;
 
+    /** Môn học liên quan. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id",
+            foreignKey = @ForeignKey(name = "FK_DOCUMENT_SUBJECT"))
+    private Subject subject;
+
+    /** Số lượt yêu thích. */
+    @Column(name = "favorite_count", nullable = false)
+    @Builder.Default
+    private Integer favoriteCount = 0;
+
+    /** Số lượt xem. */
+    @Column(name = "view_count", nullable = false)
+    @Builder.Default
+    private Integer viewCount = 0;
+
+    /** Số lượt tải. */
+    @Column(name = "download_count", nullable = false)
+    @Builder.Default
+    private Integer downloadCount = 0;
+
     @OneToMany(mappedBy = "document", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FavoriteDocument> favoriteDocuments = new ArrayList<>();
 

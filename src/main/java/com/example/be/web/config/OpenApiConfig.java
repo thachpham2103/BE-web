@@ -28,12 +28,4 @@ public class OpenApiConfig {
                                         .scheme("bearer")
                                         .bearerFormat("JWT")));
     }
-
-//    @Bean
-//    public GroupedOpenApi publicApi() {
-//        return GroupedOpenApi.builder()
-//                .group("public-api")
-//                .packagesToScan("com.example.be.web.controller")
-//                .build();
-//    }
 }

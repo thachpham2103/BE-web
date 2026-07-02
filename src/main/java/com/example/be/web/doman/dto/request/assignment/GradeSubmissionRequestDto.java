@@ -19,7 +19,7 @@ import lombok.*;
 @Schema(description = "Request body để chấm điểm bài nộp")
 public class GradeSubmissionRequestDto {
 
-    /** Điểm chấm. */
+    /** điểm chấm */
     @NotNull(message = "Điểm không được để trống")
     @DecimalMin(value = "0.0", message = "Điểm phải >= 0")
     @Schema(description = "Điểm chấm", example = "8.5")

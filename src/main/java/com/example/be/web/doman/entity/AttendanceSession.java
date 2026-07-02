@@ -56,4 +56,10 @@ public class AttendanceSession {
     @JoinColumn(name = "location_id", foreignKey = @ForeignKey(name = "FK_ATTENDANCE_LOCATION"))
     private Location location;
 
+    /** Buổi học cụ thể gắn với phiên điểm danh. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_session_id",
+            foreignKey = @ForeignKey(name = "FK_ATTENDANCE_CLASS_SESSION"))
+    private ClassSession classSession;
+
 }
