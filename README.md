@@ -1,33 +1,165 @@
-ỨNG DỤNG ĐIỂM DANH SINH VIÊN THÔNG MINH (GPS AND FACE AL ID).
+# Smart Student Attendance System (Backend)
 
-Một giải pháp quản lý học tập (LMS) tích hợp tính năng điểm danh bằng khuôn mặt (Face Recognition) và định vị vị trí (GPS) dành riêng cho sinh viên và giảng viên. Hệ thống giúp tối ưu hóa quy trình điểm danh, chống gian lận và tích hợp sâu vào hệ thống quản lý lớp học trực tuyến.
+The **Smart Student Attendance System** is a Learning Management System (LMS) that integrates **Artificial Intelligence (AI)**, **Face Recognition**, and **GPS Geofencing** technologies to modernize the attendance process in educational institutions.
 
-Tính Năng Cốt Lõi
-Ứng dụng hoạt động như một hệ thống LMS thu nhỏ với các nhóm tính năng chính:
+The system is designed for both **Lecturers** and **Students**, providing a secure and automated attendance solution while offering comprehensive classroom management, communication, and learning support features within a single platform.
 
-1. Phân Hệ Điểm Danh Công Nghệ Cao
-   * Nhận diện khuôn mặt (Face ID AI): Quét và đối khớp khuôn mặt sinh viên với dữ liệu đã đăng ký để ngăn ngừa tình trạng điểm danh hộ.
+---
 
-   * Định vị vị trí (GPS Geofencing): Xác thực sinh viên có đang ở trong bán kính phòng học cho phép hay không trước khi mở quyền điểm danh.
+# Core Features
 
-   * Thời gian thực (Real-time): Ghi nhận chính xác giây phút điểm danh và tự động phân loại: Đi học đúng giờ, Đi muộn, Vắng mặt.
+The system consists of the following main modules.
 
-2. Quản Lý Học Tập (LMS Sub-system)
-Đối với Giảng viên:
+## 1. Smart Attendance System
 
- - Tạo buổi học mới, thiết lập bán kính GPS phòng học và thời gian đóng/mở điểm danh.
+The attendance module combines multiple technologies to ensure accuracy, security, and transparency.
 
- - Quản lý danh sách lớp, xem thống kê tỷ lệ chuyên cần của từng sinh viên được tính theo phần trăm
+### Face Recognition
 
- - Xuất báo cáo điểm danh ra file Excel.
+* Register and store students' facial information.
+* Verify student identity using AI-based face recognition.
+* Compare captured faces with registered data to prevent proxy attendance.
+* Provide fast and accurate attendance verification.
 
-Đối với Sinh viên:
+### GPS Geofencing
 
- - Xem lịch học, thời khóa biểu và danh sách các môn học đang tham gia.
+* Verify the student's current location.
+* Ensure students are within the authorized classroom radius before allowing attendance.
+* Prevent remote or fraudulent attendance attempts.
 
- - Theo dõi lịch sử điểm danh và phản hồi (khiếu nại) nếu có sai sót.
+### Real-Time Attendance
 
- - Nhận thông báo (Push Notification) nhắc nhở khi đến giờ điểm danh.
+* Record attendance timestamps in real time.
+* Automatically classify attendance status:
+
+  * Present
+  * Late
+  * Absent
+* Store complete attendance history for each student.
+
+---
+
+# 2. Learning Management System (LMS)
+
+In addition to attendance management, the system provides a complete set of classroom management features.
+
+## Features for Lecturers
+
+### Course Session Management
+
+* Create new class sessions.
+* Configure attendance opening and closing times.
+* Set the GPS radius for each classroom.
+* Manage teaching schedules and attendance sessions.
+
+### Classroom Management
+
+* Manage student lists.
+* Monitor attendance records.
+* View attendance statistics for each student.
+* Calculate attendance percentages automatically.
+
+### Announcement Management
+
+* Create and publish announcements.
+* Send announcements to specific classes or courses.
+* Manage announcement history.
+
+### Blog Management
+
+* Create educational blog posts.
+* Share learning materials and resources.
+* Publish discussion topics.
+* Encourage interaction between lecturers and students.
+
+### Group Chat
+
+* Create group chats for each class.
+* Communicate with students in real time.
+* Share files, announcements, and learning resources.
+* Store chat history for future reference.
+
+### Course Payment Management
+
+* Monitor course payment status.
+* View students who have completed or not completed payment.
+* Update payment records.
+* Manage tuition payment information by course.
+
+### Late Attendance Appeal Management
+
+* Review attendance appeal requests submitted by students.
+* Approve or reject late attendance explanations.
+* Update attendance records after approval.
+
+### Reports and Statistics
+
+* Export attendance reports to Excel.
+* View attendance summaries.
+* Generate attendance statistics for each student.
+* Support academic performance evaluation through attendance reports.
+
+---
+
+## Features for Students
+
+### Learning Management
+
+* View class schedules and timetables.
+* Access enrolled courses.
+* View classroom information.
+
+### Attendance
+
+* Check in using face recognition.
+* Verify location using GPS before attendance.
+* View attendance results for each session.
+* Access attendance history.
+
+### Attendance Appeals
+
+* Submit explanations for late or missed attendance.
+* Track appeal status.
+* Receive lecturer responses after review.
+
+### Group Chat
+
+* Join class group chats.
+* Communicate with lecturers and classmates.
+* Share learning-related information.
+* Access previous conversations.
+
+### Blog Interaction
+
+* Read blog posts published by lecturers.
+* Participate in discussions through comments.
+* Engage in academic conversations.
+
+### Notifications
+
+* Receive attendance reminders.
+* Receive announcements from lecturers.
+* Receive schedule updates.
+* Receive important course notifications.
+
+### Course Payments
+
+* View tuition payment information.
+* Check payment status.
+* Access payment history.
+
+---
+
+# System Objectives
+
+* Automate the student attendance process.
+* Prevent proxy and fraudulent attendance.
+* Improve transparency in attendance management.
+* Enhance classroom management for lecturers.
+* Increase communication and collaboration between lecturers and students.
+* Provide a modern, intelligent, and user-friendly Learning Management System.
+
+
 
 3. Luồng hoạt động
 
