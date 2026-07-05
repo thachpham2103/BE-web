@@ -1,165 +1,163 @@
 # Smart Student Attendance System (Backend)
 
-The **Smart Student Attendance System** is a Learning Management System (LMS) that integrates **Artificial Intelligence (AI)**, **Face Recognition**, and **GPS Geofencing** technologies to modernize the attendance process in educational institutions.
+The **Smart Student Attendance System** is a Learning Management System (LMS) that integrates **Artificial Intelligence (AI)**, **Face Recognition**, and **GPS Geofencing** to provide a secure and automated attendance solution for educational institutions.
 
-The system is designed for both **Lecturers** and **Students**, providing a secure and automated attendance solution while offering comprehensive classroom management, communication, and learning support features within a single platform.
+The system is designed for both **Lecturers** and **Students**, helping automate attendance, prevent fraudulent check-ins, and provide a comprehensive platform for classroom management, communication, and learning activities.
 
 ---
 
 # Core Features
 
-The system consists of the following main modules.
-
 ## 1. Smart Attendance System
 
-The attendance module combines multiple technologies to ensure accuracy, security, and transparency.
+The attendance module combines AI and location-based technologies to ensure secure and accurate attendance.
 
 ### Face Recognition
 
-* Register and store students' facial information.
-* Verify student identity using AI-based face recognition.
-* Compare captured faces with registered data to prevent proxy attendance.
-* Provide fast and accurate attendance verification.
+- AI-powered student identity verification.
+- Fast and accurate facial matching.
+- Prevents proxy attendance.
 
 ### GPS Geofencing
 
-* Verify the student's current location.
-* Ensure students are within the authorized classroom radius before allowing attendance.
-* Prevent remote or fraudulent attendance attempts.
+- Validates the student's location before attendance.
+- Allows attendance only within the authorized classroom radius.
+
+### Face Anti-Spoofing & Liveness Detection
+
+- Detects fake faces from printed photos or digital screens.
+- Verifies that the detected face belongs to a real person.
+- Prevents photo, replay, and presentation attacks.
 
 ### Real-Time Attendance
 
-* Record attendance timestamps in real time.
-* Automatically classify attendance status:
-
-  * Present
-  * Late
-  * Absent
-* Store complete attendance history for each student.
-
----
-
-# 2. Learning Management System (LMS)
-
-In addition to attendance management, the system provides a complete set of classroom management features.
-
-## Features for Lecturers
-
-### Course Session Management
-
-* Create new class sessions.
-* Configure attendance opening and closing times.
-* Set the GPS radius for each classroom.
-* Manage teaching schedules and attendance sessions.
-
-### Classroom Management
-
-* Manage student lists.
-* Monitor attendance records.
-* View attendance statistics for each student.
-* Calculate attendance percentages automatically.
-
-### Announcement Management
-
-* Create and publish announcements.
-* Send announcements to specific classes or courses.
-* Manage announcement history.
-
-### Blog Management
-
-* Create educational blog posts.
-* Share learning materials and resources.
-* Publish discussion topics.
-* Encourage interaction between lecturers and students.
-
-### Group Chat
-
-* Create group chats for each class.
-* Communicate with students in real time.
-* Share files, announcements, and learning resources.
-* Store chat history for future reference.
-
-### Course Payment Management
-
-* Monitor course payment status.
-* View students who have completed or not completed payment.
-* Update payment records.
-* Manage tuition payment information by course.
-
-### Late Attendance Appeal Management
-
-* Review attendance appeal requests submitted by students.
-* Approve or reject late attendance explanations.
-* Update attendance records after approval.
-
-### Reports and Statistics
-
-* Export attendance reports to Excel.
-* View attendance summaries.
-* Generate attendance statistics for each student.
-* Support academic performance evaluation through attendance reports.
+- Records attendance in real time.
+- Automatically classifies attendance status:
+  - Present
+  - Late
+  - Absent
+- Stores complete attendance history.
 
 ---
 
-## Features for Students
+## 2. Learning Management System (LMS)
 
-### Learning Management
+### Features for Lecturers
 
-* View class schedules and timetables.
-* Access enrolled courses.
-* View classroom information.
+- Create and manage class sessions.
+- Configure attendance schedules and GPS radius.
+- Manage student lists and attendance statistics.
+- View attendance percentage for each student.
+- Create announcements for classes and courses.
+- Publish blogs and discussion posts.
+- Real-time group chat with students.
+- Review and approve attendance appeal requests.
+- Manage course payment status.
+- Export attendance reports to Excel.
 
-### Attendance
+### Features for Students
 
-* Check in using face recognition.
-* Verify location using GPS before attendance.
-* View attendance results for each session.
-* Access attendance history.
+- View schedules, timetables, and enrolled courses.
+- Check in using Face Recognition and GPS verification.
+- View attendance history.
+- Submit attendance appeal requests.
+- Join class group chats.
+- Read and interact with blog posts.
+- Receive announcements and attendance reminders.
+- View tuition payment status and payment history.
 
-### Attendance Appeals
+---
+# Tech Stack
 
-* Submit explanations for late or missed attendance.
-* Track appeal status.
-* Receive lecturer responses after review.
+### Backend
 
-### Group Chat
+- Java 17
+- Spring Boot 3.x
+  - Spring MVC
+  - Spring Security
+  - Spring Data JPA
+  - Spring WebSocket
+- Hibernate
+- MySQL
+- Redis
+- JWT Authentication
 
-* Join class group chats.
-* Communicate with lecturers and classmates.
-* Share learning-related information.
-* Access previous conversations.
+### AI Service
 
-### Blog Interaction
+- Python
+- OpenCV
+- Face Recognition
+- Face Anti-Spoofing
+- Face Liveness Detection
 
-* Read blog posts published by lecturers.
-* Participate in discussions through comments.
-* Engage in academic conversations.
+### Tools & Services
 
-### Notifications
-
-* Receive attendance reminders.
-* Receive announcements from lecturers.
-* Receive schedule updates.
-* Receive important course notifications.
-
-### Course Payments
-
-* View tuition payment information.
-* Check payment status.
-* Access payment history.
+- Docker
+- Docker Compose
+- Maven
+- Lombok
+- MapStruct
+- Cloudinary API
+- SendGrid API
+- Springdoc OpenAPI (Swagger)
 
 ---
 
-# System Objectives
+# Getting Started
 
-* Automate the student attendance process.
-* Prevent proxy and fraudulent attendance.
-* Improve transparency in attendance management.
-* Enhance classroom management for lecturers.
-* Increase communication and collaboration between lecturers and students.
-* Provide a modern, intelligent, and user-friendly Learning Management System.
+## Prerequisites
 
+Before running the project, make sure the following software is installed:
 
+- JDK 17+
+- Maven
+- MySQL
+- Redis
+- Python 3.10+ (AI Service)
+- Docker & Docker Compose (Optional)
+
+---
+
+## Project Architecture
+
+```
+Backend (Spring Boot)
+│
+├── Authentication (JWT)
+├── User Management
+├── Attendance Management
+├── Course Management
+├── Payment Management
+├── Blog & Announcement
+├── Group Chat (WebSocket)
+├── Report & Excel Export
+│
+└── AI Service (Python)
+      ├── Face Recognition
+      ├── Face Anti-Spoofing
+      └── Face Liveness Detection
+```
+
+---
+
+# Highlights
+
+- AI-powered Face Recognition
+- Face Anti-Spoofing & Liveness Detection
+- GPS Geofencing Attendance
+- JWT Authentication & RBAC
+- Real-time Group Chat
+- Attendance Appeal Workflow
+- Course Payment Management
+- Excel Report Export
+- Dockerized Deployment
+- RESTful API Architecture
+
+---
+
+# License
+
+This project is developed for educational and research purposes.
 
 3. Luồng hoạt động
 
