@@ -121,25 +121,29 @@ Before running the project, make sure the following software is installed:
 ## Project Architecture
 
 ```
-Backend (Spring Boot)
-│
-├── Authentication (JWT)
-├── User Management
-├── Attendance Management
-├── Course Management
-├── Payment Management
-├── Blog & Announcement
-├── Group Chat (WebSocket)
-├── Report & Excel Export
+backend
+├── src/
+│   ├── main/java/com/example/
+│   │   ├── controller/      # REST Controllers
+│   │   ├── service/         # Business logic
+│   │   ├── repository/      # JPA Repositories
+│   │   ├── domain/
+│   │   │   ├── entity/      # JPA Entities
+│   │   │   └── model/       # DTOs, enums
+│   │   ├── security/        # JWT & Spring Security
+│   │   └── config/          # App configurations
+│   └── resources/
+│       ├── application.properties
+│       └── i18n/            # (Optional) Localization files
+├── Dockerfile
+├── docker-compose.yml
+└── pom.xml
 │
 └── AI Service (Python)
       ├── Face Recognition
       ├── Face Anti-Spoofing
       └── Face Liveness Detection
 ```
-
----
-
 # Highlights
 
 - AI-powered Face Recognition
@@ -158,9 +162,3 @@ Backend (Spring Boot)
 # License
 
 This project is developed for educational and research purposes.
-
-3. Luồng hoạt động
-
-<img width="402" height="493" alt="Ảnh chụp màn hình 2026-04-26 225315" src="https://github.com/user-attachments/assets/073749da-bec7-4ee7-b6bc-ecd32175d712" />
-
-
