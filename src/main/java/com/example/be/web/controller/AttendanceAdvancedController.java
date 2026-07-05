@@ -207,4 +207,34 @@ public class AttendanceAdvancedController {
         AttendanceAppealResponseDto result = service.reviewAppeal(id, requestDto);
         return VsResponseUtil.success(result);
     }
+
+    @PutMapping("/appeals/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
+    @Operation(summary = "Cập nhật giải trình", description = "Sinh viên cập nhật khi PENDING")
+    public ResponseEntity<RestData<?>> updateAppeal(
+            @PathVariable Long id,
+            @Valid @RequestBody AttendanceAppealRequestDto requestDto) {
+        AttendanceAppealResponseDto result = service.updateAppeal(id, requestDto);
+        return VsResponseUtil.success(result);
+    }
+
+    @DeleteMapping("/appeals/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
+    @Operation(summary = "Xóa giải trình", description = "Sinh viên xóa khi PENDING")
+    public ResponseEntity<RestData<?>> deleteAppeal(@PathVariable Long id) {
+        service.deleteAppeal(id);
+        return VsResponseUtil.success("Đã xóa giải trình thành công");
+    }
+
+    @GetMapping("/appeals/search")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @Operation(summary = "Tìm kiếm giải trình", description = "Admin/Giảng viên tìm kiếm")
+    public ResponseEntity<RestData<?>> searchAppeals(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) AppealStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createDate").descending());
+        return VsResponseUtil.success(service.searchAppeals(keyword, status, pageable));
+    }
 }

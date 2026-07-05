@@ -40,4 +40,7 @@ public interface PaymentService {
 
     /** Lấy hóa đơn của user hiện tại. */
     Page<InvoiceResponseDto> getMyInvoices(Pageable pageable);
+
+    /** Tạo hóa đơn thủ công. */
+    InvoiceResponseDto createManualInvoice(com.example.be.web.doman.dto.request.payment.ManualInvoiceRequestDto requestDto);
 }

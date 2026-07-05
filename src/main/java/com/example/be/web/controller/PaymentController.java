@@ -82,6 +82,13 @@ public class PaymentController {
 
     // ======================== INVOICE ========================
 
+    @PostMapping("/invoice")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @Operation(summary = "Tạo hóa đơn thủ công", description = "Giáo viên/Admin tạo hóa đơn thủ công cho học viên")
+    public ResponseEntity<RestData<?>> createManualInvoice(@Valid @RequestBody com.example.be.web.doman.dto.request.payment.ManualInvoiceRequestDto dto) {
+        return VsResponseUtil.success(HttpStatus.CREATED, paymentService.createManualInvoice(dto));
+    }
+
     @GetMapping("/{paymentId}/invoice")
     @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
     @Operation(summary = "Lấy hóa đơn theo payment ID")

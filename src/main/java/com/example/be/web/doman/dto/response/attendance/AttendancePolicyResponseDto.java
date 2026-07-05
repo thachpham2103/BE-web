@@ -5,11 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-/**
- * DTO trả về thông tin chính sách điểm danh.
- *
- * @author auto-generated
- */
 @Getter
 @Setter
 @NoArgsConstructor

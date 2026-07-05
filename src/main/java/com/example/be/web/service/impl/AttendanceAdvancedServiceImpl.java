@@ -263,6 +263,76 @@ public class AttendanceAdvancedServiceImpl implements AttendanceAdvancedService 
         return appealMapper.toResponse(reviewed);
     }
 
+    @Override
+    public AttendanceAppealResponseDto updateAppeal(Long appealId, AttendanceAppealRequestDto requestDto) {
+        User currentUser = getCurrentUser();
+
+        AttendanceAppeal appeal = appealRepository.findById(appealId)
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorMessage.AttendanceAdvanced.APPEAL_NOT_FOUND,
+                        new String[]{appealId.toString()}));
+
+        if (!appeal.getStudent().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Bạn không có quyền sửa giải trình này");
+        }
+
+        if (appeal.getStatus() != AppealStatus.PENDING) {
+            throw new BadRequestException("Chỉ có thể sửa giải trình khi đang chờ duyệt");
+        }
+
+        appeal.setReason(requestDto.getReason());
+
+        if (requestDto.getProofImageUrl() != null) {
+            appeal.setProofImageUrl(requestDto.getProofImageUrl());
+        }
+
+        AttendanceAppeal updated = appealRepository.save(appeal);
+        log.info("Sinh viên {} đã cập nhật giải trình ID: {}", currentUser.getUsername(), appealId);
+
+        return appealMapper.toResponse(updated);
+    }
+
+    @Override
+    public void deleteAppeal(Long appealId) {
+        User currentUser = getCurrentUser();
+        AttendanceAppeal appeal = appealRepository.findById(appealId)
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorMessage.AttendanceAdvanced.APPEAL_NOT_FOUND,
+                        new String[]{appealId.toString()}));
+
+        if (!appeal.getStudent().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Bạn không có quyền xóa giải trình này");
+        }
+
+        if (appeal.getStatus() != AppealStatus.PENDING) {
+            throw new BadRequestException("Chỉ có thể xóa giải trình khi đang chờ duyệt");
+        }
+
+        appealRepository.delete(appeal);
+        log.info("Sinh viên {} đã xóa giải trình ID: {}", currentUser.getUsername(), appealId);
+    }
+
+    @Override
+    public Page<AttendanceAppealResponseDto> searchAppeals(String keyword, AppealStatus status, Pageable pageable) {
+        org.springframework.data.jpa.domain.Specification<AttendanceAppeal> spec = org.springframework.data.jpa.domain.Specification.where(null);
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            String kw = "%" + keyword.trim().toLowerCase() + "%";
+            spec = spec.and((root, query, cb) -> cb.or(
+                    cb.like(cb.lower(root.get("reason")), kw),
+                    cb.like(cb.lower(root.get("student").get("fullName")), kw),
+                    cb.like(cb.lower(root.get("student").get("studentId")), kw)
+            ));
+        }
+
+        if (status != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), status));
+        }
+
+        Page<AttendanceAppeal> pages = appealRepository.findAll(spec, pageable);
+        return pages.map(appealMapper::toResponse);
+    }
+
     // ======================== PRIVATE HELPERS ========================
 
     /**

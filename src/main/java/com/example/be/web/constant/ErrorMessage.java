@@ -1,5 +1,7 @@
 package com.example.be.web.constant;
 
+import org.hibernate.boot.cfgxml.internal.CfgXmlAccessServiceImpl;
+
 public class ErrorMessage {
     public static final String INVALID_SOME_THING_FIELD_IS_REQUIRED = "invalid.general.required";
     public static final String INVALID_FORMAT_PASSWORD = "invalid.password-format";
@@ -14,6 +16,7 @@ public class ErrorMessage {
         public static final String USER_NOT_FOUND_ID="exception.user.not.found.id";
         public static final String ERR_NOT_FOUND_USERNAME = "exception.user.not.found.username";
         public static final String ERR_NOT_FOUND = "exception.user.not.found";
+        public static final  String USER_NOT_FOUND="exception.user.not.found";
     }
 
     public static class Auth{
@@ -102,5 +105,26 @@ public class ErrorMessage {
 //    public static class ClassRegistration {
 //        public static final String REGISTRATION_NOT_FOUND = "exception.class.registration.not.found";
 //    }
+
+    public static class LearningTask{
+        public static final String TASK_NOT_FOUND="exception.task.not.found";
+    }
+
+    public static class Notification{
+        public static final String NOTIFICATION_NOT_FOUND="exception.notification.not.found";
+    }
+
+    public static class NotificationTemplate{
+        public static final String TEMPLATE_NOT_FOUND="exception.template.not.found";
+    }
+
+    public static class Conversation{
+        public static final String CONVERSATION_NOT_FOUND="exception.conversation.not.found";
+    }
+
+    public static class Message{
+        public static final String MESSAGE_NOT_FOUND="exception.message.not.found";
+    }
+
 
 }

@@ -53,6 +53,38 @@ public class NotificationController {
         return VsResponseUtil.success("Đã đánh dấu đọc");
     }
 
+    @DeleteMapping("/{notifId}")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
+    @Operation(summary = "Xóa thông báo cá nhân")
+    public ResponseEntity<RestData<?>> deleteNotification(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long notifId) {
+        notificationService.deleteNotification(notifId, userDetails.getUsername());
+        return VsResponseUtil.success("Đã xóa thông báo");
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
+    @Operation(summary = "Tìm kiếm thông báo của tôi")
+    public ResponseEntity<RestData<?>> searchMyNotifications(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createAt").descending());
+        return VsResponseUtil.success(notificationService.searchMyNotifications(userDetails.getUsername(), keyword, pageable));
+    }
+
+    @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')") // Or based on roles that can send. Usually TEACHER or ADMIN. Since LEADER might be teacher.
+    @Operation(summary = "Gửi thông báo")
+    public ResponseEntity<RestData<?>> sendNotification(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody com.example.be.web.doman.dto.request.notification.NotificationSendRequestDto dto) {
+        notificationService.sendNotification(dto, userDetails.getUsername());
+        return VsResponseUtil.success(HttpStatus.CREATED, "Đã gửi thông báo");
+    }
+
     @PostMapping("/templates")
     @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Tạo template thông báo")

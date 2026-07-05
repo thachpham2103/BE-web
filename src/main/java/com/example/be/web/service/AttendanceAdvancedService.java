@@ -131,6 +131,21 @@ public interface AttendanceAdvancedService {
     Page<AttendanceAppealResponseDto> getAppealsByStatus(AppealStatus status, Pageable pageable);
 
     /**
+     * Cập nhật giải trình (chỉ khi PENDING).
+     */
+    AttendanceAppealResponseDto updateAppeal(Long appealId, AttendanceAppealRequestDto requestDto);
+
+    /**
+     * Hủy/xóa giải trình (chỉ khi PENDING).
+     */
+    void deleteAppeal(Long appealId);
+
+    /**
+     * Tìm kiếm giải trình chung (Admin/Giảng viên).
+     */
+    Page<AttendanceAppealResponseDto> searchAppeals(String keyword, AppealStatus status, Pageable pageable);
+
+    /**
      * Giảng viên xét duyệt giải trình.
      *
      * @param appealId   mã giải trình

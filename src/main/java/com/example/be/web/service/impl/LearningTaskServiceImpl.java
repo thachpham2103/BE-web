@@ -1,5 +1,6 @@
 package com.example.be.web.service.impl;
 
+import com.example.be.web.constant.ErrorMessage;
 import com.example.be.web.doman.dto.request.task.LearningTaskRequestDto;
 import com.example.be.web.doman.dto.response.task.LearningTaskResponseDto;
 import com.example.be.web.doman.dto.response.task.StudentTaskProgressResponseDto;
@@ -42,9 +43,9 @@ public class LearningTaskServiceImpl implements LearningTaskService {
     @Override
     public LearningTaskResponseDto createTask(LearningTaskRequestDto dto, String username) {
         User creator = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND));
         ClassRoom classRoom = classRepository.findById(dto.getClassId())
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy lớp học"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ClassRoom.CLASS_NOT_FOUND));
 
         LearningTask task = LearningTask.builder()
                 .classRoom(classRoom)
@@ -70,14 +71,14 @@ public class LearningTaskServiceImpl implements LearningTaskService {
     @Transactional(readOnly = true)
     public LearningTaskResponseDto getTask(Long taskId) {
         LearningTask task = learningTaskRepository.findById(taskId)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy nhiệm vụ"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.LearningTask.TASK_NOT_FOUND));
         return learningTaskMapper.toResponse(task);
     }
 
     @Override
     public void cancelTask(Long taskId) {
         LearningTask task = learningTaskRepository.findById(taskId)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy nhiệm vụ"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.LearningTask.TASK_NOT_FOUND));
         task.setStatus(TaskStatus.CANCELLED);
         learningTaskRepository.save(task);
     }
@@ -93,9 +94,9 @@ public class LearningTaskServiceImpl implements LearningTaskService {
     @Override
     public StudentTaskProgressResponseDto updateProgress(Long taskId, TaskProgressStatus status, String note, String username) {
         User student = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND));
         LearningTask task = learningTaskRepository.findById(taskId)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy nhiệm vụ"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.LearningTask.TASK_NOT_FOUND));
 
         StudentTaskProgress progress = studentTaskProgressRepository
                 .findByStudent_IdAndLearningTask_TaskId(student.getId(), taskId)
@@ -117,7 +118,7 @@ public class LearningTaskServiceImpl implements LearningTaskService {
     @Transactional(readOnly = true)
     public List<StudentTaskProgressResponseDto> getMyProgress(String username) {
         User student = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND));
         return studentTaskProgressRepository.findByStudent_Id(student.getId())
                 .stream().map(studentTaskProgressMapper::toResponse)
                 .collect(Collectors.toList());

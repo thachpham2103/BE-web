@@ -24,6 +24,7 @@ public interface ClassRegistrationRepository extends JpaRepository<ClassRegistra
     Page<ClassRegistration> findByClassEntity_ClassId(Pageable pageable, Long classId);
     Page<ClassRegistration> findByStudent_IdAndStatus(Pageable pageable, Long userId, RegistrationStatus status);
     Page<ClassRegistration> findByClassEntity_ClassIdAndStatus(Pageable pageable, Long classId, RegistrationStatus status);
+    java.util.Optional<ClassRegistration> findByClassEntity_ClassIdAndStudent_Id(Long classId, Long studentId);
 //    Page<ClassRegistrationResponseDto> getRegistrationsByUser(Long userId, Pageable pageable, UserPrincipal principal);
 
     @Query("SELECT a FROM ClassRegistration r " +

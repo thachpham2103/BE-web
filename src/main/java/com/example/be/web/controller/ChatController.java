@@ -106,4 +106,48 @@ public class ChatController {
     public ResponseEntity<RestData<?>> getPinnedMessages(@PathVariable Long convoId) {
         return VsResponseUtil.success(chatService.getPinnedMessages(convoId));
     }
+
+    @GetMapping("/conversations/public")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
+    @Operation(summary = "Lấy danh sách nhóm công khai")
+    public ResponseEntity<RestData<?>> getPublicGroups(@AuthenticationPrincipal UserDetails userDetails) {
+        return VsResponseUtil.success(chatService.getPublicGroups(userDetails.getUsername()));
+    }
+
+    @PostMapping("/conversations/{convoId}/join-request")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
+    @Operation(summary = "Gửi yêu cầu tham gia nhóm")
+    public ResponseEntity<RestData<?>> requestJoinGroup(
+            @PathVariable Long convoId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        chatService.requestJoinGroup(convoId, userDetails.getUsername());
+        return VsResponseUtil.success(HttpStatus.CREATED, "Đã gửi yêu cầu tham gia nhóm");
+    }
+
+    @GetMapping("/conversations/join-requests/pending")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @Operation(summary = "Lấy danh sách yêu cầu tham gia nhóm đang chờ duyệt")
+    public ResponseEntity<RestData<?>> getPendingJoinRequests(@AuthenticationPrincipal UserDetails userDetails) {
+        return VsResponseUtil.success(chatService.getPendingJoinRequests(userDetails.getUsername()));
+    }
+
+    @PostMapping("/conversations/join-requests/{requestId}/approve")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @Operation(summary = "Duyệt yêu cầu tham gia nhóm")
+    public ResponseEntity<RestData<?>> approveJoinRequest(
+            @PathVariable Long requestId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        chatService.approveJoinRequest(requestId, userDetails.getUsername());
+        return VsResponseUtil.success("Đã duyệt yêu cầu");
+    }
+
+    @PostMapping("/conversations/join-requests/{requestId}/reject")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @Operation(summary = "Từ chối yêu cầu tham gia nhóm")
+    public ResponseEntity<RestData<?>> rejectJoinRequest(
+            @PathVariable Long requestId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        chatService.rejectJoinRequest(requestId, userDetails.getUsername());
+        return VsResponseUtil.success("Đã từ chối yêu cầu");
+    }
 }

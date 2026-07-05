@@ -5,11 +5,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-/**
- * DTO nhận dữ liệu tạo / cập nhật chính sách điểm danh.
- *
- * @author auto-generated
- */
 @Getter
 @Setter
 @NoArgsConstructor

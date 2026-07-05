@@ -181,6 +181,61 @@ public class PaymentServiceImpl implements PaymentService {
                 .map(invoiceMapper::toResponse);
     }
 
+    @Override
+    public InvoiceResponseDto createManualInvoice(com.example.be.web.doman.dto.request.payment.ManualInvoiceRequestDto requestDto) {
+        User currentUser = getCurrentUser();
+
+        // Find student by ID
+        Long sId;
+        try {
+            sId = Long.parseLong(requestDto.getStudentId());
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("studentId phải là một số (ID của sinh viên)");
+        }
+
+        User student = userRepository.findById(sId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND));
+
+        // Find ClassRegistration
+        ClassRegistration registration = registrationRepository.findByClassEntity_ClassIdAndStudent_Id(requestDto.getClassId(), sId)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy đăng ký lớp học cho sinh viên này trong lớp " + requestDto.getClassId()));
+
+        // Check if payment already exists for this registration
+        // (Assuming one registration = one payment, but here we are making a manual invoice, maybe extra fee?)
+        // Wait, if it already exists, UK_PAYMENT_REGISTRATION will fail.
+        // For the sake of this manual invoice (like an extra fee), we might hit the unique constraint.
+        // Let's just create a payment if it doesn't exist, or update the existing if we are allowed.
+        // Wait, the DB schema says "uniqueConstraints = @UniqueConstraint(columnNames = {"registration_id"})".
+        // SO ONE REGISTRATION CAN ONLY HAVE ONE PAYMENT EVER!
+        if (paymentRepository.existsByClassRegistration_RegistrationId(registration.getRegistrationId())) {
+            throw new BadRequestException("Lớp học này đã có yêu cầu thanh toán. Mỗi đăng ký chỉ được phép có 1 thanh toán duy nhất.");
+        }
+
+        // Create Payment
+        Payment payment = Payment.builder()
+                .user(student)
+                .classRegistration(registration)
+                .amount(requestDto.getAmount())
+                .paymentMethod(com.example.be.web.doman.model.PaymentMethod.BANK_TRANSFER) // default
+                .paymentStatus(PaymentStatus.PENDING)
+                .note(requestDto.getReason())
+                .build();
+        payment = paymentRepository.save(payment);
+
+        // Create Invoice
+        Invoice invoice = Invoice.builder()
+                .payment(payment)
+                .invoiceCode("INV-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase())
+                .user(student)
+                .amount(requestDto.getAmount())
+                .issueDate(LocalDate.now())
+                .status(InvoiceStatus.ISSUED)
+                .build();
+        invoice = invoiceRepository.save(invoice);
+
+        return invoiceMapper.toResponse(invoice);
+    }
+
     private User getCurrentUser() {
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder
                 .getContext().getAuthentication().getPrincipal();

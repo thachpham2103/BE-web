@@ -5,15 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-/**
- * Entity đại diện cho chính sách điểm danh ({@code AttendancePolicy}) của một lớp học.
- *
- * <p>Mỗi lớp học ({@link ClassRoom}) chỉ có tối đa một chính sách điểm danh (1-1).
- * Chính sách quy định ngưỡng cảnh báo, ngưỡng cấm thi và số phút cho phép trễ.</p>
- *
- * @author auto-generated
- * @see ClassRoom
- */
 @Getter
 @Setter
 @NoArgsConstructor

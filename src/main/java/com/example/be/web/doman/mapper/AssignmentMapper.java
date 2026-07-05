@@ -29,8 +29,6 @@ public interface AssignmentMapper {
     @Mapping(target = "classRoom", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "submissions", ignore = true)
-    @Mapping(target = "createDate", ignore = true)
-    @Mapping(target = "lastModifiedDate", ignore = true)
     Assignment toEntity(AssignmentRequestDto dto);
 
     /**
@@ -66,7 +64,5 @@ public interface AssignmentMapper {
     @Mapping(target = "classRoom", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "submissions", ignore = true)
-    @Mapping(target = "createDate", ignore = true)
-    @Mapping(target = "lastModifiedDate", ignore = true)
     void updateEntityFromDto(AssignmentRequestDto dto, @MappingTarget Assignment entity);
 }
