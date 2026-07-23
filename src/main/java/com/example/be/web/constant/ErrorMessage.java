@@ -10,6 +10,7 @@ public class ErrorMessage {
     public static final String ROLE_NOT_FOUND="invalid.role.not-found";
     public static final String UNAUTHORIZED = "exception.unauthorized";
     public static final String FORBIDDEN_UPDATE_DELETE = "exception.forbidden.update-delete";
+    public static final String REQUEST_NOT_FOUND="exception.not.found";
 
     public static class User{
 

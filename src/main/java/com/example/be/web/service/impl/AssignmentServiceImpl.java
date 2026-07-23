@@ -69,6 +69,7 @@ public class AssignmentServiceImpl implements AssignmentService {
         log.info("Tạo bài tập mới cho lớp: {}", requestDto.getClassId());
 
         User currentUser = getCurrentUser();
+
         ClassRoom classRoom = classRepository.findById(requestDto.getClassId())
                 .orElseThrow(() -> new NotFoundException(
                         ErrorMessage.ClassRoom.CLASS_NOT_FOUND,
@@ -78,18 +79,22 @@ public class AssignmentServiceImpl implements AssignmentService {
         assignment.setClassRoom(classRoom);
         assignment.setCreatedBy(currentUser);
 
+        if (assignment.getAllowLateSubmit() == null) {
+            assignment.setAllowLateSubmit(false);
+        }
+
         if (assignment.getStatus() == null) {
             assignment.setStatus(AssignmentStatus.DRAFT);
         }
 
         Assignment saved = assignmentRepository.save(assignment);
+
         log.info("Đã tạo bài tập ID: {}", saved.getAssignmentId());
 
         AssignmentResponseDto response = assignmentMapper.toResponse(saved);
         response.setSubmissionCount(0L);
         return response;
     }
-
     /**
      * {@inheritDoc}
      *

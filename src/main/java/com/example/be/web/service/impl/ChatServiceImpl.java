@@ -93,17 +93,23 @@ public class ChatServiceImpl implements ChatService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND));
 
-        return conversationRepository.findByMemberUserId(user.getId())
-                .stream().map(c -> {
-                    ConversationResponseDto dto = conversationMapper.toResponse(c);
-                    var members = conversationMemberRepository
-                            .findByConversation_ConvoIdAndLeftAtIsNull(c.getConvoId());
-                    dto.setMemberCount(members.size());
-                    dto.setMembers(members.stream()
-                            .map(conversationMemberMapper::toResponse)
-                            .collect(Collectors.toList()));
-                    return dto;
-                }).collect(Collectors.toList());
+        List<Conversation> convos;
+        if (user.getRole() != null && com.example.be.web.constant.RoleConstant.ADMIN.equals(user.getRole().getName())) {
+            convos = conversationRepository.findAll();
+        } else {
+            convos = conversationRepository.findByMemberUserId(user.getId());
+        }
+
+        return convos.stream().map(c -> {
+            ConversationResponseDto dto = conversationMapper.toResponse(c);
+            var members = conversationMemberRepository
+                    .findByConversation_ConvoIdAndLeftAtIsNull(c.getConvoId());
+            dto.setMemberCount(members.size());
+            dto.setMembers(members.stream()
+                    .map(conversationMemberMapper::toResponse)
+                    .collect(Collectors.toList()));
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -211,10 +217,22 @@ public class ChatServiceImpl implements ChatService {
     @Override
     @Transactional(readOnly = true)
     public List<ConversationResponseDto> getPublicGroups(String username) {
-        // Assume ConversationType.GROUP is considered public
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND));
+        
+        List<Long> myConvoIds = conversationRepository.findByMemberUserId(user.getId())
+                .stream().map(Conversation::getConvoId).collect(Collectors.toList());
+
         return conversationRepository.findAll().stream()
-                .filter(c -> c.getConversationType() == com.example.be.web.doman.model.ConversationType.GROUP)
-                .map(conversationMapper::toResponse)
+                .filter(c -> c.getConversationType() == com.example.be.web.doman.model.ConversationType.GROUP || c.getConversationType() == com.example.be.web.doman.model.ConversationType.CLASS)
+                .filter(c -> !myConvoIds.contains(c.getConvoId()))
+                .map(c -> {
+                    ConversationResponseDto dto = conversationMapper.toResponse(c);
+                    var members = conversationMemberRepository
+                            .findByConversation_ConvoIdAndLeftAtIsNull(c.getConvoId());
+                    dto.setMemberCount(members.size());
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -271,7 +289,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public void approveJoinRequest(Long requestId, String username) {
         ConversationJoinRequest request = conversationJoinRequestRepository.findById(requestId)
-                .orElseThrow(() -> new NotFoundException("Request not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.REQUEST_NOT_FOUND));
         
         request.setStatus(com.example.be.web.doman.model.JoinRequestStatus.APPROVED);
         conversationJoinRequestRepository.save(request);
@@ -289,7 +307,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public void rejectJoinRequest(Long requestId, String username) {
         ConversationJoinRequest request = conversationJoinRequestRepository.findById(requestId)
-                .orElseThrow(() -> new NotFoundException("Request not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.REQUEST_NOT_FOUND));
         
         request.setStatus(com.example.be.web.doman.model.JoinRequestStatus.REJECTED);
         conversationJoinRequestRepository.save(request);
