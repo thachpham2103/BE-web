@@ -125,14 +125,14 @@ public class ChatController {
     }
 
     @GetMapping("/conversations/join-requests/pending")
-    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
     @Operation(summary = "Lấy danh sách yêu cầu tham gia nhóm đang chờ duyệt")
     public ResponseEntity<RestData<?>> getPendingJoinRequests(@AuthenticationPrincipal UserDetails userDetails) {
         return VsResponseUtil.success(chatService.getPendingJoinRequests(userDetails.getUsername()));
     }
 
     @PostMapping("/conversations/join-requests/{requestId}/approve")
-    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
     @Operation(summary = "Duyệt yêu cầu tham gia nhóm")
     public ResponseEntity<RestData<?>> approveJoinRequest(
             @PathVariable Long requestId,
@@ -142,7 +142,7 @@ public class ChatController {
     }
 
     @PostMapping("/conversations/join-requests/{requestId}/reject")
-    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
     @Operation(summary = "Từ chối yêu cầu tham gia nhóm")
     public ResponseEntity<RestData<?>> rejectJoinRequest(
             @PathVariable Long requestId,

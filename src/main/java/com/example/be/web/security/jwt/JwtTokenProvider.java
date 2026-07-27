@@ -49,6 +49,9 @@ public class JwtTokenProvider {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
+    @Autowired
+    private com.example.be.web.repository.UserRepository userRepository;
+
     /* ===================== COMMON ===================== */
 
     private SecretKey getSigningKey() {
@@ -73,11 +76,30 @@ public class JwtTokenProvider {
         // Đổi tên thành expirationMs cho đúng bản chất
         long expirationMs = isRefreshToken ? REFRESH_TOKEN_MS : ACCESS_TOKEN_MS;
 
+        com.example.be.web.doman.entity.User user = null;
+        if (userRepository != null && userPrincipal.getId() != null) {
+            user = userRepository.findById(userPrincipal.getId()).orElse(null);
+        }
+        String fullName = user != null && user.getFullName() != null ? user.getFullName() : (userPrincipal.getFullname() != null ? userPrincipal.getFullname() : userPrincipal.getUsername());
+        String code = user != null && user.getUsername() != null ? user.getUsername() : userPrincipal.getUsername();
+        String email = user != null && user.getEmail() != null ? user.getEmail() : "";
+        String roleName = user != null && user.getRole() != null ? user.getRole().getName() : authorities;
+
         return Jwts.builder()
                 .setSubject(userPrincipal.getId().toString())
                 .claim(CLAIM_TYPE, isRefreshToken ? TYPE_REFRESH : TYPE_ACCESS)
                 .claim(USERNAME_KEY, userPrincipal.getUsername())
                 .claim(AUTHORITIES_KEY, authorities)
+                .claim("fullName", fullName)
+                .claim("name", fullName)
+                .claim("studentCode", code)
+                .claim("code", code)
+                .claim("mssv", code)
+                .claim("email", email)
+                .claim("userId", userPrincipal.getId())
+                .claim("studentId", userPrincipal.getId())
+                .claim("id", userPrincipal.getId())
+                .claim("role", roleName)
                 .setIssuedAt(new Date())
                 // System.currentTimeMillis() trả về ms, nên expirationMs cũng phải là ms
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))

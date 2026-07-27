@@ -31,4 +31,6 @@ public class ConversationResponseDto {
     private Integer memberCount;
     @Schema(description = "Danh sách thành viên")
     private List<ConversationMemberResponseDto> members;
+    @Schema(description = "Đã gửi yêu cầu tham gia (chờ duyệt)")
+    private Boolean joinRequested;
 }

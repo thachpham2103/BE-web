@@ -40,6 +40,8 @@ public class ClassRoomServiceImpl implements ClassRoomService {
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
     private final SessionAttendanceStatsMapper statsMapper;
+    private final com.example.be.web.repository.ConversationRepository conversationRepository;
+    private final com.example.be.web.repository.ConversationMemberRepository conversationMemberRepository;
 
 
     @Override
@@ -61,6 +63,25 @@ public class ClassRoomServiceImpl implements ClassRoomService {
 
         // Lưu vào DB
         ClassRoom savedClassRoom = classRepository.save(classRoom);
+
+        try {
+            com.example.be.web.doman.entity.Conversation convo = com.example.be.web.doman.entity.Conversation.builder()
+                    .name(savedClassRoom.getTitle() != null ? savedClassRoom.getTitle() : "Lớp #" + savedClassRoom.getClassId())
+                    .conversationType(com.example.be.web.doman.model.ConversationType.CLASS)
+                    .classRoom(savedClassRoom)
+                    .createdBy(creator)
+                    .build();
+            conversationRepository.save(convo);
+            com.example.be.web.doman.entity.ConversationMember creatorMember = com.example.be.web.doman.entity.ConversationMember.builder()
+                    .id(new com.example.be.web.doman.entity.ConversationMember.ConversationMemberId(convo.getConvoId(), creator.getId()))
+                    .conversation(convo)
+                    .user(creator)
+                    .role(com.example.be.web.doman.model.ConversationMemberRole.ADMIN)
+                    .build();
+            conversationMemberRepository.save(creatorMember);
+        } catch (Exception e) {
+            log.error("Error auto-creating conversation for classroom: " + e.getMessage());
+        }
 
         // Trả về DTO response
         return mapper.toResponse(savedClassRoom);

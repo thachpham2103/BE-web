@@ -46,7 +46,7 @@ public class Message {
     private User sender;
 
     /** Nội dung tin nhắn. */
-    @Column(name = "content", columnDefinition = "TEXT")
+    @Column(name = "content", columnDefinition = "LONGTEXT")
     private String content;
 
     /** Loại tin nhắn. */
