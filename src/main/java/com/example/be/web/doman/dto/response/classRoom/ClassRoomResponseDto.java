@@ -22,4 +22,5 @@ public class ClassRoomResponseDto {
 
 //    private Long locationId;
     private List<Long> locationIds;
+    private java.math.BigDecimal tuitionFee;
 }

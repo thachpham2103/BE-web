@@ -49,4 +49,6 @@ public interface UserRepository extends JpaRepository<User, Long > {
     Page<User> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
     Long countAllByRole_Name(String roleName);
+    
+    java.util.List<User> findByRole_Name(String roleName);
 }

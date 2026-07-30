@@ -12,4 +12,5 @@ public interface ActivityLogService {
     Page<ActivityLogResponseDto> getLogsByUser(Long userId, Pageable pageable);
     Page<ActivityLogResponseDto> getLogsByAction(ActivityAction action, Pageable pageable);
     Page<ActivityLogResponseDto> getLogsByTarget(TargetType targetType, Long targetId, Pageable pageable);
+    Page<ActivityLogResponseDto> getMyLogs(Pageable pageable);
 }

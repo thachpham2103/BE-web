@@ -26,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Triển khai {@link AttendanceAdvancedService}.
@@ -165,6 +166,59 @@ public class AttendanceAdvancedServiceImpl implements AttendanceAdvancedService 
                         ErrorMessage.AttendanceAdvanced.WARNING_NOT_FOUND,
                         new String[]{warningId.toString()}));
         return warningMapper.toResponse(warning);
+    }
+
+    @Override
+    @Transactional
+    public AttendanceWarningResponseDto createWarning(com.example.be.web.doman.dto.request.attendance.AttendanceWarningRequestDto requestDto) {
+        User student = userRepository.findById(requestDto.getStudentId())
+                .orElseThrow(() -> new NotFoundException("Student not found"));
+        ClassRoom classRoom = classRepository.findById(requestDto.getClassId())
+                .orElseThrow(() -> new NotFoundException("Class not found"));
+
+        List<AttendanceRecord> userRecords = recordRepository.findByUser_Id(requestDto.getStudentId()).stream()
+                .filter(r -> r.getAttendanceSession().getClassRoom().getClassId().equals(requestDto.getClassId()))
+                .toList();
+
+        int totalSession = userRecords.size();
+        int absentCount = (int) userRecords.stream()
+                .filter(r -> r.getRecordStatus() == com.example.be.web.doman.model.RecordStatus.ABSENT)
+                .count();
+        double absentRate = totalSession == 0 ? 0 : ((double) absentCount / totalSession) * 100;
+
+        AttendanceWarning warning = AttendanceWarning.builder()
+                .student(student)
+                .classRoom(classRoom)
+                .absentCount(absentCount)
+                .totalSession(totalSession)
+                .absentRate(absentRate)
+                .warningLevel(requestDto.getWarningLevel())
+                .message(requestDto.getMessage())
+                .status(AppealStatus.PENDING)
+                .build();
+
+        warning = warningRepository.save(warning);
+        return warningMapper.toResponse(warning);
+    }
+
+    @Override
+    @Transactional
+    public AttendanceWarningResponseDto updateWarning(Long warningId, com.example.be.web.doman.dto.request.attendance.AttendanceWarningRequestDto requestDto) {
+        AttendanceWarning warning = warningRepository.findById(warningId)
+                .orElseThrow(() -> new NotFoundException("Warning not found"));
+
+        warning.setWarningLevel(requestDto.getWarningLevel());
+        warning.setMessage(requestDto.getMessage());
+        warning = warningRepository.save(warning);
+        return warningMapper.toResponse(warning);
+    }
+
+    @Override
+    @Transactional
+    public void deleteWarning(Long warningId) {
+        AttendanceWarning warning = warningRepository.findById(warningId)
+                .orElseThrow(() -> new NotFoundException("Warning not found"));
+        warningRepository.delete(warning);
     }
 
     // ======================== APPEAL ========================

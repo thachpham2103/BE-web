@@ -73,4 +73,18 @@ public class ActivityLogServiceImpl implements ActivityLogService {
         return activityLogRepository.findByTargetTypeAndTargetId(targetType, targetId, pageable)
                 .map(activityLogMapper::toResponse);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ActivityLogResponseDto> getMyLogs(Pageable pageable) {
+        Object principal = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long currentUserId = null;
+        if (principal instanceof com.example.be.web.security.UserPrincipal) {
+            currentUserId = ((com.example.be.web.security.UserPrincipal) principal).getId();
+        } else {
+            throw new com.example.be.web.exception.extended.UnauthorizedException("User not authenticated");
+        }
+        return activityLogRepository.findByActor_Id(currentUserId, pageable)
+                .map(activityLogMapper::toResponse);
+    }
 }

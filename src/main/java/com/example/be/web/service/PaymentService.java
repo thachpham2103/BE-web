@@ -43,4 +43,7 @@ public interface PaymentService {
 
     /** Tạo hóa đơn thủ công. */
     InvoiceResponseDto createManualInvoice(com.example.be.web.doman.dto.request.payment.ManualInvoiceRequestDto requestDto);
+
+    /** Học sinh thực hiện thanh toán. */
+    PaymentResponseDto payPayment(Long paymentId);
 }

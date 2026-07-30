@@ -144,6 +144,31 @@ public class AttendanceAdvancedController {
         return VsResponseUtil.success(service.getWarningById(id));
     }
 
+    @PostMapping("/warnings")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @Operation(summary = "Tạo cảnh báo điểm danh", description = "ADMIN / LEADER")
+    public ResponseEntity<RestData<?>> createWarning(
+            @Valid @RequestBody com.example.be.web.doman.dto.request.attendance.AttendanceWarningRequestDto requestDto) {
+        return VsResponseUtil.success(HttpStatus.CREATED, service.createWarning(requestDto));
+    }
+
+    @PutMapping("/warnings/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @Operation(summary = "Cập nhật cảnh báo", description = "ADMIN / LEADER")
+    public ResponseEntity<RestData<?>> updateWarning(
+            @PathVariable Long id,
+            @Valid @RequestBody com.example.be.web.doman.dto.request.attendance.AttendanceWarningRequestDto requestDto) {
+        return VsResponseUtil.success(service.updateWarning(id, requestDto));
+    }
+
+    @DeleteMapping("/warnings/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @Operation(summary = "Xóa cảnh báo", description = "ADMIN / LEADER")
+    public ResponseEntity<RestData<?>> deleteWarning(@PathVariable Long id) {
+        service.deleteWarning(id);
+        return VsResponseUtil.success("Đã xóa cảnh báo");
+    }
+
     // ======================== APPEAL ========================
 
     /**

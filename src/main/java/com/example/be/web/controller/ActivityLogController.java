@@ -33,6 +33,16 @@ public class ActivityLogController {
         return VsResponseUtil.success(activityLogService.getAllLogs(pageable));
     }
 
+    @GetMapping("/me")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
+    @Operation(summary = "Lấy nhật ký hoạt động của tôi")
+    public ResponseEntity<RestData<?>> getMyLogs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return VsResponseUtil.success(activityLogService.getMyLogs(pageable));
+    }
+
     @GetMapping("/user/{userId}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Lấy nhật ký theo người dùng")

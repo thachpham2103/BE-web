@@ -80,6 +80,13 @@ public class PaymentController {
         return VsResponseUtil.success(paymentService.rejectPayment(id, note));
     }
 
+    @PutMapping("/{id}/pay")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
+    @Operation(summary = "Học sinh thực hiện thanh toán", description = "Học sinh tự thanh toán")
+    public ResponseEntity<RestData<?>> payPayment(@PathVariable Long id) {
+        return VsResponseUtil.success(paymentService.payPayment(id));
+    }
+
     // ======================== INVOICE ========================
 
     @PostMapping("/invoice")

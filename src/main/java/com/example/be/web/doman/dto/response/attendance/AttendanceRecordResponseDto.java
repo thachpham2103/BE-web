@@ -27,7 +27,10 @@ public class AttendanceRecordResponseDto {
     private Long attendanceSessionId;
     private String attendanceSessionTitle;
 
+    // thông tin lớp học
+    private Long classId;
+    private String className;
+
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 }
-

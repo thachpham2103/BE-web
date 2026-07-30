@@ -85,6 +85,38 @@ public class NotificationController {
         return VsResponseUtil.success(HttpStatus.CREATED, "Đã gửi thông báo");
     }
 
+    @GetMapping("/sent")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @Operation(summary = "Lấy danh sách thông báo đã gửi")
+    public ResponseEntity<RestData<?>> getSentNotifications(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return VsResponseUtil.success(notificationService.getSentNotifications(userDetails.getUsername(), pageable));
+    }
+
+    @PutMapping("/sent/{notifId}")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @Operation(summary = "Cập nhật thông báo đã gửi")
+    public ResponseEntity<RestData<?>> updateSentNotification(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long notifId,
+            @Valid @RequestBody com.example.be.web.doman.dto.request.notification.NotificationSendRequestDto dto) {
+        notificationService.updateSentNotification(notifId, dto, userDetails.getUsername());
+        return VsResponseUtil.success("Đã cập nhật thông báo");
+    }
+
+    @DeleteMapping("/sent/{notifId}")
+    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
+    @Operation(summary = "Xóa thông báo đã gửi")
+    public ResponseEntity<RestData<?>> deleteSentNotification(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long notifId) {
+        notificationService.deleteSentNotification(notifId, userDetails.getUsername());
+        return VsResponseUtil.success("Đã xóa thông báo");
+    }
+
     @PostMapping("/templates")
     @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Tạo template thông báo")

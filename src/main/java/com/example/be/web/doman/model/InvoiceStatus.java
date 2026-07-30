@@ -6,5 +6,6 @@ package com.example.be.web.doman.model;
 public enum InvoiceStatus {
     DRAFT,
     ISSUED,
-    CANCELLED
+    CANCELLED,
+    PAID
 }

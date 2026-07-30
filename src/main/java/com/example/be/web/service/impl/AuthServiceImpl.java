@@ -32,6 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final ClassRepository classRepository;
+    private final com.example.be.web.service.ActivityLogService activityLogService;
 
     @Override
     public LoginResponseDto login(LoginRequestDto request) {
@@ -58,6 +59,13 @@ public class AuthServiceImpl implements AuthService {
             if (user.getLastLogin() != null && user.getCreateDate() != null) {
                 isFirstLogin = user.getLastLogin().equals(user.getCreateDate());
             }
+
+            // Log activity
+            try {
+                // Determine ip from request or put null if not easily accessible in this layer. 
+                // Wait, AuthServiceImpl has no HttpServletRequest in login(LoginRequestDto) unless passed.
+                activityLogService.logActivity(user.getUsername(), com.example.be.web.doman.model.ActivityAction.LOGIN, null, null, "Người dùng đăng nhập hệ thống", null);
+            } catch (Exception ignored) {}
 
             return new LoginResponseDto(
                     accessToken,

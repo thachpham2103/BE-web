@@ -167,6 +167,9 @@ public class NotificationServiceImpl implements NotificationService {
             for (com.example.be.web.doman.entity.ClassRegistration reg : registrations.getContent()) {
                 targets.add(reg.getStudent());
             }
+        } else {
+            // Broadcast to all users
+            targets.addAll(userRepository.findByRole_Name("ROLE_USER"));
         }
 
         if (targets.isEmpty()) {
@@ -190,5 +193,37 @@ public class NotificationServiceImpl implements NotificationService {
                     .build();
             notificationRecipientRepository.save(recipient);
         }
+    }
+
+    @Override
+    public Page<NotificationResponseDto> getSentNotifications(String username, Pageable pageable) {
+        Page<Notification> notifications = notificationRepository.findDistinctSentNotifications(username, pageable);
+        return notifications.map(notificationMapper::toResponse);
+    }
+
+    @Override
+    @Transactional
+    public void updateSentNotification(Long notifId, com.example.be.web.doman.dto.request.notification.NotificationSendRequestDto dto, String username) {
+        Notification existing = notificationRepository.findById(notifId)
+                .orElseThrow(() -> new NotFoundException("Notification not found"));
+        
+        if (!existing.getCreatedBy().getUsername().equals(username)) {
+            throw new BadRequestException("You can only edit your own sent notifications");
+        }
+        
+        notificationRepository.updateSentNotifications(existing.getTitle(), existing.getBody(), dto.getTitle(), dto.getContent(), username);
+    }
+
+    @Override
+    @Transactional
+    public void deleteSentNotification(Long notifId, String username) {
+        Notification existing = notificationRepository.findById(notifId)
+                .orElseThrow(() -> new NotFoundException("Notification not found"));
+                
+        if (!existing.getCreatedBy().getUsername().equals(username)) {
+            throw new BadRequestException("You can only delete your own sent notifications");
+        }
+        
+        notificationRepository.deleteSentNotifications(existing.getTitle(), existing.getBody(), username);
     }
 }

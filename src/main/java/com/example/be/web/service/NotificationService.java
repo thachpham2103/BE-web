@@ -21,4 +21,8 @@ public interface NotificationService {
     List<NotificationTemplateResponseDto> getTemplates();
     NotificationTemplateResponseDto updateTemplate(Long templateId, NotificationTemplateRequestDto dto);
     void deactivateTemplate(Long templateId);
+
+    Page<NotificationResponseDto> getSentNotifications(String username, Pageable pageable);
+    void updateSentNotification(Long notifId, com.example.be.web.doman.dto.request.notification.NotificationSendRequestDto dto, String username);
+    void deleteSentNotification(Long notifId, String username);
 }

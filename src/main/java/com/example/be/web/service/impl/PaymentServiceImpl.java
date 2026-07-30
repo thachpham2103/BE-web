@@ -46,6 +46,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final UserRepository userRepository;
     private final PaymentMapper paymentMapper;
     private final InvoiceMapper invoiceMapper;
+    private final com.example.be.web.service.ActivityLogService activityLogService;
 
     @Override
     public PaymentResponseDto createPayment(PaymentRequestDto requestDto) {
@@ -135,6 +136,11 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         log.info("Đã xác nhận thanh toán ID: {}", paymentId);
+        
+        try {
+            activityLogService.logActivity(currentUser.getUsername(), com.example.be.web.doman.model.ActivityAction.UPDATE, com.example.be.web.doman.model.TargetType.PAYMENT, payment.getPaymentId(), "Xác nhận thanh toán học phí", null);
+        } catch (Exception ignored) {}
+
         return paymentMapper.toResponse(payment);
     }
 
@@ -234,6 +240,43 @@ public class PaymentServiceImpl implements PaymentService {
         invoice = invoiceRepository.save(invoice);
 
         return invoiceMapper.toResponse(invoice);
+    }
+
+    @Override
+    public PaymentResponseDto payPayment(Long paymentId) {
+        User currentUser = getCurrentUser();
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new NotFoundException(
+                        ErrorMessage.Payment.PAYMENT_NOT_FOUND,
+                        new String[]{paymentId.toString()}));
+
+        if (!payment.getUser().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("Bạn không có quyền thanh toán giao dịch này.");
+        }
+
+        if (payment.getPaymentStatus() != PaymentStatus.PENDING) {
+            throw new BadRequestException("Giao dịch này không ở trạng thái chờ thanh toán.");
+        }
+
+        // Mô phỏng việc thanh toán thành công (chuyển sang PAID)
+        payment.setPaymentStatus(PaymentStatus.PAID);
+        payment.setPaidAt(LocalDateTime.now());
+        paymentRepository.save(payment);
+
+        // Cập nhật trạng thái Invoice nếu có
+        Invoice invoice = invoiceRepository.findByPayment_PaymentId(paymentId).orElse(null);
+        if (invoice != null) {
+            invoice.setStatus(InvoiceStatus.PAID);
+            invoiceRepository.save(invoice);
+        }
+
+        log.info("Học sinh đã thanh toán ID: {}", paymentId);
+        
+        try {
+            activityLogService.logActivity(currentUser.getUsername(), com.example.be.web.doman.model.ActivityAction.UPDATE, com.example.be.web.doman.model.TargetType.PAYMENT, payment.getPaymentId(), "Thanh toán học phí", null);
+        } catch (Exception ignored) {}
+
+        return paymentMapper.toResponse(payment);
     }
 
     private User getCurrentUser() {

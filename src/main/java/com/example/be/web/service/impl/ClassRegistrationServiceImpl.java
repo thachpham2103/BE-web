@@ -37,6 +37,8 @@ public class ClassRegistrationServiceImpl implements ClassRegistrationService {
     private final ClassRepository classRepository;
     private final UserRepository userRepository;
     private final ClassRegistrationMapper mapper;
+    private final com.example.be.web.repository.PaymentRepository paymentRepository;
+    private final com.example.be.web.repository.InvoiceRepository invoiceRepository;
 
     @Override
     public ClassRegistrationResponseDto registerStudentToClass(ClassRegistrationRequestDto requestDto) {
@@ -65,6 +67,29 @@ public class ClassRegistrationServiceImpl implements ClassRegistrationService {
                 .build();
 
         ClassRegistration saved = classRegistrationRepository.save(registration);
+
+        // Auto create Payment and Invoice if class has tuition fee
+        if (classRoom.getTuitionFee() != null && classRoom.getTuitionFee().compareTo(java.math.BigDecimal.ZERO) > 0) {
+            com.example.be.web.doman.entity.Payment payment = com.example.be.web.doman.entity.Payment.builder()
+                    .user(student)
+                    .classRegistration(saved)
+                    .amount(classRoom.getTuitionFee())
+                    .paymentMethod(com.example.be.web.doman.model.PaymentMethod.BANK_TRANSFER)
+                    .paymentStatus(com.example.be.web.doman.model.PaymentStatus.PENDING)
+                    .build();
+            payment = paymentRepository.save(payment);
+
+            com.example.be.web.doman.entity.Invoice invoice = com.example.be.web.doman.entity.Invoice.builder()
+                    .payment(payment)
+                    .invoiceCode("INV-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase())
+                    .user(student)
+                    .amount(classRoom.getTuitionFee())
+                    .issueDate(java.time.LocalDate.now())
+                    .status(com.example.be.web.doman.model.InvoiceStatus.ISSUED)
+                    .build();
+            invoiceRepository.save(invoice);
+        }
+
         return mapper.toResponseDto(saved);
     }
 
