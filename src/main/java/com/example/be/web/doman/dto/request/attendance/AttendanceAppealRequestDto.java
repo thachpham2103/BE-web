@@ -18,11 +18,9 @@ import lombok.*;
 @Schema(description = "Request body giải trình điểm danh")
 public class AttendanceAppealRequestDto {
 
-    @NotNull(message = "Mã buổi điểm danh không được để trống")
     @Schema(description = "ID buổi điểm danh", example = "1")
     private Long sessionId;
 
-    @NotNull(message = "Mã bản ghi điểm danh không được để trống")
     @Schema(description = "ID bản ghi điểm danh", example = "1")
     private Long recordId;
 

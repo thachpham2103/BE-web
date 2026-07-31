@@ -51,6 +51,7 @@ public class AttendanceAdvancedServiceImpl implements AttendanceAdvancedService 
     private final AttendancePolicyMapper policyMapper;
     private final AttendanceWarningMapper warningMapper;
     private final AttendanceAppealMapper appealMapper;
+    private final com.example.be.web.service.NotificationService notificationService;
 
     // ======================== POLICY ========================
 
@@ -233,6 +234,10 @@ public class AttendanceAdvancedServiceImpl implements AttendanceAdvancedService 
         User currentUser = getCurrentUser();
         log.info("Sinh viên {} tạo giải trình cho record {}", currentUser.getId(), requestDto.getRecordId());
 
+        if (requestDto.getSessionId() == null || requestDto.getRecordId() == null) {
+            throw new BadRequestException("Mã buổi học và mã bản ghi không được để trống khi tạo giải trình.");
+        }
+
         // Kiểm tra đã giải trình chưa
         if (appealRepository.existsByStudent_IdAndAttendanceRecord_RecordId(
                 currentUser.getId(), requestDto.getRecordId())) {
@@ -313,6 +318,19 @@ public class AttendanceAdvancedServiceImpl implements AttendanceAdvancedService 
 
         AttendanceAppeal reviewed = appealRepository.save(appeal);
         log.info("Đã duyệt giải trình ID: {} → {}", appealId, requestDto.getStatus());
+
+        // Gửi thông báo cho sinh viên
+        try {
+            com.example.be.web.doman.dto.request.notification.NotificationSendRequestDto notifDto = new com.example.be.web.doman.dto.request.notification.NotificationSendRequestDto();
+            notifDto.setTitle("Kết quả giải trình điểm danh");
+            String statusVi = requestDto.getStatus() == AppealStatus.APPROVED ? "ĐƯỢC CHẤP NHẬN" : "BỊ TỪ CHỐI";
+            notifDto.setContent("Giải trình của bạn cho lớp " + appeal.getAttendanceSession().getClassRoom().getTitle() + " đã " + statusVi + ". " + (requestDto.getTeacherNote() != null ? "Ghi chú: " + requestDto.getTeacherNote() : ""));
+            notifDto.setType(com.example.be.web.doman.model.NotificationType.SYSTEM);
+            notifDto.setStudentId(appeal.getStudent().getUsername());
+            notificationService.sendNotification(notifDto, currentUser.getUsername());
+        } catch (Exception e) {
+            log.error("Lỗi khi gửi thông báo giải trình: ", e);
+        }
 
         return appealMapper.toResponse(reviewed);
     }

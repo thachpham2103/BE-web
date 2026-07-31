@@ -58,6 +58,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/**",           // Cho phép đăng nhập, đăng ký
                                 "/api/public/**",     // Các API công khai (nếu có)
+                                "/api/v1/files/**",   // File API (upload/download)
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",

@@ -121,19 +121,23 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setConfirmedAt(LocalDateTime.now());
         paymentRepository.save(payment);
 
-        // Tự động tạo hóa đơn
-        if (!invoiceRepository.existsByPayment_PaymentId(paymentId)) {
-            Invoice invoice = Invoice.builder()
+        // Tự động tạo hóa đơn hoặc cập nhật hóa đơn đã có
+        Invoice invoice = invoiceRepository.findByPayment_PaymentId(paymentId).orElse(null);
+        if (invoice == null) {
+            invoice = Invoice.builder()
                     .payment(payment)
                     .invoiceCode("INV-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase())
                     .user(payment.getUser())
                     .amount(payment.getAmount())
                     .issueDate(LocalDate.now())
-                    .status(InvoiceStatus.ISSUED)
+                    .status(InvoiceStatus.PAID)
                     .build();
-            invoiceRepository.save(invoice);
             log.info("Đã tạo hóa đơn cho payment ID: {}", paymentId);
+        } else {
+            invoice.setStatus(InvoiceStatus.PAID);
+            log.info("Đã cập nhật trạng thái hóa đơn thành PAID cho payment ID: {}", paymentId);
         }
+        invoiceRepository.save(invoice);
 
         log.info("Đã xác nhận thanh toán ID: {}", paymentId);
         
@@ -157,6 +161,13 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setConfirmedAt(LocalDateTime.now());
         payment.setNote(note);
         paymentRepository.save(payment);
+
+        // Khôi phục trạng thái Hóa đơn về ISSUED để sinh viên có thể thanh toán lại
+        Invoice invoice = invoiceRepository.findByPayment_PaymentId(paymentId).orElse(null);
+        if (invoice != null) {
+            invoice.setStatus(InvoiceStatus.ISSUED);
+            invoiceRepository.save(invoice);
+        }
 
         log.info("Đã từ chối thanh toán ID: {}", paymentId);
         return paymentMapper.toResponse(payment);
@@ -183,8 +194,28 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Page<InvoiceResponseDto> getMyInvoices(Pageable pageable) {
         User currentUser = getCurrentUser();
-        return invoiceRepository.findByUser_Id(currentUser.getId(), pageable)
-                .map(invoiceMapper::toResponse);
+        Page<Invoice> invoices = invoiceRepository.findByUser_Id(currentUser.getId(), pageable);
+        
+        // Cơ chế tự động sửa lỗi (Self-healing) cho dữ liệu kẹt:
+        // Đồng bộ trạng thái Invoice nếu Payment đã được duyệt (CONFIRMED)
+        boolean hasChanges = false;
+        for (Invoice invoice : invoices) {
+            Payment payment = invoice.getPayment();
+            if (payment != null) {
+                if (payment.getPaymentStatus() == PaymentStatus.CONFIRMED && invoice.getStatus() != InvoiceStatus.PAID) {
+                    invoice.setStatus(InvoiceStatus.PAID);
+                    hasChanges = true;
+                } else if (payment.getPaymentStatus() == PaymentStatus.PAID && invoice.getStatus() != InvoiceStatus.PAID) {
+                    invoice.setStatus(InvoiceStatus.PAID);
+                    hasChanges = true;
+                }
+            }
+        }
+        if (hasChanges) {
+            invoiceRepository.saveAll(invoices);
+        }
+
+        return invoices.map(invoiceMapper::toResponse);
     }
 
     @Override
@@ -243,7 +274,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentResponseDto payPayment(Long paymentId) {
+    public PaymentResponseDto payPayment(Long paymentId, String proofImageUrl) {
         User currentUser = getCurrentUser();
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new NotFoundException(
@@ -254,13 +285,18 @@ public class PaymentServiceImpl implements PaymentService {
             throw new BadRequestException("Bạn không có quyền thanh toán giao dịch này.");
         }
 
-        if (payment.getPaymentStatus() != PaymentStatus.PENDING) {
-            throw new BadRequestException("Giao dịch này không ở trạng thái chờ thanh toán.");
+        if (payment.getPaymentStatus() != PaymentStatus.PENDING 
+                && payment.getPaymentStatus() != PaymentStatus.PAID 
+                && payment.getPaymentStatus() != PaymentStatus.REJECTED) {
+            throw new BadRequestException("Giao dịch này không ở trạng thái hợp lệ để thanh toán.");
         }
 
-        // Mô phỏng việc thanh toán thành công (chuyển sang PAID)
+        // Cập nhật trạng thái và lưu ảnh hóa đơn
         payment.setPaymentStatus(PaymentStatus.PAID);
         payment.setPaidAt(LocalDateTime.now());
+        if (proofImageUrl != null && !proofImageUrl.isEmpty()) {
+            payment.setProofImageUrl(proofImageUrl);
+        }
         paymentRepository.save(payment);
 
         // Cập nhật trạng thái Invoice nếu có

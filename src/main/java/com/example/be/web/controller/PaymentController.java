@@ -83,8 +83,11 @@ public class PaymentController {
     @PutMapping("/{id}/pay")
     @PreAuthorize("hasAnyRole('ADMIN','LEADER','USER')")
     @Operation(summary = "Học sinh thực hiện thanh toán", description = "Học sinh tự thanh toán")
-    public ResponseEntity<RestData<?>> payPayment(@PathVariable Long id) {
-        return VsResponseUtil.success(paymentService.payPayment(id));
+    public ResponseEntity<RestData<?>> payPayment(
+            @PathVariable Long id,
+            @RequestBody(required = false) java.util.Map<String, String> body) {
+        String proofImageUrl = (body != null) ? body.get("proofImageUrl") : null;
+        return VsResponseUtil.success(paymentService.payPayment(id, proofImageUrl));
     }
 
     // ======================== INVOICE ========================

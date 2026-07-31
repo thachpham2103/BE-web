@@ -22,7 +22,7 @@ public class AttendanceSession {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sessionId;
 
-    @Column(name="title", nullable = false,length = 35)
+    @Column(name="title", nullable = false, length = 255)
     private String title;
 
     @Column(name="start_time",nullable = false)

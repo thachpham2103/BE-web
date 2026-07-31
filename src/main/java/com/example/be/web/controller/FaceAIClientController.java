@@ -20,29 +20,8 @@ import java.io.IOException;
 public class FaceAIClientController {
 
     private final FaceAIClient faceAIClient;
-
-//    @Operation(summary = "Upload face image to get embedding")
-//    @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
-//    @PostMapping
-//    public double[] getEmbedding(
-//            @Parameter(description = "Face image file", required = true)
-//            @RequestPart("image") MultipartFile file) throws IOException {
-//
-//        // Tạo file tạm
-//        File tempFile = File.createTempFile("upload-", file.getOriginalFilename());
-//        file.transferTo(tempFile);
-//
-//        // Gọi service với File
-//        double[] embedding = faceAIClient.getEmbedding(tempFile);
-//
-//        // Xóa file tạm
-//        tempFile.delete();
-//
-//        return embedding;
-//    }
 @PostMapping(
-        consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-)//nó nè phải thêm nó vào để swagger hiểu là nhận file
+        consumes = MediaType.MULTIPART_FORM_DATA_VALUE)//nó nè phải thêm nó vào để swagger hiểu là nhận file
 @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
 @Operation(summary = "Upload face image to get embedding")
 public double[] getOriginalEmbedding(
