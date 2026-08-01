@@ -161,6 +161,13 @@ public class AttendanceAdvancedController {
         return VsResponseUtil.success(service.updateWarning(id, requestDto));
     }
 
+    @PutMapping("/warnings/{id}/acknowledge")
+    @PreAuthorize("hasAnyRole('USER')")
+    @Operation(summary = "Xác nhận đã đọc cảnh báo", description = "USER")
+    public ResponseEntity<RestData<?>> acknowledgeWarning(@PathVariable Long id) {
+        return VsResponseUtil.success(service.acknowledgeWarning(id));
+    }
+
     @DeleteMapping("/warnings/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','LEADER')")
     @Operation(summary = "Xóa cảnh báo", description = "ADMIN / LEADER")

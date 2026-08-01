@@ -44,7 +44,7 @@ public class AttendanceSessionServiceImpl implements AttendanceSessionService {
     public AttendanceSessionResponseDto createSession(AttendanceSessionRequestDto requestDto) {
 
         if (requestDto.getLocationId() == null) {
-            throw new NotFoundException("LOCATION_ID_NULL");
+            throw new NotFoundException(ErrorMessage.Location.LOCATION_NOT_FOUND);
         }
 
         AttendanceSession session = mapper.toEntity(requestDto);

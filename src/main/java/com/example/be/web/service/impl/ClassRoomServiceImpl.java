@@ -54,10 +54,6 @@ public class ClassRoomServiceImpl implements ClassRoomService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND_ID, new String[]{principal.getId().toString()}));
         classRoom.setTeacher(creator);
 
-        // xử lý Location
-//        Location location = locationRepository.findById(requestDto.getLocationId())
-//                .orElseThrow(() -> new NotFoundException( ErrorMessage.Location.LOCATION_NOT_FOUND, new String[]{requestDto.getLocationId().toString()} ));
-//        classRoom.setLocation(location);
         Set<Location> locations = new HashSet<>(locationRepository.findAllById(requestDto.getLocationIds()));
         classRoom.setLocations(locations);
 
@@ -178,28 +174,4 @@ public class ClassRoomServiceImpl implements ClassRoomService {
                 .map(statsMapper::toDto)   // gọi mapper thay vì viết inline
                 .collect(Collectors.toList());
     }
-
-//    @Override
-//    public List<SessionAttendanceStatsDto> getAttendanceStatsBySession(Long classId) {
-//        ClassRoom classRoom = classRepository.findById(classId)
-//                .orElseThrow(() -> new NotFoundException(ErrorMessage.ClassRoom.CLASS_NOT_FOUND));
-//
-//        return classRoom.getAttendanceSessions().stream()
-//                .map(session -> {
-//                    long total = session.getAttendanceRecords().size();
-//                    long present = session.getAttendanceRecords().stream()
-//                            .filter(record -> record.getRecordStatus() == RecordStatus.PRESENT)
-//                            .count();
-//
-//                    SessionAttendanceStatsDto dto = new SessionAttendanceStatsDto();
-//                    dto.setSessionId(session.getSessionId());
-//                    dto.setTitle(session.getTitle());
-//                    dto.setTotalCount(total);
-//                    dto.setPresentCount(present);
-//                    return dto;
-//                })
-//                .collect(Collectors.toList());
-//    }
-
-
 }

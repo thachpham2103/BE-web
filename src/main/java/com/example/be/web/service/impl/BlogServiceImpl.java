@@ -1,5 +1,6 @@
 package com.example.be.web.service.impl;
 
+import com.example.be.web.constant.ErrorMessage;
 import com.example.be.web.doman.dto.request.blog.BlogCommentRequestDto;
 import com.example.be.web.doman.dto.request.blog.BlogPostRequestDto;
 import com.example.be.web.doman.dto.response.blog.BlogCommentResponseDto;
@@ -36,7 +37,7 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public BlogPostResponseDto createPost(BlogPostRequestDto dto, String username) {
         User author = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND));
 
         BlogPost post = BlogPost.builder()
                 .author(author)
@@ -66,7 +67,7 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public BlogPostResponseDto getPost(Long id) {
         BlogPost post = blogPostRepository.findByBlogPostIdAndStatusNot(id, BlogPostStatus.DELETED)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy bài viết"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_BLANK_FIELD.toLowerCase()));
         post.setViewCount(post.getViewCount() + 1);
         blogPostRepository.save(post);
 
@@ -81,7 +82,7 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public void deletePost(Long id) {
         BlogPost post = blogPostRepository.findByBlogPostIdAndStatusNot(id, BlogPostStatus.DELETED)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy bài viết"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Blog.BLOG_NOT_FOUND));
         post.setStatus(BlogPostStatus.DELETED);
         blogPostRepository.save(post);
     }
@@ -89,9 +90,9 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public BlogCommentResponseDto addComment(Long postId, BlogCommentRequestDto dto, String username) {
         BlogPost post = blogPostRepository.findByBlogPostIdAndStatusNot(postId, BlogPostStatus.DELETED)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy bài viết"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Blog.BLOG_NOT_FOUND));
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND));
 
         BlogComment comment = BlogComment.builder()
                 .post(post)
@@ -124,14 +125,14 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public void toggleLike(Long postId, String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND));
 
         var existing = blogLikeRepository.findByPost_BlogPostIdAndUser_Id(postId, user.getId());
         if (existing.isPresent()) {
             blogLikeRepository.delete(existing.get());
         } else {
             BlogPost post = blogPostRepository.findByBlogPostIdAndStatusNot(postId, BlogPostStatus.DELETED)
-                    .orElseThrow(() -> new NotFoundException("Không tìm thấy bài viết"));
+                    .orElseThrow(() -> new NotFoundException(ErrorMessage.Blog.BLOG_NOT_FOUND));
             blogLikeRepository.save(BlogLike.builder().post(post).user(user).build());
         }
     }
@@ -139,14 +140,14 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public void toggleSave(Long postId, String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND));
 
         var existing = savedPostRepository.findByUser_IdAndPost_BlogPostId(user.getId(), postId);
         if (existing.isPresent()) {
             savedPostRepository.delete(existing.get());
         } else {
             BlogPost post = blogPostRepository.findByBlogPostIdAndStatusNot(postId, BlogPostStatus.DELETED)
-                    .orElseThrow(() -> new NotFoundException("Không tìm thấy bài viết"));
+                    .orElseThrow(() -> new NotFoundException(ErrorMessage.Blog.BLOG_NOT_FOUND));
             savedPostRepository.save(SavedPost.builder().user(user).post(post).build());
         }
     }
@@ -155,7 +156,7 @@ public class BlogServiceImpl implements BlogService {
     @Transactional(readOnly = true)
     public Page<BlogPostResponseDto> getSavedPosts(String username, Pageable pageable) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.User.ERR_NOT_FOUND));
         return savedPostRepository.findByUser_Id(user.getId(), pageable)
                 .map(sp -> blogPostMapper.toResponse(sp.getPost()));
     }

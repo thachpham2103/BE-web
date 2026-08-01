@@ -2,6 +2,7 @@ package com.example.be.web.controller;
 
 import com.example.be.web.base.RestData;
 import com.example.be.web.base.VsResponseUtil;
+import com.example.be.web.constant.ResponseMessage;
 import com.example.be.web.doman.dto.request.blog.BlogCommentRequestDto;
 import com.example.be.web.doman.dto.request.blog.BlogPostRequestDto;
 import com.example.be.web.service.BlogService;
@@ -56,7 +57,7 @@ public class BlogController {
     @Operation(summary = "Xóa mềm bài viết")
     public ResponseEntity<RestData<?>> deletePost(@PathVariable Long id) {
         blogService.deletePost(id);
-        return VsResponseUtil.success("Đã xóa bài viết");
+        return VsResponseUtil.success(ResponseMessage.DELETE_SUCCESS);
     }
 
     @PostMapping("/posts/{postId}/comments")
@@ -86,7 +87,7 @@ public class BlogController {
             @PathVariable Long postId,
             @AuthenticationPrincipal UserDetails userDetails) {
         blogService.toggleLike(postId, userDetails.getUsername());
-        return VsResponseUtil.success("Đã thay đổi trạng thái thích");
+        return VsResponseUtil.success(ResponseMessage.CHANGE_STORY);
     }
 
     @PostMapping("/posts/{postId}/save")

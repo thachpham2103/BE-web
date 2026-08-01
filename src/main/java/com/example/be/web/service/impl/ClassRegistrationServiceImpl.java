@@ -170,12 +170,6 @@ public class ClassRegistrationServiceImpl implements ClassRegistrationService {
                 .classTitle(reg.getClassEntity().getTitle())
                 .registeredAt(reg.getRegisteredAt())
                 .pending(reg.isPending())
-
-//                .RegistrationStatus(reg.getStatus().name())
-//                .classRoom(classMapper.toDTO(reg.getClassEntity()))
                 .build();
     }
-
-
-
 }

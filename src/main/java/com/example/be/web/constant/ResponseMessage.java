@@ -21,4 +21,6 @@ public class ResponseMessage {
         public final static String USER_DELETE="user successful!";
 
     }
+
+    public static final String CHANGE_STORY ="The liking status has been changed.";
 }

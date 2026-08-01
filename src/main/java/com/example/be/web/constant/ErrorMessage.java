@@ -20,6 +20,10 @@ public class ErrorMessage {
         public static final  String USER_NOT_FOUND="exception.user.not.found";
     }
 
+    public static class Blog{
+        public static final String BLOG_NOT_FOUND="exception.blog.not.found";
+    }
+
     public static class Auth{
 
         public static final String INVALID_REFRESH_TOKEN = "exception.auth.invalid.refresh.token";

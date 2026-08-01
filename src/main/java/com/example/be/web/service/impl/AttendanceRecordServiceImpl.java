@@ -65,18 +65,6 @@ public class AttendanceRecordServiceImpl implements AttendanceRecordService {
             throw new NotFoundException(ErrorMessage.Location.LOCATION_NOT_FOUND);
         }
 
-        // 1. Kiểm tra GPS - tạm ẩn
-//    double distance = calculateDistance(location.getLatitude(), location.getLongitude(), gpsLat, gpsLng);
-//    if (distance > location.getRadiusMeters()) {
-//        throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_RANGE);
-//    }
-
-        // 2. Kiểm tra thời gian điểm danh - tạm ẩn
-//    LocalDateTime now = LocalDateTime.now();
-//    if (now.isBefore(session.getStartTime()) || now.isAfter(session.getEndTime())) {
-//        throw new BadRequestException(ErrorMessage.AttendanceRecord.OUT_OF_TIME);
-//    }
-
         // 3. Gọi AI nhận diện khuôn mặt
         FaceResponse recognize = faceService.recognize(faceImage, userId);
 

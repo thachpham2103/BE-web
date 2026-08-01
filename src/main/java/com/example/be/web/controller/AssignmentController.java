@@ -2,6 +2,7 @@ package com.example.be.web.controller;
 
 import com.example.be.web.base.RestData;
 import com.example.be.web.base.VsResponseUtil;
+import com.example.be.web.constant.ResponseMessage;
 import com.example.be.web.doman.dto.request.assignment.AssignmentRequestDto;
 import com.example.be.web.doman.dto.request.assignment.AssignmentSubmissionRequestDto;
 import com.example.be.web.doman.dto.request.assignment.GradeSubmissionRequestDto;
@@ -76,7 +77,7 @@ public class AssignmentController {
     @Operation(summary = "Xóa mềm bài tập", description = "ADMIN / LEADER")
     public ResponseEntity<RestData<?>> deleteAssignment(@PathVariable Long id) {
         assignmentService.deleteAssignment(id);
-        return VsResponseUtil.success("Đã xóa bài tập thành công");
+        return VsResponseUtil.success(ResponseMessage.DELETE_SUCCESS);
     }
 
     /**

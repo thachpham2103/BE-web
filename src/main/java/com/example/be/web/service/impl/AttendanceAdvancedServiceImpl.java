@@ -199,6 +199,19 @@ public class AttendanceAdvancedServiceImpl implements AttendanceAdvancedService 
                 .build();
 
         warning = warningRepository.save(warning);
+
+        try {
+            com.example.be.web.doman.dto.request.notification.NotificationSendRequestDto notifDto = new com.example.be.web.doman.dto.request.notification.NotificationSendRequestDto();
+            notifDto.setTitle("Cảnh báo điểm danh - " + classRoom.getTitle());
+            notifDto.setContent(requestDto.getMessage());
+            notifDto.setType(com.example.be.web.doman.model.NotificationType.ATTENDANCE);
+            notifDto.setStudentId(student.getUsername());
+            String sender = SecurityContextHolder.getContext().getAuthentication().getName();
+            notificationService.sendNotification(notifDto, sender);
+        } catch (Exception e) {
+            log.error("Khong the gui thong bao canh bao diem danh", e);
+        }
+
         return warningMapper.toResponse(warning);
     }
 
@@ -210,6 +223,17 @@ public class AttendanceAdvancedServiceImpl implements AttendanceAdvancedService 
 
         warning.setWarningLevel(requestDto.getWarningLevel());
         warning.setMessage(requestDto.getMessage());
+        warning = warningRepository.save(warning);
+        return warningMapper.toResponse(warning);
+    }
+
+    @Override
+    @Transactional
+    public AttendanceWarningResponseDto acknowledgeWarning(Long warningId) {
+        AttendanceWarning warning = warningRepository.findById(warningId)
+                .orElseThrow(() -> new NotFoundException("Warning not found"));
+        
+        warning.setStatus(AppealStatus.RESOLVED);
         warning = warningRepository.save(warning);
         return warningMapper.toResponse(warning);
     }

@@ -99,6 +99,8 @@ public interface AttendanceAdvancedService {
 
     AttendanceWarningResponseDto updateWarning(Long warningId, com.example.be.web.doman.dto.request.attendance.AttendanceWarningRequestDto requestDto);
 
+    AttendanceWarningResponseDto acknowledgeWarning(Long warningId);
+
     void deleteWarning(Long warningId);
 
     // ======================== APPEAL ========================
