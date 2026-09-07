@@ -102,7 +102,7 @@ public class BlogServiceImpl implements BlogService {
 
         if (dto.getParentId() != null) {
             BlogComment parent = blogCommentRepository.findById(dto.getParentId())
-                    .orElseThrow(() -> new NotFoundException("Không tìm thấy bình luận cha"));
+                    .orElseThrow(() -> new NotFoundException(ErrorMessage.Blog.COMMENT_NOT_FOUND));
             comment.setParent(parent);
         }
 

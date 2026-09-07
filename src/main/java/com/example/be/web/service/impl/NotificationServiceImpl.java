@@ -158,7 +158,7 @@ public class NotificationServiceImpl implements NotificationService {
         java.util.List<User> targets = new java.util.ArrayList<>();
         if (dto.getStudentId() != null && !dto.getStudentId().isEmpty()) {
             User student = userRepository.findByUsername(dto.getStudentId())
-                    .orElseThrow(() -> new NotFoundException("Student not found"));
+                    .orElseThrow(() -> new NotFoundException(ErrorMessage.User.USER_NOT_FOUND));
             targets.add(student);
         } else if (dto.getClassId() != null) {
             Page<com.example.be.web.doman.entity.ClassRegistration> registrations = 
@@ -205,7 +205,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public void updateSentNotification(Long notifId, com.example.be.web.doman.dto.request.notification.NotificationSendRequestDto dto, String username) {
         Notification existing = notificationRepository.findById(notifId)
-                .orElseThrow(() -> new NotFoundException("Notification not found"));
+                .orElseThrow(() -> new NotFoundException( ErrorMessage.Notification.NOTIFICATION_NOT_FOUND));
         
         if (!existing.getCreatedBy().getUsername().equals(username)) {
             throw new BadRequestException("You can only edit your own sent notifications");
@@ -218,7 +218,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public void deleteSentNotification(Long notifId, String username) {
         Notification existing = notificationRepository.findById(notifId)
-                .orElseThrow(() -> new NotFoundException("Notification not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.Notification.NOTIFICATION_NOT_FOUND));
                 
         if (!existing.getCreatedBy().getUsername().equals(username)) {
             throw new BadRequestException("You can only delete your own sent notifications");

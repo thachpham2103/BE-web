@@ -13,6 +13,7 @@ import com.example.be.web.doman.mapper.AttendancePolicyMapper;
 import com.example.be.web.doman.mapper.AttendanceWarningMapper;
 import com.example.be.web.doman.model.AppealStatus;
 import com.example.be.web.exception.extended.BadRequestException;
+import com.example.be.web.exception.extended.InternalServerException;
 import com.example.be.web.exception.extended.NotFoundException;
 import com.example.be.web.repository.*;
 import com.example.be.web.security.UserPrincipal;
@@ -210,6 +211,7 @@ public class AttendanceAdvancedServiceImpl implements AttendanceAdvancedService 
             notificationService.sendNotification(notifDto, sender);
         } catch (Exception e) {
             log.error("Khong the gui thong bao canh bao diem danh", e);
+            throw new InternalServerException(ErrorMessage.AttendanceAdvanced.NO_SEND_ATTENDANCE);
         }
 
         return warningMapper.toResponse(warning);
@@ -219,7 +221,7 @@ public class AttendanceAdvancedServiceImpl implements AttendanceAdvancedService 
     @Transactional
     public AttendanceWarningResponseDto updateWarning(Long warningId, com.example.be.web.doman.dto.request.attendance.AttendanceWarningRequestDto requestDto) {
         AttendanceWarning warning = warningRepository.findById(warningId)
-                .orElseThrow(() -> new NotFoundException("Warning not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.AttendanceAdvanced.WARNING_NOT_FOUND));
 
         warning.setWarningLevel(requestDto.getWarningLevel());
         warning.setMessage(requestDto.getMessage());
@@ -231,7 +233,7 @@ public class AttendanceAdvancedServiceImpl implements AttendanceAdvancedService 
     @Transactional
     public AttendanceWarningResponseDto acknowledgeWarning(Long warningId) {
         AttendanceWarning warning = warningRepository.findById(warningId)
-                .orElseThrow(() -> new NotFoundException("Warning not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.AttendanceAdvanced.WARNING_NOT_FOUND));
         
         warning.setStatus(AppealStatus.RESOLVED);
         warning = warningRepository.save(warning);
@@ -242,7 +244,7 @@ public class AttendanceAdvancedServiceImpl implements AttendanceAdvancedService 
     @Transactional
     public void deleteWarning(Long warningId) {
         AttendanceWarning warning = warningRepository.findById(warningId)
-                .orElseThrow(() -> new NotFoundException("Warning not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.AttendanceAdvanced.WARNING_NOT_FOUND));
         warningRepository.delete(warning);
     }
 
@@ -369,11 +371,15 @@ public class AttendanceAdvancedServiceImpl implements AttendanceAdvancedService 
                         new String[]{appealId.toString()}));
 
         if (!appeal.getStudent().getId().equals(currentUser.getId())) {
-            throw new BadRequestException("Bạn không có quyền sửa giải trình này");
+            throw new BadRequestException(
+                    ErrorMessage.NO_PERMISSION_UPDATE_APPEAL
+            );
         }
 
         if (appeal.getStatus() != AppealStatus.PENDING) {
-            throw new BadRequestException("Chỉ có thể sửa giải trình khi đang chờ duyệt");
+            throw new BadRequestException(
+                    ErrorMessage.ONLY_UPDATE_PENDING_APPEAL
+            );
         }
 
         appeal.setReason(requestDto.getReason());
@@ -397,11 +403,15 @@ public class AttendanceAdvancedServiceImpl implements AttendanceAdvancedService 
                         new String[]{appealId.toString()}));
 
         if (!appeal.getStudent().getId().equals(currentUser.getId())) {
-            throw new BadRequestException("Bạn không có quyền xóa giải trình này");
+            throw new BadRequestException(
+                    ErrorMessage.NO_PERMISSION_DELETE_APPEAL
+            );
         }
 
         if (appeal.getStatus() != AppealStatus.PENDING) {
-            throw new BadRequestException("Chỉ có thể xóa giải trình khi đang chờ duyệt");
+            throw new BadRequestException(
+                    ErrorMessage.ONLY_DELETE_PENDING_APPEAL
+            );
         }
 
         appealRepository.delete(appeal);

@@ -22,6 +22,7 @@ public class ErrorMessage {
 
     public static class Blog{
         public static final String BLOG_NOT_FOUND="exception.blog.not.found";
+        public static final String COMMENT_NOT_FOUND="exception.comment.not.found";
     }
 
     public static class Auth{
@@ -98,18 +99,28 @@ public class ErrorMessage {
         public static final String APPEAL_NOT_FOUND = "exception.attendance.appeal.not.found";
         public static final String APPEAL_ALREADY_EXISTS = "error.attendance.appeal.already.exists";
         public static final String APPEAL_ALREADY_REVIEWED = "error.attendance.appeal.already.reviewed";
-    }
+        public static final String NO_SEND_ATTENDANCE = "error.no-send-attendance";}
+        public static final String NO_PERMISSION_UPDATE_APPEAL = "error.no-permission-update-appeal";
+        public static final String ONLY_UPDATE_PENDING_APPEAL ="error.only-update-pending-appeal";
+        public static final String NO_PERMISSION_DELETE_APPEAL ="error.no-permission-delete-appeal";
+         public static final String ONLY_DELETE_PENDING_APPEAL = "error.only-delete-pending-appeal";
 
     public static class Payment {
         public static final String PAYMENT_NOT_FOUND = "exception.payment.not.found";
         public static final String PAYMENT_ALREADY_EXISTS = "error.payment.already.exists";
         public static final String INVALID_STATUS_TRANSITION = "error.payment.invalid.status.transition";
         public static final String INVOICE_NOT_FOUND = "exception.invoice.not.found";
-    }
-
-//    public static class ClassRegistration {
-//        public static final String REGISTRATION_NOT_FOUND = "exception.class.registration.not.found";
-//    }
+        public static final String MANUAL_PAYMENT_NOT_ALLOWED = "error.manual-payment-not-allowed";
+        public static final String MANUAL_INVOICE_NOT_ALLOWED = "error.manual-invoice-not-allowed";
+        public static final String NO_PERMISSION_PAY_PAYMENT = "error.no-permission-pay-payment";
+        public static final String INVALID_PAYMENT_STATUS = "error.invalid-payment-status";
+        public static final String INVALID_PAYMENT_PROOF = "error.invalid-payment-proof";
+        public static final String PAYMENT_PROOF_NOT_FOUND = "error.payment-proof-not-found";
+        public static final String REJECT_REASON_REQUIRED = "error.reject-reason-required";
+        public static final String PAYMENT_NOT_AWAITING_REVIEW = "error.payment-not-awaiting-review";
+        public static final String NO_PERMISSION_REVIEW_PAYMENT = "error.no-permission-review-payment";
+        public static final String NO_PERMISSION_VIEW_PAYMENT = "error.no-permission-view-payment";
+        }
 
     public static class LearningTask{
         public static final String TASK_NOT_FOUND="exception.task.not.found";
@@ -130,6 +141,4 @@ public class ErrorMessage {
     public static class Message{
         public static final String MESSAGE_NOT_FOUND="exception.message.not.found";
     }
-
-
 }

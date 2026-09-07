@@ -38,7 +38,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Transactional
 public class PaymentServiceImpl implements PaymentService {
-
     private final PaymentRepository paymentRepository;
     private final InvoiceRepository invoiceRepository;
     private final UserRepository userRepository;
@@ -49,8 +48,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentResponseDto createPayment(PaymentRequestDto dto) {
         throw new BadRequestException(
-                "Học phí được tạo tự động khi đăng ký lớp. "
-                        + "Không tạo thanh toán thủ công."
+                ErrorMessage.Payment.MANUAL_PAYMENT_NOT_ALLOWED
         );
     }
 
@@ -59,8 +57,7 @@ public class PaymentServiceImpl implements PaymentService {
             ManualInvoiceRequestDto dto
     ) {
         throw new BadRequestException(
-                "Khoản thu được tạo khi đăng ký lớp. "
-                        + "Admin chỉ xác nhận hoặc từ chối minh chứng."
+                ErrorMessage.Payment.MANUAL_INVOICE_NOT_ALLOWED
         );
     }
 
@@ -85,6 +82,7 @@ public class PaymentServiceImpl implements PaymentService {
             PaymentStatus status,
             Pageable pageable
     ) {
+
         requireReviewer();
 
         return paymentRepository
@@ -97,27 +95,30 @@ public class PaymentServiceImpl implements PaymentService {
             Long id,
             String proofImageUrl
     ) {
+
         User student = getCurrentUser();
         Payment payment = lockedPayment(id);
 
         if (!payment.getUser().getId().equals(student.getId())) {
             throw new BadRequestException(
-                    "Bạn không có quyền thanh toán khoản thu này."
+                    ErrorMessage.Payment.NO_PERMISSION_PAY_PAYMENT
             );
         }
 
         if (payment.getPaymentStatus() != PaymentStatus.PENDING
                 && payment.getPaymentStatus() != PaymentStatus.REJECTED) {
+
             throw new BadRequestException(
-                    "Chỉ gửi minh chứng khi chờ đóng hoặc đã bị từ chối."
+                    ErrorMessage.Payment.INVALID_PAYMENT_STATUS
             );
         }
 
         if (proofImageUrl == null
                 || proofImageUrl.isBlank()
                 || proofImageUrl.trim().length() > 500) {
+
             throw new BadRequestException(
-                    "Vui lòng tải lên ảnh minh chứng hợp lệ."
+                    ErrorMessage.Payment.INVALID_PAYMENT_PROOF
             );
         }
 
@@ -148,16 +149,19 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentResponseDto confirmPayment(Long id) {
+
         requireReviewer();
 
         User reviewer = getCurrentUser();
         Payment payment = lockedPayment(id);
+
         requireAwaitingReview(payment);
 
         if (payment.getProofImageUrl() == null
                 || payment.getProofImageUrl().isBlank()) {
+
             throw new BadRequestException(
-                    "Chưa có ảnh minh chứng để xác nhận."
+                    ErrorMessage.Payment.PAYMENT_PROOF_NOT_FOUND
             );
         }
 
@@ -183,15 +187,17 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentResponseDto rejectPayment(Long id, String note) {
+
         requireReviewer();
 
         User reviewer = getCurrentUser();
         Payment payment = lockedPayment(id);
+
         requireAwaitingReview(payment);
 
         if (note == null || note.isBlank()) {
             throw new BadRequestException(
-                    "Vui lòng nhập lý do từ chối để sinh viên bổ sung minh chứng."
+                    ErrorMessage.Payment.REJECT_REASON_REQUIRED
             );
         }
 
@@ -212,6 +218,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public InvoiceResponseDto getInvoiceByPayment(Long paymentId) {
+
         Invoice invoice = invoiceRepository
                 .findByPayment_PaymentId(paymentId)
                 .orElseThrow(() -> new NotFoundException(
@@ -220,11 +227,13 @@ public class PaymentServiceImpl implements PaymentService {
                 ));
 
         requireOwnerOrReviewer(invoice.getPayment());
+
         return invoiceResponse(invoice);
     }
 
     @Override
     public InvoiceResponseDto getInvoiceByCode(String code) {
+
         Invoice invoice = invoiceRepository
                 .findByInvoiceCode(code)
                 .orElseThrow(() -> new NotFoundException(
@@ -233,17 +242,20 @@ public class PaymentServiceImpl implements PaymentService {
                 ));
 
         requireOwnerOrReviewer(invoice.getPayment());
+
         return invoiceResponse(invoice);
     }
 
     @Override
     public Page<InvoiceResponseDto> getMyInvoices(Pageable pageable) {
+
         return invoiceRepository
                 .findByUser_Id(getCurrentUser().getId(), pageable)
                 .map(this::invoiceResponse);
     }
 
     private InvoiceResponseDto invoiceResponse(Invoice invoice) {
+
         InvoiceResponseDto dto = invoiceMapper.toResponse(invoice);
 
         // Dữ liệu cũ có thể ghi PAID ngay khi sinh viên gửi ảnh.
@@ -252,6 +264,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         if (status == PaymentStatus.CONFIRMED) {
             dto.setStatus(InvoiceStatus.PAID);
+
         } else if (invoice.getStatus() == InvoiceStatus.PAID) {
             dto.setStatus(InvoiceStatus.ISSUED);
         }
@@ -263,6 +276,7 @@ public class PaymentServiceImpl implements PaymentService {
             Payment payment,
             InvoiceStatus status
     ) {
+
         Invoice invoice = invoiceRepository
                 .findByPayment_PaymentId(payment.getPaymentId())
                 .orElseGet(() -> Invoice.builder()
@@ -278,11 +292,13 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private Payment lockedPayment(Long id) {
+
         return paymentRepository.findForUpdate(id)
                 .orElseThrow(() -> paymentNotFound(id));
     }
 
     private NotFoundException paymentNotFound(Long id) {
+
         return new NotFoundException(
                 ErrorMessage.Payment.PAYMENT_NOT_FOUND,
                 new String[]{id.toString()}
@@ -290,14 +306,17 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private void requireAwaitingReview(Payment payment) {
+
         if (payment.getPaymentStatus() != PaymentStatus.PAID) {
+
             throw new BadRequestException(
-                    "Chỉ duyệt khoản thu đã có minh chứng và đang chờ xác nhận."
+                    ErrorMessage.Payment.PAYMENT_NOT_AWAITING_REVIEW
             );
         }
     }
 
     private boolean isReviewer() {
+
         return SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getAuthorities()
@@ -309,24 +328,29 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private void requireReviewer() {
+
         if (!isReviewer()) {
+
             throw new BadRequestException(
-                    "Bạn không có quyền duyệt thanh toán."
+                    ErrorMessage.Payment.NO_PERMISSION_REVIEW_PAYMENT
             );
         }
     }
 
     private void requireOwnerOrReviewer(Payment payment) {
+
         if (!isReviewer()
                 && !payment.getUser().getId()
                 .equals(getCurrentUser().getId())) {
+
             throw new BadRequestException(
-                    "Bạn không có quyền xem khoản thanh toán này."
+                    ErrorMessage.Payment.NO_PERMISSION_VIEW_PAYMENT
             );
         }
     }
 
     private User getCurrentUser() {
+
         UserPrincipal principal = (UserPrincipal)
                 SecurityContextHolder.getContext()
                         .getAuthentication()
@@ -344,7 +368,9 @@ public class PaymentServiceImpl implements PaymentService {
             Payment payment,
             String message
     ) {
+
         try {
+
             activityLogService.logActivity(
                     user.getUsername(),
                     ActivityAction.UPDATE,
@@ -353,6 +379,7 @@ public class PaymentServiceImpl implements PaymentService {
                     message,
                     null
             );
+
         } catch (Exception ignored) {
         }
     }
